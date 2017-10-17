@@ -1,0 +1,21 @@
+web:
+  upload-path: /Users/hexuan/Desktop/develop/car_upload_file/
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/car?characterEncoding=utf8&useSSL=false
+    username: root
+    password: hex
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+

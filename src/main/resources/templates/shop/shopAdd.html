@@ -1,0 +1,218 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>4s店添加</title>
+<style>
+	.store-contact{
+		margin-top: 10px;
+	}
+	.store-contact:nth-child(1){
+		margin-top: 0px!important;
+	}
+</style>
+</head>
+<body>
+<article class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-shop-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">4S店名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="name" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">4S店账号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="storename" name="storename">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">4S店密码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="storename" name="storename">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><!-- <span class="c-red">*</span> -->负责人名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="linkman" name="linkman">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><!-- <span class="c-red">*</span> -->联系方式:</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text store-contact" value="" placeholder="客服电话(Phone)" id="customService" name="customService">
+				<input type="text" class="input-text store-contact" value="" placeholder="联系电话(Mobile)" id="phone" name="phone">
+				<input type="text" class="input-text store-contact" value="" placeholder="邮箱@email" id="email" name="email">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" multiple name="file-2" class="input-file">
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" multiple name="file-2" class="input-file">
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" multiple name="file-2" class="input-file">
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" multiple name="file-2" class="input-file">
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">所在城市：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span id="topPlaceSpan"></span></div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">所在区：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span id="childPlaceSpan"></span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">街道名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="address" name="address">
+			</div>
+		</div>
+		<div class="row cl" id="store-description">
+			<label class="form-label col-xs-4 col-sm-3">4S店描述：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea id="store-area" name="remark" cols="" rows="" class="textarea"  placeholder="4S店描述...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,500)"></textarea>
+				<p class="textarea-numberbar"><em id="store-restriction" class="textarea-length">500</em>/500</p>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+		<span id="childPlaceHideSpan" style="display: none;">
+		</span>
+	</form>
+</article>
+
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本--> 
+<script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+        type:"GET",
+        url:"/getUsingPlaceList",
+        dataType : "json",
+        success : function(data) {
+            if (data.code == "0") {
+                var topPlaceSelect=$("<select>",{id:"topPlaceSelect"}).change(function(){
+					changeTopPlace(projectPointObject.id,this);
+				});;
+                var childPlaceSelect=$("<select>",{id:"childPlaceHideSelect"});
+                $("#topPlaceSpan").append(topPlaceSelect);
+				$("#childPlaceHideSpan").append(childPlaceSelect);
+                topPlaceSelect.append("<option>请选择省份</option>");
+                childPlaceSelect.append("<option id='firstOption'>请选择区域</option>");
+                $.each(data.data.topPlaceList, function (index,topPlace) {
+                    topPlaceSelect.append("<option id='"+topPlace.id+"' value='"+topPlace.id+"'>"+topPlace.name+"</option>");
+                });
+                $.each(data.data.childPlaceList, function (index,childPlace) {
+                    childPlaceSelect.append("<option id='"+childPlace.parentPlace.id+"_"+childPlace.id+"' value='"+childPlace.id+"'>"+childPlace.name+"</option>");
+                });
+				var childPlaceSelectnNew=$("#childPlaceHideSelect").clone();
+				childPlaceSelectnNew.attr("id","childPlaceSelect").attr("name","placeId");
+				$("#childPlaceSpan").append(childPlaceSelectnNew);
+            } else {
+                layer.msg('获取信息失败',{icon:1,time:1000});
+            }
+        }
+    });
+	$("#form-shop-add").validate({
+		rules:{
+			storename:{
+				required:true,
+				minlength:2,
+				maxlength:16
+			},
+			storemobile:{
+				required:true,
+				isMobile:true,
+			},
+			storephone:{
+				required:true,
+				isPhone:true,
+			},
+			store_email:{
+				required:true,
+				email:true,
+			},
+			principal:{
+				required:true,
+			}
+			uploadfile:{
+				required:true,
+			},
+			
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				url: "/saveShop",
+				type: 'post',
+				dataType:"json",
+				success: function(data){
+					layer.msg('添加成功!',{icon:1,time:1000});
+					setTimeout("window.parent.location.reload();",1000);
+				},
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+					layer.msg('error!',{icon:1,time:1000});
+					setTimeout("window.parent.location.reload();",1000);
+				}
+			});
+		}
+	});
+	/*门店描述字数限制*/  
+    $("#store-area").on("input propertychange", function() {  
+        var $this = $(this),  
+            _val = $this.val(),  
+            count = "";  
+            $this.css('border','1px solid #ddd');
+        if (_val.length > 500) {  
+            $this.val(_val.substring(0, 500));  
+            $this.css('border','1px solid red');
+        }  
+        count = 500 - $this.val().length;  
+        $("#store-restriction").text(count);  
+    });  
+});
+function changeTopPlace(object){
+	$("#childPlaceSelect").find("option").remove();
+	$("#childPlaceSelect").append($("#childPlaceHideSelect").find("option[id=firstOption]").clone());
+    $("#childPlaceSelect").append($("#childPlaceHideSelect").find("option[id^="+object.value+"_]").clone());
+}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

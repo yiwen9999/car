@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>添加型号</title>
+</head>
+<body>
+<article class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-model-add">
+		<div class="row cl" id="modellist">
+			<label class="form-label col-xs-4 col-sm-3"><span class="add-model">+</span><span class="c-red">*</span>型号名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" name="modelNames">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+	</form>
+</article>
+
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(function(){
+	$(".add-model").click(function(){
+		var modellist = '<div class="row cl" id="modellist"><label class="form-label col-xs-4 col-sm-3"><span class="add-model">-</span><span class="c-red">*</span>型号名：</label><div class="formControls col-xs-8 col-sm-9"><input type="text" class="input-text" value="" placeholder="" id="modelname" name="modelname"></div></div>'
+		$("#modellist").after(modellist);
+	});
+	$(".delete-model").click(function(){
+	});
+	$("#form-model-add").validate({
+		rules:{
+			modelNames{
+				required:true
+			},			
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				url: "/saveModel",
+				type: 'post',
+				dataType:"json",
+				success: function(data){
+					layer.msg('添加成功!',{icon:1,time:1000});
+					setTimeout("window.parent.location.reload();",1000);
+				},
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+					layer.msg('error!',{icon:1,time:1000});
+					setTimeout("window.parent.location.reload();",1000);
+				}
+			});
+		}
+	});
+});
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

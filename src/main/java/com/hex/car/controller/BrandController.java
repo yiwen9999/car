@@ -49,44 +49,6 @@ public class BrandController {
     }
 
     /**
-     * 获取所有型号集合，按名称排序
-     *
-     * @return
-     */
-//    @GetMapping(value = "/getModelAllList")
-//    public Object getModelAllList() {
-//        return ResultUtil.success(modelService.findAllModelList());
-//    }
-
-    /**
-     * 保存品牌
-     *
-     * @param brand 品牌
-     * @return
-     */
-//    @PostMapping(value = "/saveBrand")
-//    public Object saveBrand(Brand brand) {
-//        return ResultUtil.success(brandService.saveBrand(brand));
-//    }
-
-    /**
-     * 保存型号
-     *
-     * @param model   型号
-     * @param brandId 品牌id
-     * @return
-     */
-//    @PostMapping(value = "/saveModel")
-//    public Object saveModel(Model model, String brandId) {
-//        Brand brand = brandService.findBrandById(brandId);
-//        if (null == brand) {
-//            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-//        }
-//        model.setBrand(brand);
-//        return ResultUtil.success(modelService.saveModel(model));
-//    }
-
-    /**
      * 品牌，批量型号添加
      *
      * @param modelNames   型号名称集合

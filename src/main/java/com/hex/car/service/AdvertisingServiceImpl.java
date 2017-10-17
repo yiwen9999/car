@@ -5,6 +5,8 @@ import com.hex.car.repository.AdvertisingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/9/29
@@ -29,5 +31,10 @@ public class AdvertisingServiceImpl implements AdvertisingService {
     @Override
     public Advertising findAdvertisingById(String id) {
         return advertisingRepository.findOne(id);
+    }
+
+    @Override
+    public List<Advertising> findAllAdvertisingList() {
+        return advertisingRepository.findAll();
     }
 }

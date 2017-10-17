@@ -57,7 +57,10 @@ public class ShopController {
      * @throws NoSuchAlgorithmException
      */
     @PostMapping(value = "/saveShop")
-    public Object saveShop(Shop shop, String placeId, String username, String password,
+    public Object saveShop(Shop shop,
+                           String placeId,
+                           String username,
+                           String password,
                            @RequestParam(value = "imgShops", required = false) List<MultipartFile> imgShops) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Place place = placeService.findPlaceById(placeId);
         shop.setPlace(place);

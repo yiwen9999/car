@@ -45,4 +45,9 @@ public class BrandServiceImpl implements BrandService {
         Sort sort = new Sort(orders);
         return brandRepository.findAll(sort);
     }
+
+    @Override
+    public List<Brand> findBrandListByState(Integer state) {
+        return brandRepository.findBrandsByStateOrderByInitialAscNameAsc(state);
+    }
 }

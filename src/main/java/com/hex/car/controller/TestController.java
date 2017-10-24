@@ -1,24 +1,12 @@
 package com.hex.car.controller;
 
-import com.hex.car.domain.Car;
-import com.hex.car.domain.ImgProduct;
-import com.hex.car.domain.Shop;
-import com.hex.car.enums.ResultEnum;
-import com.hex.car.service.ImgProductService;
 import com.hex.car.service.CarService;
+import com.hex.car.service.ImgProductService;
 import com.hex.car.service.ShopService;
-import com.hex.car.utils.FileUtil;
-import com.hex.car.utils.ResultUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import java.util.*;
 
 /**
  * User: hexuan

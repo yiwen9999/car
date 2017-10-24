@@ -14,83 +14,83 @@
 </head>
 <body>
 <article class="page-container">
-	<form action="" method="post" class="form form-horizontal" id="form-shop-add">
+	<form action="" method="post" class="form form-horizontal" id="form-shop-add"  enctype="multipart/form-data">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">4S店名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="name" name="name">
+				<input type="text" class="input-text" value="" placeholder="" id="name" name="name" th:value="${shop!=null ? shop.name:''}">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">4S店账号：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="storename" name="storename">
+				<input type="text" class="input-text" value="" placeholder="" id="username" name="username">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">4S店密码：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="storename" name="storename">
+				<input type="text" class="input-text" value="" placeholder="" id="password" name="password">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><!-- <span class="c-red">*</span> -->负责人名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="linkman" name="linkman">
+				<input type="text" class="input-text" value="" placeholder="" id="linkman" name="linkman" th:value="${shop!=null ? shop.linkman:''}">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><!-- <span class="c-red">*</span> -->联系方式:</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text store-contact" value="" placeholder="客服电话(Phone)" id="customService" name="customService">
-				<input type="text" class="input-text store-contact" value="" placeholder="联系电话(Mobile)" id="phone" name="phone">
-				<input type="text" class="input-text store-contact" value="" placeholder="邮箱@email" id="email" name="email">
+				<input type="text" class="input-text store-contact" value="" placeholder="客服电话(Phone)" id="customService" name="customService" th:value="${shop!=null ? shop.customService:''}">
+				<input type="text" class="input-text store-contact" value="" placeholder="联系电话(Mobile)" id="phone" name="phone" th:value="${shop!=null ? shop.phone:''}">
+				<input type="text" class="input-text store-contact" value="" placeholder="邮箱@email" id="email" name="email" th:value="${shop!=null ? shop.email:''}">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
-				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:200px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" multiple name="file-2" class="input-file">
+				<input type="file" name="files" class="input-file">
 				</span> </div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
-				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:200px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" multiple name="file-2" class="input-file">
+				<input type="file" name="files" class="input-file">
 				</span> </div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
-				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:200px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" multiple name="file-2" class="input-file">
+				<input type="file" name="files" class="input-file">
 				</span> </div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片添加)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
-				<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" readonly nullmsg="请添加附件！" style="width:200px">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:200px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" multiple name="file-2" class="input-file">
+				<input type="file" name="files" class="input-file">
 				</span> </div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">所在城市：</label>
-			<div class="formControls col-xs-8 col-sm-9"> <span id="topPlaceSpan"></span></div>
+			<div class="formControls col-xs-8 col-sm-9"> <span id="topPlaceSpan" class="select-box"></span></div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">所在区：</label>
-			<div class="formControls col-xs-8 col-sm-9"> <span id="childPlaceSpan"></span> </div>
+			<div class="formControls col-xs-8 col-sm-9"> <span id="childPlaceSpan" class="select-box"></span> </div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">街道名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="address" name="address">
+				<input type="text" class="input-text" value="" placeholder="" id="address" name="address" th:value="${shop!=null ? shop.address:''}">
 			</div>
 		</div>
 		<div class="row cl" id="store-description">
@@ -121,26 +121,25 @@
 $(function(){
 	$.ajax({
         type:"GET",
-        url:"/getUsingPlaceList",
+        url:"/getBJPlaceList",
         dataType : "json",
         success : function(data) {
-            if (data.code == "0") {
-                var topPlaceSelect=$("<select>",{id:"topPlaceSelect"}).change(function(){
+            if (data.code == "0") {console.log(data.data);
+                var topPlaceSelect=$("<select>",{id:"topPlaceSelect"}).attr("class","select").change(function(){
 					changeTopPlace(projectPointObject.id,this);
 				});;
                 var childPlaceSelect=$("<select>",{id:"childPlaceHideSelect"});
                 $("#topPlaceSpan").append(topPlaceSelect);
 				$("#childPlaceHideSpan").append(childPlaceSelect);
-                topPlaceSelect.append("<option>请选择省份</option>");
                 childPlaceSelect.append("<option id='firstOption'>请选择区域</option>");
                 $.each(data.data.topPlaceList, function (index,topPlace) {
                     topPlaceSelect.append("<option id='"+topPlace.id+"' value='"+topPlace.id+"'>"+topPlace.name+"</option>");
                 });
                 $.each(data.data.childPlaceList, function (index,childPlace) {
-                    childPlaceSelect.append("<option id='"+childPlace.parentPlace.id+"_"+childPlace.id+"' value='"+childPlace.id+"'>"+childPlace.name+"</option>");
+                    childPlaceSelect.append("<option id='"+childPlace.parent.id+"_"+childPlace.id+"' value='"+childPlace.id+"'>"+childPlace.name+"</option>");
                 });
 				var childPlaceSelectnNew=$("#childPlaceHideSelect").clone();
-				childPlaceSelectnNew.attr("id","childPlaceSelect").attr("name","placeId");
+				childPlaceSelectnNew.attr("id","childPlaceSelect").attr("name","placeId").attr("class","select");
 				$("#childPlaceSpan").append(childPlaceSelectnNew);
             } else {
                 layer.msg('获取信息失败',{icon:1,time:1000});
@@ -148,32 +147,6 @@ $(function(){
         }
     });
 	$("#form-shop-add").validate({
-		rules:{
-			storename:{
-				required:true,
-				minlength:2,
-				maxlength:16
-			},
-			storemobile:{
-				required:true,
-				isMobile:true,
-			},
-			storephone:{
-				required:true,
-				isPhone:true,
-			},
-			store_email:{
-				required:true,
-				email:true,
-			},
-			principal:{
-				required:true,
-			}
-			uploadfile:{
-				required:true,
-			},
-			
-		},
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",

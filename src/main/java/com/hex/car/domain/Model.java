@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: 上午11:31
  */
 @Entity
-public class Model implements Serializable{
+public class Model implements Serializable {
 
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")

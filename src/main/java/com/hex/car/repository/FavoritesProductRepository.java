@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/9/18
  * Time: 下午4:22
  */
-public interface FavoritesProductRepository extends JpaRepository<FavoritesProduct,String> {
+public interface FavoritesProductRepository extends JpaRepository<FavoritesProduct, String> {
 }

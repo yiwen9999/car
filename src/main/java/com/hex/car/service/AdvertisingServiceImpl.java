@@ -37,4 +37,9 @@ public class AdvertisingServiceImpl implements AdvertisingService {
     public List<Advertising> findAllAdvertisingList() {
         return advertisingRepository.findAll();
     }
+
+    @Override
+    public List<Advertising> findAdvertisingsByStateOrderBySort(Integer state) {
+        return advertisingRepository.findAdvertisingsByStateOrderBySort(state);
+    }
 }

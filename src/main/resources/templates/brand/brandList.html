@@ -14,7 +14,6 @@
 				<th scope="col" colspan="7">品牌列表</th>
 			</tr>
 			<tr class="text-c">
-				<th width="25"></th>
 				<th width="40">ID</th>
 				<th width="200">品牌名称</th>
 				<th width="200">型号</th>
@@ -42,6 +41,7 @@ $(function(){
 				$.each(data.data, function (index, brand) {
 					createTr(index,brand);
             	});
+            	$("#list_quantity").html(data.data.length);
             } else {
                 alert("获取信息失败");
             }
@@ -57,12 +57,7 @@ function createTr(index,brand){
 	});
 	$("#brandTbody").append(tr);
 
-	var td=$("<td>");
-	tr.append(td);
-	var checkbox=$("<input>",{type:"checkbox"});
-	td.append(checkbox);
-
-	td=$("<td>").html(index+1);
+	var td=$("<td>").html(index+1);
 	tr.append(td);
 
 	td=$("<td>").css("text-align","left").html(brand.name);
@@ -70,11 +65,12 @@ function createTr(index,brand){
 
 	td=$("<td>");
 	tr.append(td);
-	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","型号添加")
+	var modelAddA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","型号添加").attr("class","btn btn-primary radius")
 	.click(function(){
-	  modelAdd('型号添加','/toModelAdd?brandId='+brand.id,'','800','500');
+	  modelAdd('型号添加','/toModelAdd?brandId='+brand.id,'','800','300');
 	});
-	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
+	var modelAddLi=$("<i>").attr("class","Hui-iconfont").html("&#xe600;");
+	td.append(modelAddA.append(modelAddLi).append("添加型号&nbsp;&nbsp;"));
 
 	td=$("<td>").attr("class","td-status");
 	if(brand.state==2)
@@ -99,15 +95,16 @@ function createTr(index,brand){
 	}
 	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
 	.click(function(){
-	  brandEdit('品牌修改','/toBrandUpdate?id='+brand.id,brand.id,'800','500');
+	  brandEdit('修改品牌','/toBrandUpdate?brandId='+brand.id,brand.id,'800','300');
 	});
 	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
 	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
 	.click(function(){
 	  brandDelete(this,brand.id);
 	});
-	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
-	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
+	// var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
+	// td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
+	td.append(stopA.append(stopLi)).append(editA.append(editLi));
 
 	tr.append(td);
 }
@@ -126,12 +123,7 @@ function createModelTr(brandId){
 					var tr=$("<tr>").attr("class","text-c").attr("id","modelTr_"+brandId+"_"+model.id);
 					$("#brandTr_"+brandId).after(tr);
 
-					var td=$("<td>");
-					tr.append(td);
-					var checkbox=$("<input>",{type:"checkbox"});
-					td.append(checkbox);
-
-					td=$("<td>").html(index+1);
+					var td=$("<td>").html(index+1);
 					tr.append(td);
 
 					td=$("<td>");
@@ -163,16 +155,16 @@ function createModelTr(brandId){
 					}
 					var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
 					.click(function(){
-					  modelEdit('角色编辑','/toOperatorUpdate?id='+model.id,model.id,'800','500');
+					  modelEdit('修改型号','/toModelUpdate?modelId='+model.id,model.id,'800','500');
 					});
 					var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
-					var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
-					.click(function(){
-					  modelDelete(this,model.id);
-					});
-					var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
-					td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
-
+					// var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
+					// .click(function(){
+					//   modelDelete(this,model.id);
+					// });
+					// var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
+					// td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
+					td.append(stopA.append(stopLi)).append(editA.append(editLi));
 					tr.append(td);
             	});
             } else {
@@ -208,13 +200,13 @@ function brandDelete(obj,id){
 	});
 }
 function updateBrandState(obj,id){
-	layer.confirm('确认要'+obj.title+'停用吗？',function(index){
+	layer.confirm('确认要'+obj.title+'吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
 		$.ajax({
 			type: 'POST',
 			url: '/updateBrandState',
 			data : {
-	            "id" : id
+	            "brandId" : id
 	        },
 			dataType: 'json',
 			success : function(data) {
@@ -268,9 +260,9 @@ function updateModelState(obj,id){
 		//此处请求后台程序，下方是成功后的前台处理……
 		$.ajax({
 			type: 'POST',
-			url: '/updateBrandState',
+			url: '/updateModelState',
 			data : {
-	            "id" : id
+	            "modelId" : id
 	        },
 			dataType: 'json',
 			success : function(data) {

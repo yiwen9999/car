@@ -31,6 +31,11 @@ public class ImgShop implements Serializable {
     private String fileName;
 
     /**
+     * 是否为主图
+     */
+    private Boolean isMain;
+
+    /**
      * 创建时间
      */
     private Date createTime = new Date();
@@ -60,6 +65,14 @@ public class ImgShop implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Boolean getMain() {
+        return isMain;
+    }
+
+    public void setMain(Boolean main) {
+        isMain = main;
     }
 
     @Override

@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>文章添加</title>
+</head>
+<body>
+<div class="page-container">
+	<form class="form form-horizontal" id="form-evaluate-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2" >文章标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="title" name="title" th:value="${evaluate!=null ? evaluate.title:''}">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="content" name="content" th:value="${evaluate!=null ? evaluate.content:''}">
+            </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">图片上传：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:200px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" name="file" class="input-file">
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<input type="hidden" name="id" value="" th:value="${evaluate!=null ? evaluate.id:''}">
+			</div>
+		</div>
+	</form>
+</div>
+
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script> 
+<script type="text/javascript" src="lib/webuploader/0.1.5/webuploader.min.js"></script> 
+<script type="text/javascript">
+$(function(){
+	$("#form-evaluate-add").validate({
+		rules:{
+			name:{
+				required:true
+			},
+			content:{
+				required:true
+			}
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				url: "/saveEvaluate",
+				type: 'post',
+				dataType:"json",
+				success: function(data){
+					layer.msg('添加成功!',{icon:1,time:1000});
+					setTimeout("window.parent.location.reload();",1000);
+				},
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+					layer.msg('error!',{icon:1,time:1000});
+					setTimeout("window.parent.location.reload();",1000);
+				}
+			});
+		}
+	});
+});
+</script>
+</body>
+</html>

@@ -17,4 +17,6 @@ public interface BrandService {
     Brand findBrandById(String id);
 
     List<Brand> findAllBrandList();
+
+    List<Brand> findBrandListByState(Integer state);
 }

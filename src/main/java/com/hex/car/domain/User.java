@@ -5,9 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 登录账号
@@ -33,7 +31,7 @@ public class User implements Serializable {
     /**
      * 密码
      */
-    @Column(length = 50)
+    @Column(length = 100)
     private String password;
 
     /**

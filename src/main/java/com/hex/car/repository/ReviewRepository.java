@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/9/18
  * Time: 下午4:29
  */
-public interface ReviewRepository extends JpaRepository<Review,String> {
+public interface ReviewRepository extends JpaRepository<Review, String> {
 }

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/8/24
  * Time: 上午11:19
  */
-public interface ImgProductRepository extends JpaRepository<ImgProduct,String> {
+public interface ImgProductRepository extends JpaRepository<ImgProduct, String> {
 }

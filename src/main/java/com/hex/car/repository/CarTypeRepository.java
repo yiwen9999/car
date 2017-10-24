@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/9/18
  * Time: 下午4:20
  */
-public interface CarTypeRepository extends JpaRepository<CarType,String> {
+public interface CarTypeRepository extends JpaRepository<CarType, String> {
 }

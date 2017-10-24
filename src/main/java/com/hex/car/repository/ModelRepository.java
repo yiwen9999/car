@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/9/18
  * Time: 下午4:27
  */
-public interface ModelRepository extends JpaRepository<Model,String> {
+public interface ModelRepository extends JpaRepository<Model, String> {
 }

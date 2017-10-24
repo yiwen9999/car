@@ -2,6 +2,7 @@ package com.hex.car.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.List;
  * Time: 上午11:31
  */
 @Entity
-public class Brand implements Serializable{
+public class Brand implements Serializable {
 
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -39,9 +40,17 @@ public class Brand implements Serializable{
     /**
      * 型号集合
      */
-    @OneToMany(mappedBy = "brand",cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "brand", cascade = {CascadeType.PERSIST})
     @JsonIgnore
     private List<Model> models = new ArrayList<>();
+
+    /**
+     * 在用型号集合
+     */
+    @OneToMany(mappedBy = "brand")
+    @Where(clause = "state=2")
+    @JsonIgnore
+    private List<Model> usingModels = new ArrayList<>();
 
     /**
      * 状态
@@ -102,6 +111,14 @@ public class Brand implements Serializable{
 
     public void setModels(List<Model> models) {
         this.models = models;
+    }
+
+    public List<Model> getUsingModels() {
+        return usingModels;
+    }
+
+    public void setUsingModels(List<Model> usingModels) {
+        this.usingModels = usingModels;
     }
 
     @Override

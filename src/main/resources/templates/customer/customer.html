@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>用户列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span class="c-gray en">&gt;</span> 用户列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+		<form class="Huiform" method="post" action="" target="_self">
+			<input type="text" class="input-text" style="width:250px" placeholder="姓名" id="" name="">
+			<button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索用户姓名</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"><span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
+	    <table class="table table-border table-bordered table-bg table-hover table-sort">
+			<thead>
+			    <tr>
+				    <th scope="col" colspan="7">用户列表</th>
+			    </tr>
+				<tr class="text-c">
+					<th width="25"><input name="" type="checkbox" value=""></th>
+					<th width="40">序号</th>
+					<th width="100">姓名</th>
+					<th width="100">姓名</th>
+					<th>手机号</th>
+					<th>创建时间</th>
+					<th width="100">操作</th>
+				</tr>
+			</thead>
+			<tbody id="customerTbody">
+			</tbody>
+	    </table>		
+</div>
+
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+        type : "GET",
+        url : "/getCustomerAllList",
+        dataType : "json",
+        success : function(data) {
+            if (data.code == "0") {
+				$.each(data.data, function (index,customer) {
+					createTr(index,customer);
+            	});
+            } else {
+                alert("获取信息失败");
+            }
+        }
+    });
+});
+function createTr(index,customer){
+	var tr=$("<tr>").attr("class","text-c").attr("id","customerTr_"+customer.id);
+	$("#customerTbody").append(tr);
+
+	var td=$("<td>");
+	tr.append(td);
+	var checkbox=$("<input>",{type:"checkbox"});
+	td.append(checkbox);
+
+	td=$("<td>").html(index+1);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(customer.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(customer.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left");
+	tr.append(td);
+
+	td=$("<td>").attr("class","td-status");
+	if(customer.state==2)
+		td.append("<span class='label label-success radius'>已启用</span>");
+	else
+		td.append("<span class='label radius'>已停用</span>");
+	tr.append(td);
+
+	td=$("<td>").attr("class","td-manage");
+	var stopA=$("<a>").css("text-decoration","none").attr("href","javascript:")
+	.click(function(){
+		updateCustomerState(this,customer.id);
+	});
+	var stopLi=$("<i>").attr("class","Hui-iconfont");
+	if(customer.state==2){
+		stopA.attr("title","停用");
+		stopLi.html("&#xe631;&nbsp;&nbsp;");
+	}
+	else{
+		stopA.attr("title","启用");
+		stopLi.html("&#xe615;&nbsp;&nbsp;");
+	}
+	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
+	.click(function(){
+		advertisingEdit('4s店修改','/toCustomerUpdate?id='+customer.id,customer.id,'800','500');
+	});
+	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
+	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
+	.click(function(){
+		customerDelete(this,customer.id);
+	});
+	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
+	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
+
+	tr.append(td);
+}
+function customerAdd(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+function customerEdit(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+function customerDelete(obj,id){
+	layer.confirm('确认要删除吗？',function(index){
+		$.ajax({
+			type: 'POST',
+			url: '/deleteCustomer',
+			data : {
+	            "id" : id
+	        },
+			dataType: 'json',
+			success : function(data) {
+	            if (data.code == "0") {
+	            	$(obj).parents("tr").remove();
+	            	layer.msg('已删除!',{icon:1,time:1000});
+	            } else {
+	                layer.msg(data.msg,{icon:1,time:1000});
+	            }
+	        }
+		});		
+	});
+}
+function updateCustomerState(obj,id){
+	layer.confirm('确认要'+obj.title+'吗？',function(index){
+		$.ajax({
+			type: 'POST',
+			url: '/updateCustomerState',
+			data : {
+	            "id" : id
+	        },
+			dataType: 'json',
+			success : function(data) {
+	            if (data.code == "0") {
+	            	if(data.data.state==-1){
+		            	$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateCustomerState(this,\"'+data.data.id+'\")" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;&nbsp;&nbsp;</i></a>');
+						$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
+						$(obj).remove();
+						layer.msg('已停用!',{icon: 5,time:1000});
+					}else{
+						$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateCustomerState(this,\"'+data.data.id+'\")" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;&nbsp;&nbsp;</i></a>');
+						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+						$(obj).remove();
+						layer.msg('已启用!', {icon: 6,time:1000});
+					}
+	            } else {
+	                layer.msg(data.msg,{icon:2,time:2000});
+	            }
+	        }
+		});	
+	});
+}
+</script>
+</body>
+</html>

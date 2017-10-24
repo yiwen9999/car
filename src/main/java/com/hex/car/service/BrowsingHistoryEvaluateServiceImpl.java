@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * Time: 上午10:03
  */
 @Service
-public class BrowsingHistoryEvaluateServiceImpl implements BrowsingHistoryEvaluateService{
+public class BrowsingHistoryEvaluateServiceImpl implements BrowsingHistoryEvaluateService {
 
     @Autowired
     private BrowsingHistoryEvaluateRepository browsingHistoryEvaluateRepository;

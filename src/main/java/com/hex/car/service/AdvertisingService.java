@@ -17,4 +17,12 @@ public interface AdvertisingService {
     Advertising findAdvertisingById(String id);
 
     List<Advertising> findAllAdvertisingList();
+
+    /**
+     * 根据状态查询广告集合，按排序号排序
+     *
+     * @param state
+     * @return
+     */
+    List<Advertising> findAdvertisingsByStateOrderBySort(Integer state);
 }

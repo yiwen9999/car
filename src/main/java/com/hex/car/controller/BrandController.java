@@ -45,7 +45,42 @@ public class BrandController {
      */
     @PostMapping(value = "/getModelListByBrandId")
     public Object getModelListByBrandId(String brandId) {
-        return ResultUtil.success(brandService.findBrandById(brandId).getModels());
+        if (null == brandId || brandId.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Brand brand = brandService.findBrandById(brandId);
+        if (null == brand) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        return ResultUtil.success(brand.getModels());
+    }
+
+    /**
+     * 获取在用品牌集合，按首字母，名称排序
+     *
+     * @return
+     */
+    @GetMapping(value = "/getUsingBrandList")
+    public Object getUsingBrandList() {
+        return ResultUtil.success(brandService.findBrandListByState(new Integer(2)));
+    }
+
+    /**
+     * 根据品牌id，获取在用型号集合
+     *
+     * @param brandId 品牌id
+     * @return
+     */
+    @PostMapping(value = "/getUsingModelListByBrandId")
+    public Object getUsingModelListByBrandId(String brandId) {
+        if (null == brandId || brandId.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Brand brand = brandService.findBrandById(brandId);
+        if (null == brand) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        return ResultUtil.success(brand.getUsingModels());
     }
 
     /**
@@ -80,6 +115,9 @@ public class BrandController {
      */
     @PostMapping(value = "/saveModels")
     public Object saveModels(@RequestParam String[] modelNames, String brandId) {
+        if (null == brandId || brandId.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
         Brand brand = brandService.findBrandById(brandId);
         if (null == modelNames || 0 == modelNames.length) {
             ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
@@ -92,7 +130,95 @@ public class BrandController {
     }
 
     /**
-     * 循环保存型号方法
+     * 停启用品牌
+     *
+     * @param brandId 品牌id
+     * @return
+     */
+    @PostMapping(value = "/updateBrandState")
+    public Object updateBrandState(String brandId) {
+        if (null == brandId || brandId.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Brand brand = brandService.findBrandById(brandId);
+        if (null == brand) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (brand.getState() == 2) {
+            brand.setState(new Integer(-1));
+        } else {
+            brand.setState(new Integer(2));
+        }
+        return ResultUtil.success(brandService.saveBrand(brand));
+    }
+
+    /**
+     * 停启用型号
+     *
+     * @param modelId 型号id
+     * @return
+     */
+    @PostMapping(value = "/updateModelState")
+    public Object updateModelState(String modelId) {
+        if (null == modelId || modelId.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Model model = modelService.findModelById(modelId);
+        if (null == model) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (model.getState() == 2) {
+            model.setState(new Integer(-1));
+        } else {
+            model.setState(new Integer(2));
+        }
+        return ResultUtil.success(modelService.saveModel(model));
+    }
+
+    /**
+     * 更新品牌
+     *
+     * @param brandId      品牌id
+     * @param brandName    品牌名称
+     * @param brandInitial 品牌首字母
+     * @return
+     */
+    @PostMapping(value = "/updateBrand")
+    public Object updateBrand(String brandId, String brandName, String brandInitial) {
+        if (null == brandId || brandId.equals("") || brandName == null || brandName.equals("") || brandInitial == null || brandInitial.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Brand brand = brandService.findBrandById(brandId);
+        if (null == brand) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        brand.setName(brandName);
+        brand.setInitial(brandInitial);
+        return ResultUtil.success(brandService.saveBrand(brand));
+    }
+
+    /**
+     * 更新型号
+     *
+     * @param modelId   型号id
+     * @param modelName 型号名称
+     * @return
+     */
+    @PostMapping(value = "/updateModel")
+    public Object updateModel(String modelId, String modelName) {
+        if (null == modelId || modelId.equals("") || null == modelName || modelName.equals("")) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Model model = modelService.findModelById(modelId);
+        if (null == model) {
+            ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        model.setName(modelName);
+        return ResultUtil.success(modelService.saveModel(model));
+    }
+
+    /**
+     * 【方法】循环保存型号
      *
      * @param modelNames 型号名称集合
      * @param brand      品牌

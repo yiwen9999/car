@@ -13,6 +13,7 @@ import com.hex.car.utils.Md5SaltTool;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,14 +62,14 @@ public class ShopController {
                            String placeId,
                            String username,
                            String password,
-                           @RequestParam(value = "imgShops", required = false) List<MultipartFile> imgShops) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+                           @RequestParam(value = "files", required = false) List<MultipartFile> files) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Place place = placeService.findPlaceById(placeId);
         shop.setPlace(place);
         MultipartFile file;
         ImgShop imgShop;
         List<ImgShop> imgShopList = new ArrayList<>();
-        for (int i = 0; i < imgShops.size(); i++) {
-            file = imgShops.get(i);
+        for (int i = 0; i < files.size(); i++) {
+            file = files.get(i);
             String fileName = file.getOriginalFilename();
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
@@ -82,13 +83,13 @@ public class ShopController {
                 return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
             }
         }
-        shopService.saveShop(shop);
         User user = new User();
         user.setUsername(username);
         user.setPassword(Md5SaltTool.getEncryptedPwd(password));
-        user.setShop(shop);
         userService.saveUser(user);
-        return ResultUtil.success(shop);
+        shop.setUser(user);
+        shop.setImgShops(imgShopList);
+        return ResultUtil.success(shopService.saveShop(shop));
     }
 
     /**
@@ -146,5 +147,15 @@ public class ShopController {
     @PostMapping(value = "/getShopInfo")
     public Object getShopInfo(String shopId) {
         return ResultUtil.success(shopService.findShopById(shopId));
+    }
+
+    /**
+     * 获取全部4s店集合
+     *
+     * @return
+     */
+    @GetMapping(value = "/getAllShopList")
+    public Object getAllShopList() {
+        return ResultUtil.success(shopService.findAllShop());
     }
 }

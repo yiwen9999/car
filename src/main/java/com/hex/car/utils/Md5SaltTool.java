@@ -12,11 +12,12 @@ import java.util.Arrays;
  * Time: 下午4:10
  */
 public class Md5SaltTool {
-    private static final String HEX_NUMS_STR="0123456789ABCDEF";
+    private static final String HEX_NUMS_STR = "0123456789ABCDEF";
     private static final Integer SALT_LENGTH = 12;
 
     /**
      * 将16进制字符串转换成字节数组
+     *
      * @param hex
      * @return
      */
@@ -34,6 +35,7 @@ public class Md5SaltTool {
 
     /**
      * 将指定byte数组转换成16进制字符串
+     *
      * @param b
      * @return
      */
@@ -51,6 +53,7 @@ public class Md5SaltTool {
 
     /**
      * 验证口令是否合法
+     *
      * @param password
      * @param passwordInDb
      * @return
@@ -89,6 +92,7 @@ public class Md5SaltTool {
 
     /**
      * 获得加密后的16进制形式口令
+     *
      * @param password
      * @return
      * @throws NoSuchAlgorithmException
@@ -122,7 +126,7 @@ public class Md5SaltTool {
         System.arraycopy(salt, 0, pwd, 0, SALT_LENGTH);
         //将消息摘要拷贝到加密口令字节数组从第13个字节开始的字节
         System.arraycopy(digest, 0, pwd, SALT_LENGTH, digest.length);
-        for(int i=0;i<pwd.length;i++){
+        for (int i = 0; i < pwd.length; i++) {
             System.out.print(pwd[i]);
         }
         //将字节数组格式加密后的口令转化为16进制字符串格式的口令

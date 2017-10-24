@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/9/22
  * Time: 上午9:39
  */
-public interface PersonnelRepository extends JpaRepository<Personnel,String> {
+public interface PersonnelRepository extends JpaRepository<Personnel, String> {
 }

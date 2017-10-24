@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * Time: 上午10:35
  */
 @Service
-public class CarTypeServiceImpl implements CarTypeService{
+public class CarTypeServiceImpl implements CarTypeService {
 
     @Autowired
     private CarTypeRepository carTypeRepository;

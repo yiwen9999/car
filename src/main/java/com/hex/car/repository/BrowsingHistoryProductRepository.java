@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 2017/9/18
  * Time: 下午4:18
  */
-public interface BrowsingHistoryProductRepository extends JpaRepository<BrowsingHistoryProduct,String> {
+public interface BrowsingHistoryProductRepository extends JpaRepository<BrowsingHistoryProduct, String> {
 }

@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: 上午11:49
  */
 @Entity
-public class Evaluate implements Serializable{
+public class Evaluate implements Serializable {
 
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -46,6 +46,13 @@ public class Evaluate implements Serializable{
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    /**
+     * 文章头图
+     */
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "img_evaluate_id")
+    private ImgEvaluate imgEvaluate;
 
     /**
      * 创建时间
@@ -101,6 +108,14 @@ public class Evaluate implements Serializable{
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public ImgEvaluate getImgEvaluate() {
+        return imgEvaluate;
+    }
+
+    public void setImgEvaluate(ImgEvaluate imgEvaluate) {
+        this.imgEvaluate = imgEvaluate;
     }
 
     @Override

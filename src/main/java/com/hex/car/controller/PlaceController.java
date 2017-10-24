@@ -9,10 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.awt.print.Pageable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class PlaceController {
     /**
      * 根据父地点id获取在用子地点集合
      *
-     * @param parentId  父地点id
+     * @param parentId 父地点id
      * @return
      */
     @PostMapping(value = "/getUsingPlaceListByParentId")
@@ -61,6 +60,7 @@ public class PlaceController {
 
     /**
      * 获取北京及其子地点
+     *
      * @return
      */
     @GetMapping(value = "/getBJPlaceList")
@@ -70,8 +70,10 @@ public class PlaceController {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         Map<String, Object> map = new HashMap<>();
-        map.put("bjPlace", bjPlace);
-        map.put("usingChildPlaces", bjPlace.getUsingChilds());
+        List<Place> list = new ArrayList<>();
+        list.add(bjPlace);
+        map.put("topPlaceList", list);
+        map.put("childPlaceList", bjPlace.getUsingChilds());
         return ResultUtil.success(map);
     }
 

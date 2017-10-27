@@ -43,6 +43,7 @@ $(function(){
 				$.each(data.data, function (index, advertising) {
 					createTr(index,advertising);
             	});
+            	$("#list_quantity").html(data.data.length);
             } else {
                 alert("获取信息失败");
             }
@@ -63,7 +64,8 @@ function createTr(index,advertising){
 	tr.append(td);
 
 	td=$("<td>").css("text-align","left");
-	var img=$("<img>").attr("src","");
+	var img=$("<img>").attr("src","/"+advertising.imgAD.fileName).css("height","50");
+	td.append(img);
 	tr.append(td);
 
 	td=$("<td>").attr("class","td-status");
@@ -113,7 +115,7 @@ function advertisingDelete(obj,id){
 			type: 'POST',
 			url: '/deleteAdvertising',
 			data : {
-	            "advertisingId" : id
+	            "id" : id
 	        },
 			dataType: 'json',
 			success : function(data) {

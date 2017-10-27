@@ -38,11 +38,6 @@ public class Car implements Serializable {
     private Integer year;
 
     /**
-     * 座位数
-     */
-    private Integer seats;
-
-    /**
      * 品牌
      */
     @ManyToOne
@@ -99,6 +94,13 @@ public class Car implements Serializable {
     private Parameter bodyType;
 
     /**
+     * 座位数
+     */
+    @ManyToOne
+    @JoinColumn(name = "seats_id")
+    private Parameter seats;
+
+    /**
      * 状态
      */
     private Integer state = new Integer(2);
@@ -133,14 +135,6 @@ public class Car implements Serializable {
 
     public void setYear(Integer year) {
         this.year = year;
-    }
-
-    public Integer getSeats() {
-        return seats;
-    }
-
-    public void setSeats(Integer seats) {
-        this.seats = seats;
     }
 
     public Brand getBrand() {
@@ -231,6 +225,14 @@ public class Car implements Serializable {
         this.name = name;
     }
 
+    public Parameter getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Parameter seats) {
+        this.seats = seats;
+    }
+
     @Override
     public String toString() {
         return "Car{" +
@@ -238,7 +240,6 @@ public class Car implements Serializable {
                 ", name='" + name + '\'' +
                 ", displacement=" + displacement +
                 ", year=" + year +
-                ", seats=" + seats +
                 ", brand=" + brand +
                 ", model=" + model +
                 ", carType=" + carType +
@@ -247,6 +248,7 @@ public class Car implements Serializable {
                 ", transmission=" + transmission +
                 ", fuelType=" + fuelType +
                 ", bodyType=" + bodyType +
+                ", seats=" + seats +
                 ", state=" + state +
                 ", createTime=" + createTime +
                 '}';

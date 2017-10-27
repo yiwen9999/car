@@ -8,6 +8,13 @@
 <div class="page-container">
 	<form class="form form-horizontal" id="form-evaluate-add">
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2" >商品：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text">
+				<input type="hidden" id="productId" name="productId" value="">
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2" >文章标题：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="title" name="title" th:value="${evaluate!=null ? evaluate.title:''}">
@@ -16,7 +23,8 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="content" name="content" th:value="${evaluate!=null ? evaluate.content:''}">
+                <textarea id="editor" name="content">
+				</textarea>
             </div>
 		</div>
 		<div class="row cl">
@@ -42,38 +50,51 @@
 <script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
 <script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script> 
 <script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script> 
-<script type="text/javascript" src="lib/webuploader/0.1.5/webuploader.min.js"></script> 
+<script type="text/javascript" src="lib/webuploader/0.1.5/webuploader.min.js"></script>
+<script type="text/javascript" src="/kindeditor/kindeditor-all.js"> </script> 
+<script type="text/javascript" src="/kindeditor/lang/zh-CN.js"> </script>  
 <script type="text/javascript">
-$(function(){
-	$("#form-evaluate-add").validate({
-		rules:{
-			name:{
-				required:true
-			},
-			content:{
-				required:true
-			}
-		},
-		onkeyup:false,
-		focusCleanup:true,
-		success:"valid",
-		submitHandler:function(form){
-			$(form).ajaxSubmit({
-				url: "/saveEvaluate",
-				type: 'post',
-				dataType:"json",
-				success: function(data){
-					layer.msg('添加成功!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
+	KindEditor.ready(function(K) {
+        window.editor=K.create('#editor', {
+        	width : '800px',
+        	height : '400px',
+	        uploadJson : '/fileUpload',
+	        fileManagerJson : '/fileManager',
+	        allowFileManager : true,
+        });         
+    });
+
+	$(function(){
+		$("#form-evaluate-add").validate({
+			rules:{
+				name:{
+					required:true
 				},
-                error: function(XmlHttpRequest, textStatus, errorThrown){
-					layer.msg('error!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
+				content:{
+					required:true
 				}
-			});
-		}
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				editor.sync();
+				$(form).ajaxSubmit({
+					url: "/saveEvaluate",
+					type: 'post',
+					dataType:"json",
+					success: function(data){
+						layer.msg('添加成功!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					},
+	                error: function(XmlHttpRequest, textStatus, errorThrown){
+						layer.msg('error!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					}
+				});
+			}
+		});
 	});
-});
 </script>
 </body>
 </html>

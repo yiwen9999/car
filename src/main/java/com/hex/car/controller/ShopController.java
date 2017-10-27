@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -121,12 +122,12 @@ public class ShopController {
     /**
      * 停启用4s店
      *
-     * @param shopId 4s店id
+     * @param id 4s店id
      * @return
      */
     @PostMapping(value = "/updateShopState")
-    public Object updateShopState(String shopId) {
-        Shop shop = shopService.findShopById(shopId);
+    public Object updateShopState(String id) {
+        Shop shop = shopService.findShopById(id);
         if (null == shop) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
@@ -141,12 +142,12 @@ public class ShopController {
     /**
      * 获取4s店信息
      *
-     * @param shopId 4s店id
+     * @param id 4s店id
      * @return
      */
     @PostMapping(value = "/getShopInfo")
-    public Object getShopInfo(String shopId) {
-        return ResultUtil.success(shopService.findShopById(shopId));
+    public Object getShopInfo(String id) {
+        return ResultUtil.success(shopService.findShopById(id));
     }
 
     /**
@@ -157,5 +158,31 @@ public class ShopController {
     @GetMapping(value = "/getAllShopList")
     public Object getAllShopList() {
         return ResultUtil.success(shopService.findAllShop());
+    }
+
+    /**
+     * 删除4s店
+     *
+     * @param id 4s店id
+     * @return
+     */
+    @PostMapping(value = "/deleteShop")
+    public Object deleteShop(String id) {
+        if (null == id || id.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Shop shop = shopService.findShopById(id);
+        if (null == shop) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        File deleteFile;
+        for (ImgShop imgShop : shop.getImgShops()) {
+            deleteFile = new File(path + imgShop.getFileName());
+            if (deleteFile.exists()) {
+                deleteFile.delete();
+            }
+        }
+        shopService.deleteShop(shop);
+        return ResultUtil.success();
     }
 }

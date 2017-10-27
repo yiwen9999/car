@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 上午11:18
  */
 public interface ShopRepository extends JpaRepository<Shop, String> {
+    Shop findShopById(String id);
 }

@@ -1,6 +1,9 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.Evaluate;
+import com.hex.car.domain.Shop;
+
+import java.util.List;
 
 /**
  * User: hexuan
@@ -13,4 +16,8 @@ public interface EvaluateService {
     void deleteEvaluate(Evaluate evaluate);
 
     Evaluate findEvaluateById(String id);
+
+    List<Evaluate> findAllEvaluateList();
+
+    List<Evaluate> findEvaluatesByProductShop(Shop shop);
 }

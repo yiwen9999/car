@@ -38,6 +38,13 @@ public class Brand implements Serializable {
     private String initial;
 
     /**
+     * 品牌对应图片
+     */
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "img_brand_id")
+    private ImgBrand imgBrand;
+
+    /**
      * 型号集合
      */
     @OneToMany(mappedBy = "brand", cascade = {CascadeType.PERSIST})
@@ -119,6 +126,14 @@ public class Brand implements Serializable {
 
     public void setUsingModels(List<Model> usingModels) {
         this.usingModels = usingModels;
+    }
+
+    public ImgBrand getImgBrand() {
+        return imgBrand;
+    }
+
+    public void setImgBrand(ImgBrand imgBrand) {
+        this.imgBrand = imgBrand;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public Shop findShopById(String id) {
-        return shopRepository.findOne(id);
+        return shopRepository.findShopById(id);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.Product;
+import com.hex.car.domain.Shop;
 import com.hex.car.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProduct() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public List<Product> findProductsByNameLikeAndStateOrderByName(String name, Integer state) {
+        return productRepository.findProductsByNameLikeAndStateOrderByName(name, state);
+    }
+
+    @Override
+    public List<Product> findProductsByNameLikeAndStateAndShopOrderByName(String name, Integer state, Shop shop) {
+        return productRepository.findProductsByNameLikeAndStateAndShopOrderByName(name, state, shop);
     }
 }

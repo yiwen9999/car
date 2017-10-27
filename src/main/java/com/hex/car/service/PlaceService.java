@@ -4,6 +4,8 @@ import com.hex.car.domain.Place;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/9/27
@@ -17,4 +19,6 @@ public interface PlaceService {
     void deletePlace(Place place);
 
     Place findPlaceById(String id);
+
+    List<Place> findPlacesByLevelOrderById(Integer level);
 }

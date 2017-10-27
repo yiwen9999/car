@@ -36,7 +36,7 @@
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-				<input type="hidden" name="id" value="" th:value="${advertising!=null ? advertising.id:''}">
+				<input type="hidden" id="id" name="id" value="" th:value="${advertising!=null ? advertising.id:''}">
 			</div>
 		</div>
 	</form>
@@ -67,12 +67,18 @@ $(function(){
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
+			var urlStr="";
+			if($("#id").value!=""){
+				urlStr="/updateAdvertising";
+			}else{
+				urlStr="/saveAdvertising";
+			}
 			$(form).ajaxSubmit({
-				url: "/saveAdvertising",
+				url: urlStr,
 				type: 'post',
 				dataType:"json",
 				success: function(data){
-					layer.msg('添加成功!',{icon:1,time:1000});
+					layer.msg('操作成功!',{icon:1,time:1000});
 					setTimeout("window.parent.location.reload();",1000);
 				},
                 error: function(XmlHttpRequest, textStatus, errorThrown){

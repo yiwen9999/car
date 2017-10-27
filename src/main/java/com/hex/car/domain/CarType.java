@@ -2,10 +2,7 @@ package com.hex.car.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -34,6 +31,13 @@ public class CarType implements Serializable {
      * 排序号
      */
     private Integer sort;
+
+    /**
+     * 车型对应图片
+     */
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "img_car_type_id")
+    private ImgCarType imgCarType;
 
     /**
      * 状态
@@ -86,6 +90,14 @@ public class CarType implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public ImgCarType getImgCarType() {
+        return imgCarType;
+    }
+
+    public void setImgCarType(ImgCarType imgCarType) {
+        this.imgCarType = imgCarType;
     }
 
     @Override

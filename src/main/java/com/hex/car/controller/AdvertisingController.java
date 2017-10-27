@@ -126,6 +126,23 @@ public class AdvertisingController {
     }
 
     /**
+     * 删除广告
+     *
+     * @param advertising
+     * @return
+     */
+    @PostMapping(value = "/deleteAdvertising")
+    public Object deleteAdvertising(Advertising advertising) {
+        try {
+            advertisingService.deleteAdvertising(advertising);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(ResultEnum.ERROR_DELETE.getCode(), ResultEnum.ERROR_DELETE.getMsg());
+        }
+        return ResultUtil.success();
+    }
+
+    /**
      * 获取广告信息
      *
      * @param advertisingId 广告id

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>文章添加</title>
+</head>
+<body>
+<input type="hidden" id="id" value="" th:value="${id}">
+<div class="page-container" id="bodyDiv">
+	
+</div>
+
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+	$(function(){
+		$.ajax({
+	        type : "POST",
+	        url : "/getEvaluateInfo",
+	        data : {
+	        	id : $("#id").val(),
+	        },
+	        dataType : "json",
+	        success : function(data) {
+	            if (data.code == "0") {
+					var img = $("<img>").css("width","100%").attr("src","/"+data.data.imgEvaluate.fileName);
+					var title = $("<h1>").html(data.data.title);
+					var content = $("<div>").html(data.data.content);
+					$("#bodyDiv").append(img).append(title).append(content);
+
+	            } else {
+	                alert("获取信息失败");
+	            }
+	        }
+    	});
+	});
+</script>
+</body>
+</html>

@@ -77,6 +77,19 @@ public class PlaceController {
         return ResultUtil.success(map);
     }
 
+    /**
+     * 获取地点库1，2级地点集合
+     *
+     * @return
+     */
+    @GetMapping(value = "/getPlaceListByLevelOneTwo")
+    public Object getPlaceListByLevelOneTwo() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("topPlaceList", placeService.findPlacesByLevelOrderById(new Integer(1)));
+        map.put("childPlaceList", placeService.findPlacesByLevelOrderById(new Integer(2)));
+        return ResultUtil.success(map);
+    }
+
 
     @GetMapping(value = "/getPlaceListByPage")
     public Object getPlaceListByPage(Integer page, Integer size) {

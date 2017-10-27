@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * User: hexuan
@@ -31,21 +30,6 @@ public class PageController {
     @GetMapping(value = "/")
     public String index() {
         return "index";
-    }
-
-    @GetMapping(value = "/index2")
-    public String index2() {
-        return "/index2";
-    }
-
-    @GetMapping(value = "/test")
-    public String test() {
-        return "test";
-    }
-
-    @GetMapping(value = "/test2")
-    public String test2() {
-        return "test2";
     }
 
     /**
@@ -161,6 +145,37 @@ public class PageController {
         Advertising advertising = advertisingService.findAdvertisingById(advertisingId);
         model.addAttribute("advertising", advertising);
         return "/advertising/advertisingAdd";
+    }
+
+    /**
+     * 跳转文章列表页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toEvaluateList")
+    public String toEvaluateList() {
+        return "/evaluate/evaluateList";
+    }
+
+    /**
+     * 跳转添加文章页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toEvaluateAdd")
+    public String toEvaluateAdd() {
+        return "/evaluate/evaluateAdd";
+    }
+
+    /**
+     * 跳转文章浏览页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toEvaluateView")
+    public String toEvaluateView(String id, Model model) {
+        model.addAttribute("id", id);
+        return "/evaluate/evaluateView";
     }
 
 //    @GetMapping(value = "/toAdvertisingView/{id}")

@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/9/27
@@ -37,5 +39,10 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public Place findPlaceById(String id) {
         return placeRepository.findOne(id);
+    }
+
+    @Override
+    public List<Place> findPlacesByLevelOrderById(Integer level) {
+        return placeRepository.findPlacesByLevelOrderById(level);
     }
 }

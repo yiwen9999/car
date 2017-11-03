@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 下午4:27
  */
 public interface ModelRepository extends JpaRepository<Model, String> {
+    Model findFirstByName(String name);
 }

@@ -12,4 +12,6 @@ import java.util.List;
  */
 public interface BrandRepository extends JpaRepository<Brand, String> {
     List<Brand> findBrandsByStateOrderByInitialAscNameAsc(Integer state);
+
+    Brand findFirstByName(String name);
 }

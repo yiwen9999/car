@@ -17,4 +17,6 @@ public interface ModelService {
     Model findModelById(String id);
 
     List<Model> findAllModelList();
+
+    Model findFirstByName(String name);
 }

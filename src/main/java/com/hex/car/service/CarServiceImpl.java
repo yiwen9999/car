@@ -3,8 +3,10 @@ package com.hex.car.service;
 import com.hex.car.domain.Car;
 import com.hex.car.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -35,6 +37,18 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<Car> findAllCar() {
-        return carRepository.findAll();
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
+        return carRepository.findAll(sort);
+    }
+
+    @Override
+    public List<Car> findCarsByNameLikeAndStateOrderByName(String name, Integer state) {
+        return carRepository.findCarsByNameLikeAndStateOrderByName(name, state);
+    }
+
+    @Override
+    @Transactional
+    public List<Car> saveCarList(List<Car> cars) {
+        return carRepository.save(cars);
     }
 }

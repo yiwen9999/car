@@ -5,6 +5,8 @@ import com.hex.car.repository.ParameterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/10/9
@@ -29,5 +31,30 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public Parameter findParameterById(String id) {
         return parameterRepository.findOne(id);
+    }
+
+    @Override
+    public List<Parameter> findParametersByStateOrderBySort(Integer state) {
+        return parameterRepository.findParametersByStateOrderBySort(state);
+    }
+
+    @Override
+    public List<Parameter> findTopParameterListOrderBySort() {
+        return parameterRepository.findParametersByParentIsNullOrderBySort();
+    }
+
+    @Override
+    public List<Parameter> findChildParameterListOrderBySort() {
+        return parameterRepository.findParametersByParentIsNotNullOrderBySort();
+    }
+
+    @Override
+    public List<Parameter> findUsingTopParameterListOrderBySort(Integer state) {
+        return parameterRepository.findParametersByParentIsNotNullAndStateOrderBySort(state);
+    }
+
+    @Override
+    public List<Parameter> findUsingChildParameterListOrderBySort(Integer state) {
+        return parameterRepository.findParametersByParentIsNotNullAndStateOrderBySort(state);
     }
 }

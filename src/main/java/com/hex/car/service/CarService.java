@@ -17,4 +17,15 @@ public interface CarService {
     Car findCarById(String id);
 
     List<Car> findAllCar();
+
+    /**
+     * 根据名称，状态查询车辆集合，按名称排序
+     *
+     * @param name  名称
+     * @param state 状态
+     * @return
+     */
+    List<Car> findCarsByNameLikeAndStateOrderByName(String name, Integer state);
+
+    List<Car> saveCarList(List<Car> cars);
 }

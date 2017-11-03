@@ -50,4 +50,9 @@ public class BrandServiceImpl implements BrandService {
     public List<Brand> findBrandListByState(Integer state) {
         return brandRepository.findBrandsByStateOrderByInitialAscNameAsc(state);
     }
+
+    @Override
+    public Brand findFirstByName(String name) {
+        return brandRepository.findFirstByName(name);
+    }
 }

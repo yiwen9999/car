@@ -85,6 +85,7 @@ public class EvaluateController {
     private Object saveEvaluate(Evaluate evaluate,
                                 String productId,
                                 @RequestParam(value = "file") MultipartFile file) {
+        // TODO 商品相关做好后需要恢复以下代码，页面需要添加快捷搜索功能
 //        if (null == productId || productId.equals("")) {
 //            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
 //        }

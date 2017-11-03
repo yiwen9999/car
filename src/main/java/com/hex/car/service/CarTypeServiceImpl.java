@@ -5,6 +5,8 @@ import com.hex.car.repository.CarTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/10/9
@@ -29,5 +31,10 @@ public class CarTypeServiceImpl implements CarTypeService {
     @Override
     public CarType findCarTypeById(String id) {
         return carTypeRepository.findOne(id);
+    }
+
+    @Override
+    public List<CarType> findCarTypesByStateOrderBySort(Integer state) {
+        return carTypeRepository.findCarTypesByStateOrderBySort(state);
     }
 }

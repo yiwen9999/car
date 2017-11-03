@@ -39,4 +39,9 @@ public class ModelServiceImpl implements ModelService {
         Sort sort = new Sort(Sort.Direction.ASC, "name");
         return modelRepository.findAll(sort);
     }
+
+    @Override
+    public Model findFirstByName(String name) {
+        return modelRepository.findFirstByName(name);
+    }
 }

@@ -20,4 +20,6 @@ public interface EvaluateService {
     List<Evaluate> findAllEvaluateList();
 
     List<Evaluate> findEvaluatesByProductShop(Shop shop);
+
+    List<Evaluate> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 }

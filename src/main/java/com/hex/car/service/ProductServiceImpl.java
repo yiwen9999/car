@@ -48,4 +48,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findProductsByNameLikeAndStateAndShopOrderByName(String name, Integer state, Shop shop) {
         return productRepository.findProductsByNameLikeAndStateAndShopOrderByName(name, state, shop);
     }
+
+    @Override
+    public List<Product> findTop4ByStateOrderByCreateTimeDesc(Integer state) {
+        return productRepository.findTop4ByStateOrderByCreateTimeDesc(state);
+    }
 }

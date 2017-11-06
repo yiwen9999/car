@@ -57,4 +57,9 @@ public class ParameterServiceImpl implements ParameterService {
     public List<Parameter> findUsingChildParameterListOrderBySort(Integer state) {
         return parameterRepository.findParametersByParentIsNotNullAndStateOrderBySort(state);
     }
+
+    @Override
+    public Parameter findFirstByCode(String code) {
+        return parameterRepository.findFirstByCode(code);
+    }
 }

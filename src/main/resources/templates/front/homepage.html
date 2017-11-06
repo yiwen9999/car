@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta charset="UTF-8">
+<!-- header加载css -->
+<link rel="stylesheet" href="/front/css/style.css">
+<link rel="stylesheet" href="/front/css/reset.css">
+<!-- 在上方加载模板css -->
+<!-- 业务css板块 -->
+<link rel="stylesheet" href="/front/jquery-ui/jquery-ui.css">
+<!-- 在上方加载业务css -->
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/front/js/html5shiv.js"></script>
+<script type="text/javascript" src="/front/js/respond.min.js"></script>
+<![endif]-->
+<!--[if IE 6]>
+<script type="text/javascript" src="/front/js/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!-- 分离出去的meta、title 需要根据页面来配置 -->
+<title>首页</title>
+<meta name="description" content="">
+<meta name="title" content="">
+<meta name="keywords" content="">
+</head>
+<body class="pulic-web">
+	<div class="body-inner-wrapper" style="min-height:0px;">
+		<!-- header单独分离出去 -->
+		<!-- 页面不用考虑IE8以下的版本 -->
+		<div class="main-head">
+			<!--[if (lt IE 9) & (!IEMobile)]>
+	            <aside class="browserCompatibility">
+	               <div class="pageWrapper">We detect you are using an older browser version. For the optimal viewing     experience, please consider upgrading to a modern browser.</div>
+	            </aside>
+            <![endif]-->
+            <script>   
+            //IE mode < 9
+            if("" != "" && "" != "" && "" == "true" && document.documentMode != undefined && document.documentMode != "" && document.documentMode < 9){
+                var redirectUrl = document.URL;
+                /* if(redirectUrl.charAt(redirectUrl.length-1) == "/"){
+                    redirectUrl=redirectUrl.substring(0,redirectUrl.length-1);
+                }else{
+                    redirectUrl=redirectUrl;
+                } */
+                //This program and mingfei, lixin, young confirmed
+                var newWidnow =  window.open(redirectUrl,"_top","scrollbars=yes, resizable=yes");
+                newWidnow.document.body.style.overflow = 'scroll';
+                newWidnow.scrollTo(0,0);
+                newWidnow.focus();
+            }
+            </script>
+            <div class="menuWrapper">          <!-- 承载nav内容 -->
+            	<div class="logoWrapper">
+            		<div class="logo">
+            			<a href="">
+            				LOGO
+            			</a>        <!-- background 配置logo 如需传则用img -->
+            		</div>
+            	</div>
+            	<div class="navWrapper">
+            		<ul class="menu general_Menu">
+            			<li class="menu-homepage">
+            				<a href="">首页</a>
+            			</li>
+            			<li class="menu-contactus">
+            				<a href="">关于我们</a>
+            			</li>
+            			<li class="menu-downloadApp">
+            				<a href="">下载APP</a>
+            			</li>
+            			<li class="menu-customeraccount not-login">
+            				<a href="">登录</a>
+            			</li>
+            			<li class="menu-customeraccount login">
+            				<a id="cus_id" href="#">13309228442</a>
+                            <div id="cus_info">
+                            	<a href="">收藏车辆</a>
+            					<a href="">浏览记录</a>
+            					<a href="">退出</a>
+                            </div>
+            			</li>      
+            		</ul>
+            	</div>
+            </div>
+            <!-- banner滚动设置 -->
+            <div class="wrapper">
+                <div class="banner">
+                    <div id="advertisingImgDiv" class="b-img">
+                    </div>
+                    <div class="b-list"></div>
+                    <a class="bar-left" href="#"><em></em></a><a class="bar-right" href="#"><em></em></a>
+                </div>
+            </div>
+            <!-- 上面配置banner滚动 -->
+		</div>    
+		<!-- content page -->
+		<div class="mainContent contentContainer pageWrapper">
+			<!-- 首页搜索功能 -->
+			<div class="main-selector">
+			    <div class="nxtGen_search_desktop">
+                    <div data-set="search-container" class="searchContainer">
+	                    <div class="nxtGen_search_wrapper">       
+			                <form role="search" class="searchbox searchInput searchForm" action="/au/en/fastsearch/" method="get" name="sli_search_form" onsubmit="return ajaxsearchsubmit(this)"> 
+				                <input class="searchInput-text global-search-input nxtGen_searchBar ui-autocomplete-input" type="search" name="text" value=""  placeholder="搜索关键字" onfocus="this.placeholder = ''" onblur="this.placeholder = '搜索关键字'">
+					            <button class="search-submit fa fa-search" type="submit"></button>
+					        </form>
+		                </div>
+		            </div>
+                </div>
+                <div class="seletor-info">
+                    <div class="selector-box">
+                    	<span class="selector-name">品牌</span>
+                    	<select id="brandSelect" class="selector">
+                        </select>
+                    </div>
+                    <div class="selector-box">
+                    	<span class="selector-name">型号</span>
+                    	<select id="modelSelect" class="selector">
+                        </select>
+                    </div>
+                    <div class="selector-box">
+                    	<span class="selector-name">车型</span>
+                    	<select id="carTypeSelect" class="selector">
+                        </select>
+                    </div>
+                    <div class="selector-box">
+                    	<span class="selector-name">价格</span>
+                    	<select class="selector">
+                            <option value="1_10">1——10万</option>
+                            <option value="10_20">10——20万</option>
+                            <option value="20_30">20——30万</option>
+                            <option value="30">30万以上</option>
+                        </select>
+                    </div>
+                    <div class="selector-box">
+                    	<span class="selector-name">区域</span>
+                    	<select id="childPlaceSelect" class="selector">
+                        </select>
+                    </div>
+                    <div class="selector-box">
+                        <span class="selector-name last">搜索</span>
+                    	<button class="search-box-submit" type="submit">
+                    		搜索
+                    	</button>
+                    </div>
+                </div>
+			</div>
+
+			<!-- 4S店/车辆动态 -->
+			<div class="home-information">
+				<ul class="tabs">  
+                    <li class="tabs_car active">
+                        <div class="tabs_car_bk"></div>
+                        <a href="#tab1" class="tabs-nav" id="tabs-nav-1">
+                        	<h1>车辆动态</h1>
+                        	<p>这里为您更新最新车辆信息</p>
+                        </a>
+                    </li>  
+                    <li class="tabs_car">
+                        <div class="tabs_car_bk"></div>
+                        <a href="#tab2" class="tabs-nav" id="tabs-nav-2">
+                        	<h1>4S店动态</h1>
+                        	<p>这里为您提供4S店的新车辆信息</p>
+                        </a>
+                    </li>  
+                </ul>
+                <div class="tab_container">
+                	<div id="tab1" class="tab_content" style="display: block;">
+                		<div class="car-container" id="carActiveDiv">
+                		</div>
+                		<div class="see-more">
+                			<a href="">
+                				查看更多>>
+                			</a>
+                		</div>
+                	</div>
+                	<div id="tab2" class="tab_content" style="display: block;">
+                		<div class="store-container" id="shopActiveDiv">
+                		</div>
+                		<div class="see-more">
+                			<a href="">
+                				查看更多>>
+                			</a>
+                		</div>
+                	</div>
+                </div>
+			</div>
+
+			<!-- 快速搜索 -->
+			<div class="quick-search">
+				<div class="search-banner">
+					<img src="/front/images/search-banner.jpg" alt="">
+				</div>
+			</div>
+
+			<!-- 专业测评 -->
+			<div class="evaluate-container">
+				<div class="evaluate-container-title">
+					专业测评
+				</div>
+				<a class="evaluate-box-wrapper" href="">
+					<div class="evaluate-box">
+					    <div class="cus-via">
+					    	<img src="/front/images/cus_photo_1.png" alt="">
+					    </div>
+						<div class="evaluate-img">
+							<img src="/front/images/evaluate_1.jpg" alt="">
+						</div>
+						<div class="evaluate-info">
+							<div class="evaluate-title">这是标题</div>
+							<div class="evaluate-body">这里是测评，对这辆车的专业评价，对性能上价格上，性价比等等好几个维度去进行评价，可
+以大大提高改车辆的购买率，会带来不错的宣传效果</div>
+						</div>
+					</div>
+				</a>
+				<a class="evaluate-box-wrapper" href="">
+					<div class="evaluate-box">
+					    <div class="cus-via">
+					    	<img src="/front/images/cus_photo_4.png" alt="">
+					    </div>
+						<div class="evaluate-img">
+							<img src="/front/images/evaluate_04.jpg" alt="">
+						</div>
+						<div class="evaluate-info">
+							<div class="evaluate-title">这是标题</div>
+							<div class="evaluate-body">这里是测评，对这辆车的专业评价，对性能上价格上，性价比等等好几个维度去进行评价，可
+以大大提高改车辆的购买率，会带来不错的宣传效果</div>
+						</div>
+					</div>
+				</a>
+				<a class="evaluate-box-wrapper" href="">
+					<div class="evaluate-box">
+					    <div class="cus-via">
+					    	<img src="/front/images/cus_photo_2.png" alt="">
+					    </div>
+						<div class="evaluate-img">
+							<img src="/front/images/evaluate_2.jpg" alt="">
+						</div>
+						<div class="evaluate-info">
+							<div class="evaluate-title">这是标题</div>
+							<div class="evaluate-body">这里是测评，对这辆车的专业评价，对性能上价格上，性价比等等好几个维度去进行评价，可
+以大大提高改车辆的购买率，会带来不错的宣传效果</div>
+						</div>
+					</div>
+				</a>
+				<a class="evaluate-box-wrapper" href="">
+					<div class="evaluate-box">
+					    <div class="cus-via">
+					    	<img src="/front/images/cus_photo_3.png" alt="">
+					    </div>
+						<div class="evaluate-img">
+							<img src="/front/images/evaluate_3.jpg" alt="">
+						</div>
+						<div class="evaluate-info">
+							<div class="evaluate-title">这是标题</div>
+							<div class="evaluate-body">这里是测评，对这辆车的专业评价，对性能上价格上，性价比等等好几个维度去进行评价，可
+以大大提高改车辆的购买率，会带来不错的宣传效果</div>
+						</div>
+					</div>
+				</a>
+				<div class="see-more">
+                	<a href="">
+                		查看更多>>
+                    </a>
+                </div>
+			</div>
+
+			<!-- 活动车辆列表 -->
+			<div class="car-promo">
+				<div class="promp-title">
+					活动车辆列表
+				</div>
+				<table>
+					<tbody>
+						<th>
+							热度最高
+						</th>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+					</tbody>
+				</table>
+				<table>
+					<tbody>
+						<th>
+							促销车辆
+						</th>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+					</tbody>
+				</table>
+				<table>
+					<tbody>
+						<th>
+							最新车辆
+						</th>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+						<tr>
+							<td>车辆名称</td>
+							<td>价格</td>
+							<td>排量</td>
+							<td>年份</td>
+							<td>座位数</td>
+							<td>品牌</td>
+							<td>型号</td>
+							<td>车型</td>
+							<td>进气形式</td>
+							<td>驱动方式</td>
+							<td>变速箱</td>
+							<td>能源类型</td>
+							<td>结构</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>	
+		</div>
+		<!-- footer单独分离出去 -->
+		<div class="mainFooter">
+			<img src="/front/images/footer-img.jpg" alt="">
+			<div class="footer-main-info">
+				<h1>联系方式</h1>
+				<p>电话: 400-123-123</p>
+				<p>邮箱：youxiang@mail.com</p>
+			</div>
+		</div>
+	</div>
+	<!--_footer加载脚本，作为公共模版分离出去-->
+        <script src="/front/js/jquery-1.8.3.min.js"></script>
+        <script src="/front/js/root.js"></script>
+        <script src="/front/jquery-ui/jquery-ui.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本--><!--/请在上方写此页面业务相关的脚本-->
+    <script src="/front/js/banner.js"></script>
+    <script>
+        $( function() {
+            $( ".controlgroup" ).controlgroup()
+                $( ".controlgroup-vertical" ).controlgroup({
+                    "direction": "vertical"
+            });
+            $.ajax({
+		        type:"GET",
+		        url:"/front/getAdvertisingList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		            	 $.each(data.data, function (index,advertising) {
+		            	 	console.log(advertising.imgAD.fileName);
+		                  $("#advertisingImgDiv").append("<a href='"+advertising.url+"' style='background:url(/"+advertising.imgAD.fileName+") center no-repeat;'></a>");
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });
+		    $.ajax({
+		        type:"GET",
+		        url:"/front/getBrandList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		            	var brandSelect=$("#brandSelect");
+		                brandSelect.append("<option id='firstBrandOption'>请选择品牌</option>");
+		                $.each(data.data, function (index,brand) {
+		                    brandSelect.append("<option value='"+brand.id+"'>"+brand.name+"</option>");
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });
+		    $.ajax({
+		        type:"GET",
+		        url:"/front/getModelList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		            	var modelSelect=$("#modelSelect");
+		                modelSelect.append("<option id='firstModelOption'>请选择型号</option>");
+		                $.each(data.data, function (index,model) {
+		                    modelSelect.append("<option value='"+model.id+"'>"+model.name+"</option>");
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });
+		    $.ajax({
+		        type:"GET",
+		        url:"/front/getCarTypeList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		            	var carTypeSelect=$("#carTypeSelect");
+		                carTypeSelect.append("<option id='firstCarTypeOption'>请选择车型</option>");
+		                $.each(data.data, function (index,carType) {
+		                    carTypeSelect.append("<option value='"+carType.id+"'>"+carType.name+"</option>");
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });
+            $.ajax({
+		        type:"GET",
+		        url:"/front/getPlaceList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		            	var childPlaceSelect=$("#childPlaceSelect");
+		                childPlaceSelect.append("<option id='firstPlaceOption'>请选择区域</option>");
+		                $.each(data.data, function (index,childPlace) {
+		                    childPlaceSelect.append("<option value='"+childPlace.id+"'>"+childPlace.name+"</option>");
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });
+		    /*$.ajax({
+		        type:"GET",
+		        url:"/front/get4ProductList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		                $.each(data.data.products, function (index,product) {
+		                    $("#carActiveDiv").append("<div class='car-box-wrapper'><img id='productImg_"+product.id+"' alt='><div class='car-box-bk'>&nbsp;</div><div class='car-detail-info'><div class='car-name'>"+product.name+"</div><div class='car-name-sliderdown'>&nbsp;</div><div class='car-price'>&yen;"+parseFloat(parseFloat(price).toFixed(2))+"</div><div class='car-store'>"+product.shop.name+"</div><div class='detail' id='><a href=''>查看详情</a></div></div></div>");
+		                    $.each(product.imgs, function (index,img) {
+		                		$("#productImg_"+img.)
+		                	});
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });*/
+		    $.ajax({
+		        type:"GET",
+		        url:"/front/get4ShopList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+	                    $.each(data.data, function (index,shop) {
+	                   		$("#shopActiveDiv").append("<div class='store-box-wrapper'><div class='store-box'><img id='shopImg_"+shop.id+"'><div class='store-box-bk'>&nbsp;</div><div class='store-detail-info'><div class='store-name'>"+shop.name+"</div><div class='store-name-sliderdown'>&nbsp;</div><div class='store-price'>"+shop.place.parent.name+"—"+shop.place.name+"</div><div class='detail' id='><a href=''>查看详情</a></div></div></div></div>");
+		                    $.each(shop.mainImgShops, function (index,img) {
+		                    	$("#shopImg_"+shop.id).attr("src","/"+img.fileName);
+		                	});
+		                });
+		                if(data.data.length<4){
+			                for(var i=0;i<4-data.data.length;i++){
+			                	$("#shopActiveDiv").append("<div class='store-box'><img src='images/car_1.png'><div class='store-box-bk'>&nbsp;</div><div class='store-detail-info'><div class='store-name'></div><div class='store-name-sliderdown'>&nbsp;</div><div class='store-price'></div><div class='detail' id='><a href=''>查看详情</a></div></div></div>");
+			                }
+		                }
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });
+		    /*$.ajax({
+		        type:"GET",
+		        url:"/front/get4EvaluateList",
+		        dataType : "json",
+		        success : function(data) {
+		            if (data.code == "0") {
+		                $.each(data.data, function (index,shop) {
+		                    $("#shopActiveDiv").append("");
+		                });
+		            } else {
+		                layer.msg('获取信息失败',{icon:1,time:1000});
+		            }
+		        }
+		    });*/
+        });
+    </script>
+</body>
+</html>

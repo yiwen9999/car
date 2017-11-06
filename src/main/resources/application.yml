@@ -19,3 +19,12 @@ spring:
   resources:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
 
+parameter:
+  engineTypeCode : engineType
+  drivetrainCode : drivetrain
+  transmissionCode : transmission
+  fuelTypeCode: fuelType
+  bodyTypeCode: bodyType
+  seatsCode: seats
+
+

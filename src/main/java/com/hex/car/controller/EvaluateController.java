@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -182,6 +183,27 @@ public class EvaluateController {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         return ResultUtil.success(evaluate);
+    }
+
+    /**
+     * 获取4个最新文章集合（前台页面用）
+     *
+     * @return
+     */
+    @GetMapping("/front/get4EvaluateList")
+    public Object get4EvaluateList() {
+        List<Evaluate> evaluates = evaluateService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
+//        List<ImgEvaluate> imgEvaluates = new ArrayList<>();
+//        List<ImgUser> imgUsers = new ArrayList<>();
+//        Map<String, Object> map = new HashMap<>();
+//        for (int i = 0; i < evaluates.size(); i++) {
+//            imgEvaluates.add(evaluates.get(i).getImgEvaluate());
+//            imgUsers.add(evaluates.get(i).getProduct().getShop().getUser().getImgUser());
+//        }
+//        map.put("evaluates", evaluates);
+//        map.put("imgs", imgEvaluates);
+//        map.put("headImgs", imgUsers);
+        return ResultUtil.success(evaluates);
     }
 
 }

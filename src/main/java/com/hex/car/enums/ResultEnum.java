@@ -3,10 +3,11 @@ package com.hex.car.enums;
 public enum ResultEnum {
     UN_KNOW_ERRO(-1, "未知错误"),
     SUCCESS(0, "成功"),
-    UN_LOGIN(101, "未登陆"),
+    UN_LOGIN(101, "未登录"),
     UPLOAD_FAIL(102, "上传失败"),
     ERROR_PARAM(103, "传递的参数错误"),
-    ERROR_DELETE(104, "未能删除"),;
+    ERROR_DELETE(104, "未能删除"),
+    ERROR_LOGIN(105, "登录失败"),;
 
     private Integer code;
 

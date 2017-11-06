@@ -115,7 +115,24 @@ public class Shop implements Serializable {
      */
     @OneToMany(targetEntity = ImgShop.class, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "shop_id")
+    @JsonIgnore
     private List<ImgShop> imgShops = new ArrayList();
+
+    /**
+     * 4s店主图
+     */
+    @OneToMany(targetEntity = ImgShop.class)
+    @Where(clause = "is_main=1")
+    @JoinColumn(name = "shop_id")
+    private List<ImgShop> mainImgShops = new ArrayList();
+
+    /**
+     * 4s店其他图
+     */
+    @OneToMany(targetEntity = ImgShop.class)
+    @Where(clause = "is_main=0")
+    @JoinColumn(name = "shop_id")
+    private List<ImgShop> commonImgShops = new ArrayList();
 
     /**
      * 创建时间
@@ -259,6 +276,22 @@ public class Shop implements Serializable {
 
     public void setImgShops(List<ImgShop> imgShops) {
         this.imgShops = imgShops;
+    }
+
+    public List<ImgShop> getMainImgShops() {
+        return mainImgShops;
+    }
+
+    public void setMainImgShops(List<ImgShop> mainImgShops) {
+        this.mainImgShops = mainImgShops;
+    }
+
+    public List<ImgShop> getCommonImgShops() {
+        return commonImgShops;
+    }
+
+    public void setCommonImgShops(List<ImgShop> commonImgShops) {
+        this.commonImgShops = commonImgShops;
     }
 
     @Override

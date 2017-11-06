@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 品牌型号相关controller
  * User: hexuan
@@ -215,6 +217,30 @@ public class BrandController {
         }
         model.setName(modelName);
         return ResultUtil.success(modelService.saveModel(model));
+    }
+
+    /**
+     * 获取在售车辆品牌集合（前台页面用）
+     *
+     * @return
+     */
+    @GetMapping(value = "/front/getBrandList")
+    public Object getBrandListForFront() {
+        // TODO 还未改为根据在售车辆筛选出品牌集合
+        List<Brand> brandList = brandService.findAllBrandList();
+        return ResultUtil.success(brandList.subList(0, 10));
+    }
+
+    /**
+     * 获取在售车辆型号集合（前台页面用）
+     *
+     * @return
+     */
+    @GetMapping(value = "/front/getModelList")
+    public Object getModelListForFront() {
+        // TODO 还未改为根据在售车辆筛选出型号集合
+        List<Model> modelList = modelService.findAllModelList();
+        return ResultUtil.success(modelList.subList(0, 10));
     }
 
     /**

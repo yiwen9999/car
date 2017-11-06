@@ -17,4 +17,6 @@ public interface ShopService {
     Shop findShopById(String id);
 
     List<Shop> findAllShop();
+
+    List<Shop> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 }

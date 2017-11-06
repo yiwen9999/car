@@ -31,4 +31,6 @@ public interface ParameterService {
     List<Parameter> findUsingTopParameterListOrderBySort(Integer state);
 
     List<Parameter> findUsingChildParameterListOrderBySort(Integer state);
+
+    Parameter findFirstByCode(String code);
 }

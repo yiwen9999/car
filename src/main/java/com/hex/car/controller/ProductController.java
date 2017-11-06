@@ -5,13 +5,13 @@ import com.hex.car.domain.Product;
 import com.hex.car.domain.User;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.CarService;
-import com.hex.car.service.ImgProductService;
 import com.hex.car.service.ProductService;
 import com.hex.car.service.ShopService;
 import com.hex.car.utils.FileUtil;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,9 +39,6 @@ public class ProductController {
 
     @Autowired
     private ShopService shopService;
-
-    @Autowired
-    private ImgProductService imgProductService;
 
     @Value("${web.upload-path}")
     private String path;
@@ -177,5 +174,30 @@ public class ProductController {
         }
         productService.deleteProduct(product);
         return ResultUtil.success();
+    }
+
+    /**
+     * 获取4个最新商品集合（前台页面用）
+     *
+     * @return
+     */
+    @GetMapping("/front/get4ProductList")
+    public Object get4ProductList() {
+        List<Product> products = productService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
+//        List<ImgProduct> imgProducts = new ArrayList<>();
+//        ImgProduct imgProduct;
+//        Map<String, Object> map = new HashMap<>();
+//        for (int i = 0; i < products.size(); i++) {
+//            imgProduct = new ImgProduct();
+//            for (int j = 0; j < products.get(i).getImgProducts().size(); j++) {
+//                if (products.get(i).getImgProducts().get(j).getMain()) {
+//                    imgProduct = products.get(i).getImgProducts().get(j);
+//                }
+//            }
+//            imgProducts.add(imgProduct);
+//        }
+//        map.put("products", products);
+//        map.put("imgs", imgProducts);
+        return ResultUtil.success(products);
     }
 }

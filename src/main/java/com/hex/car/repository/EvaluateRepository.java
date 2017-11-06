@@ -18,4 +18,6 @@ public interface EvaluateRepository extends JpaRepository<Evaluate, String> {
      * @return
      */
     List<Evaluate> findEvaluatesByProductShop(Shop shop);
+
+    List<Evaluate> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 }

@@ -185,4 +185,29 @@ public class ShopController {
         shopService.deleteShop(shop);
         return ResultUtil.success();
     }
+
+    /**
+     * 获取4个最新4s店集合（前台页面用）
+     *
+     * @return
+     */
+    @GetMapping("/front/get4ShopList")
+    public Object get4ProductList() {
+        List<Shop> shops = shopService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
+//        List<ImgShop> imgShops = new ArrayList<>();
+//        ImgShop imgShop;
+//        Map<String, Object> map = new HashMap<>();
+//        for (int i = 0; i < shops.size(); i++) {
+//            imgShop = new ImgShop();
+//            for (int j = 0; j < shops.get(i).getImgShops().size(); j++) {
+//                if (shops.get(i).getImgShops().get(j).getMain()) {
+//                    imgShop = shops.get(i).getImgShops().get(j);
+//                }
+//            }
+//            imgShops.add(imgShop);
+//        }
+//        map.put("shops", shops);
+//        map.put("imgs", imgShops);
+        return ResultUtil.success(shops);
+    }
 }

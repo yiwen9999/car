@@ -20,4 +20,6 @@ public interface ParameterRepository extends JpaRepository<Parameter, String> {
     List<Parameter> findParametersByParentIsNullAndStateOrderBySort(Integer state);
 
     List<Parameter> findParametersByParentIsNotNullAndStateOrderBySort(Integer state);
+
+    Parameter findFirstByCode(String code);
 }

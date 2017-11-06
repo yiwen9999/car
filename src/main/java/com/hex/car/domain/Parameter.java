@@ -2,6 +2,7 @@ package com.hex.car.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -51,6 +52,15 @@ public class Parameter {
     @OrderBy(value = "sort")
     @JsonIgnore
     private List<Parameter> childs;
+
+    /**
+     * 在用子集合
+     */
+    @OneToMany(mappedBy = "parent")
+    @OrderBy(value = "sort")
+    @Where(clause = "state=2")
+    @JsonIgnore
+    private List<Parameter> usingChilds;
 
     /**
      * 状态
@@ -114,6 +124,14 @@ public class Parameter {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public List<Parameter> getUsingChilds() {
+        return usingChilds;
+    }
+
+    public void setUsingChilds(List<Parameter> usingChilds) {
+        this.usingChilds = usingChilds;
     }
 
     @Override

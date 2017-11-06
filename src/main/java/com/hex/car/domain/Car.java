@@ -24,7 +24,7 @@ public class Car implements Serializable {
     /**
      * 名称，用于检索
      */
-    @Column(length = 50)
+    @Column(length = 100)
     private String name;
 
     /**

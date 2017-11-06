@@ -34,6 +34,16 @@ public class UserController {
      */
     @PostMapping(value = "/login")
     public Object login(String username, String password, HttpServletRequest request) {
+//        try {
+//            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+//            token.setRememberMe(true);
+//            Subject subject = SecurityUtils.getSubject();
+//            subject.login(token);
+//            return ResultUtil.success();
+//        } catch (AuthenticationException e) {
+//            e.printStackTrace();
+//            return ResultUtil.error(ResultEnum.ERROR_LOGIN.getCode(), ResultEnum.ERROR_LOGIN.getMsg());
+//        }
         User user = userService.findUserByUsername(username);
         boolean result = false;
         try {
@@ -67,6 +77,13 @@ public class UserController {
     public Object logout(HttpServletRequest request) {
         request.getSession().removeAttribute("user");
         return ResultUtil.success();
+    }
+
+
+    @PostMapping(value = "/saveUser")
+    public Object saveUser(User user) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        user.setPassword(Md5SaltTool.getEncryptedPwd(user.getPassword()));
+        return ResultUtil.success(userService.saveUser(user));
     }
 
 }

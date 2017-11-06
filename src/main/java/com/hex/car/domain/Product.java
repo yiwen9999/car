@@ -1,5 +1,6 @@
 package com.hex.car.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
@@ -58,7 +59,24 @@ public class Product implements Serializable {
      */
     @OneToMany(targetEntity = ImgProduct.class, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private List<ImgProduct> imgProducts = new ArrayList();
+
+    /**
+     * 商品主图
+     */
+    @OneToMany(targetEntity = ImgProduct.class)
+    @Where(clause = "is_main=1")
+    @JoinColumn(name = "product_id")
+    private List<ImgProduct> mainImgProducts = new ArrayList();
+
+    /**
+     * 商品其他图
+     */
+    @OneToMany(targetEntity = ImgProduct.class)
+    @Where(clause = "is_main=0")
+    @JoinColumn(name = "product_id")
+    private List<ImgProduct> commonImgProducts = new ArrayList();
 
     /**
      * 对应启用的评测文章集合
@@ -160,6 +178,22 @@ public class Product implements Serializable {
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public List<ImgProduct> getMainImgProducts() {
+        return mainImgProducts;
+    }
+
+    public void setMainImgProducts(List<ImgProduct> mainImgProducts) {
+        this.mainImgProducts = mainImgProducts;
+    }
+
+    public List<ImgProduct> getCommonImgProducts() {
+        return commonImgProducts;
+    }
+
+    public void setCommonImgProducts(List<ImgProduct> commonImgProducts) {
+        this.commonImgProducts = commonImgProducts;
     }
 
     @Override

@@ -97,4 +97,19 @@ public class PlaceController {
         Page placePage = placeService.findAllPlaceListByPage(page, size, sort);
         return ResultUtil.success(placePage);
     }
+
+    /**
+     * 获取北京下级地域集合（前台页面用）
+     *
+     * @return
+     */
+    @GetMapping(value = "/front/getPlaceList")
+    public Object getPlaceListForFront() {
+        Place bjPlace = placeService.findPlaceById("110100");
+        if (null == bjPlace) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        List<Place> placeList = bjPlace.getUsingChilds();
+        return ResultUtil.success(placeList);
+    }
 }

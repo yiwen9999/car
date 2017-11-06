@@ -32,4 +32,5 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> findProductsByNameLikeAndStateAndShopOrderByName(String name, Integer state, Shop shop);
 
 
+    List<Product> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 }

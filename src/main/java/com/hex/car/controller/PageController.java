@@ -5,10 +5,13 @@ import com.hex.car.domain.Brand;
 import com.hex.car.service.AdvertisingService;
 import com.hex.car.service.BrandService;
 import com.hex.car.service.ModelService;
+import com.hex.car.utils.HexUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: hexuan
@@ -27,9 +30,47 @@ public class PageController {
     @Autowired
     private ModelService modelService;
 
+    /**
+     * 默认
+     *
+     * @return
+     */
     @GetMapping(value = "/")
-    public String index() {
+    public String main() {
+        return "redirect:/toFrontMain";
+    }
+
+    /**
+     * 后台主页
+     *
+     * @param request
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/index")
+    public String index(HttpServletRequest request, Model model) {
+        model.addAttribute("user", HexUtil.getUser(request));
         return "index";
+    }
+
+    /**
+     * 后台登录
+     *
+     * @return
+     */
+    @GetMapping(value = "/toLogin")
+    public String toLogin() {
+        return "login";
+    }
+
+    /**
+     * 前台主页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toFrontMain")
+    public String toFrontMain() {
+        return "/front/homepage";
     }
 
     /**
@@ -147,6 +188,12 @@ public class PageController {
         return "/advertising/advertisingAdd";
     }
 
+    //    @GetMapping(value = "/toAdvertisingView/{id}")
+    //    public String toAdvertisingView(@PathVariable("id") String id, Model model) {
+    //        model.addAttribute("ad", advertisingService.findAdvertisingById(id));
+    //        return "/advertising/advertisingView";
+    //    }
+
     /**
      * 跳转文章列表页
      *
@@ -178,9 +225,35 @@ public class PageController {
         return "/evaluate/evaluateView";
     }
 
-//    @GetMapping(value = "/toAdvertisingView/{id}")
-//    public String toAdvertisingView(@PathVariable("id") String id, Model model) {
-//        model.addAttribute("ad", advertisingService.findAdvertisingById(id));
-//        return "/advertising/advertisingView";
-//    }
+    /**
+     * 跳转商品列表
+     *
+     * @return
+     */
+    @GetMapping(value = "/toProductList")
+    public String toProductList() {
+        return "/product/productList";
+    }
+
+    /**
+     * 跳转商品添加
+     *
+     * @return
+     */
+    @GetMapping(value = "/toProductAdd")
+    public String toProductAdd() {
+        return "/product/productAdd";
+    }
+
+    /**
+     * 跳转商品浏览
+     *
+     * @return
+     */
+    @GetMapping(value = "/toProductView")
+    public String toProductView() {
+        return "/product/productView";
+    }
+
+
 }

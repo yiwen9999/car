@@ -37,4 +37,9 @@ public class ShopServiceImpl implements ShopService {
     public List<Shop> findAllShop() {
         return shopRepository.findAll();
     }
+
+    @Override
+    public List<Shop> findTop4ByStateOrderByCreateTimeDesc(Integer state) {
+        return shopRepository.findTop4ByStateOrderByCreateTimeDesc(state);
+    }
 }

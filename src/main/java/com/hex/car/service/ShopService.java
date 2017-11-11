@@ -1,8 +1,11 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.Shop;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: hexuan
@@ -19,4 +22,8 @@ public interface ShopService {
     List<Shop> findAllShop();
 
     List<Shop> findTop4ByStateOrderByCreateTimeDesc(Integer state);
+
+    List<Shop> findTop10ShopsByNameLikeAndStateOrderByName(String name, Integer state);
+
+    Page<Shop> findShops(Map<String, Object> condition, PageRequest pageRequest);
 }

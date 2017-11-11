@@ -1,9 +1,15 @@
 package com.hex.car.service;
 
+import com.hex.car.domain.Brand;
+import com.hex.car.domain.Model;
 import com.hex.car.domain.Product;
 import com.hex.car.domain.Shop;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: hexuan
@@ -39,4 +45,18 @@ public interface ProductService {
     List<Product> findProductsByNameLikeAndStateAndShopOrderByName(String name, Integer state, Shop shop);
 
     List<Product> findTop4ByStateOrderByCreateTimeDesc(Integer state);
+
+    List<Product> findProductListByCreateTimeAndNameAndIdentity(Date beginTime, Date endTime, String name, Shop shop);
+
+    List<Product> findTop10ProductsByNameLikeAndStateOrderByName(String name, Integer state);
+
+    List<Product> findTop10ProductsByNameLikeAndStateAndShopOrderByName(String name, Integer state, Shop shop);
+
+    Page<Product> findProductsByProductBrandModelCarTypeParameterPlaceShop(String name, Double minPrice, Double maxPrice, Integer year, String brandId, String modelId, String carTypeId, String placeId, String engineTypeId, String drivetrainId, String transmissionId, String fuelTypeId, String bodyTypeId, String seatsId, String shopId, PageRequest pageRequest);
+
+    Page<Product> findProducts(Map<String, Object> condition, PageRequest pageRequest);
+
+    List<Brand> findDistinctBrandByProduct(Integer state);
+
+    List<Model> findDistinctModelByProduct(Integer state);
 }

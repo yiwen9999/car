@@ -15,8 +15,8 @@
 					<li class="dropDown dropDown_hover">
 						<a href="#" class="dropDown_A"><strong th:text="${user.username}"></strong> <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
-							<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
-							<li><a href="#">退出</a></li>
+							<li><a href="javascript:;" onclick="updatePassword('修改密码','/toPasswordUpdate','400','300');">修改密码</a></li>
+							<li><a href="javascript:;" onclick="logout();">退出</a></li>
 					    </ul>
 				    </li>
 				</ul>
@@ -59,87 +59,68 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript">
-$(function(){
-	$.ajax({
-        type : "GET",
-        url : "/getChannelList",
-        dataType : "json",
-        success : function(data) {
-            if (data.code == "0") {
-				$.each(data.data, function (index, channel) {
-					createTopChannel(channel);
-					$.each(channel.childList, function (indexc, childChannel) {
-						createChildChannel(channel,childChannel);
-            		});
-            	});
-            	$(".Hui-aside").Huifold({
-					titCell:'.menu_dropdown dl dt',
-					mainCell:'.menu_dropdown dl dd',
-				});
-            } else {
-                alert("获取信息失败");
-            }
-        }
-    });
-	$("body").Huitab({
-		tabBar:".navbar-wrapper .navbar-levelone",
-		tabCon:".Hui-aside .menu_dropdown",
-		className:"current",
-		index:0,
-	});
+	$(function(){
+		$.ajax({
+	        type : "GET",
+	        url : "/getChannelList",
+	        dataType : "json",
+	        success : function(data) {
+	            if (data.code == "0") {
+					$.each(data.data, function (index, channel) {
+						createTopChannel(channel);
+						$.each(channel.childList, function (indexc, childChannel) {
+							createChildChannel(channel,childChannel);
+	            		});
+	            	});
+	            	$(".Hui-aside").Huifold({
+						titCell:'.menu_dropdown dl dt',
+						mainCell:'.menu_dropdown dl dd',
+					});
+	            } else {
+	                alert("获取信息失败");
+	            }
+	        }
+	    });
+		$("body").Huitab({
+			tabBar:".navbar-wrapper .navbar-levelone",
+			tabCon:".Hui-aside .menu_dropdown",
+			className:"current",
+			index:0,
+		});
 
-});
-function createTopChannel(channel){
-	var dl = $("<dl>",{id:"menu-"+channel.id});
-	var dt = $('<dt><i class="Hui-iconfont">&#xe616;</i> '+channel.name+'<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>');
-	var dd = $("<dd>");
-	var ul = $("<ul>",{id:"ul_"+channel.id});
-	dd.append(ul);
-	dl.append(dt);
-	dl.append(dd);
-	$("#menuDiv").append(dl);
-}
-
-function createChildChannel(channel,childChannel){
-	var ul = $("#ul_"+channel.id);
-	var li = $("<li>");
-	var a = $('<a data-href="'+childChannel.url+'" data-title="'+childChannel.name+'" href="javascript:void(0)">'+childChannel.name+'</a>');
-	li.append(a);
-	ul.append(li);
-}
-/*资讯-添加*/
-function article_add(title,url){
-	var index = layer.open({
-		type: 2,
-		title: title,
-		content: url
 	});
-	layer.full(index);
-}
-/*图片-添加*/
-function picture_add(title,url){
-	var index = layer.open({
-		type: 2,
-		title: title,
-		content: url
-	});
-	layer.full(index);
-}
-/*产品-添加*/
-function product_add(title,url){
-	var index = layer.open({
-		type: 2,
-		title: title,
-		content: url
-	});
-	layer.full(index);
-}
-/*用户-添加*/
-function member_add(title,url,w,h){
-	layer_show(title,url,w,h);
-}
-
-
+	function createTopChannel(channel){
+		var dl = $("<dl>",{id:"menu-"+channel.id});
+		var dt = $('<dt><i class="Hui-iconfont">&#xe616;</i> '+channel.name+'<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>');
+		var dd = $("<dd>");
+		var ul = $("<ul>",{id:"ul_"+channel.id});
+		dd.append(ul);
+		dl.append(dt);
+		dl.append(dd);
+		$("#menuDiv").append(dl);
+	}
+	function createChildChannel(channel,childChannel){
+		var ul = $("#ul_"+channel.id);
+		var li = $("<li>");
+		var a = $('<a data-href="'+childChannel.url+'" data-title="'+childChannel.name+'" href="javascript:void(0)">'+childChannel.name+'</a>');
+		li.append(a);
+		ul.append(li);
+	}
+	function updatePassword(title,url,w,h){
+		layer_show(title,url,w,h);
+	}
+	function logout(){
+		$.ajax({
+	        type : "GET",
+	        url : "/logout",
+	        dataType : "json",
+	        success : function(data) {
+	            if (data.code == "0") {
+					window.location.replace("/toLogin");
+	            }
+	        }
+	    });
+	}
 </script>
 </body>
 </html>

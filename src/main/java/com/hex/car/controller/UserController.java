@@ -1,7 +1,9 @@
 package com.hex.car.controller;
 
 import com.hex.car.domain.User;
+import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.UserService;
+import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.Md5SaltTool;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,10 +81,62 @@ public class UserController {
         return ResultUtil.success();
     }
 
-
+    /**
+     * 保存用户
+     *
+     * @param user
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
     @PostMapping(value = "/saveUser")
     public Object saveUser(User user) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         user.setPassword(Md5SaltTool.getEncryptedPwd(user.getPassword()));
+        return ResultUtil.success(userService.saveUser(user));
+    }
+
+    /**
+     * 修改用户密码
+     *
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @param request     request获取当前用户
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    @PostMapping(value = "/updatePassword")
+    public Object updatePassword(String oldPassword, String newPassword, HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        User user = HexUtil.getUser(request);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (Md5SaltTool.validPassword(oldPassword, user.getPassword())) {
+            user.setPassword(Md5SaltTool.getEncryptedPwd(newPassword));
+            return ResultUtil.success(userService.saveUser(user));
+        } else {
+            return ResultUtil.error(ResultEnum.ERROR_PASSWORD.getCode(), ResultEnum.ERROR_PASSWORD.getMsg());
+        }
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param id 账号id
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    @PostMapping(value = "/resetPassword")
+    public Object resetPassword(String id) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        if (null == id || "".equals(id)) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        User user = userService.findUserById(id);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        user.setPassword(Md5SaltTool.getEncryptedPwd("000000"));
         return ResultUtil.success(userService.saveUser(user));
     }
 

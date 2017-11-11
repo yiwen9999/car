@@ -133,6 +133,20 @@ public class CarController {
     }
 
     /**
+     * 根据名称模糊搜索在用车辆集合，按名称排序返回10个（用于快速检索）
+     *
+     * @param name
+     * @return
+     */
+    @PostMapping(value = "/searchTop10UsingCarListByName")
+    public Object searchTop10UsingCarListByName(String name) {
+        if (name == null || name.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        return ResultUtil.success(carService.findTop10CarsByNameLikeAndStateOrderByName(name, new Integer(2)));
+    }
+
+    /**
      * 删除车辆
      *
      * @param id

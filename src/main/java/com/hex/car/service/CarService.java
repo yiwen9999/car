@@ -28,4 +28,13 @@ public interface CarService {
     List<Car> findCarsByNameLikeAndStateOrderByName(String name, Integer state);
 
     List<Car> saveCarList(List<Car> cars);
+
+    /**
+     * 根据名称模糊，状态，查询10个车辆集合，按名称排序
+     *
+     * @param name
+     * @param state
+     * @return
+     */
+    List<Car> findTop10CarsByNameLikeAndStateOrderByName(String name, Integer state);
 }

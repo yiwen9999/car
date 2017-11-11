@@ -294,19 +294,4 @@ public class Shop implements Serializable {
         this.commonImgShops = commonImgShops;
     }
 
-    @Override
-    public String toString() {
-        return "Shop{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", state=" + state +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", place=" + place +
-                ", user=" + user +
-                ", createTime=" + createTime +
-                '}';
-    }
 }

@@ -16,5 +16,7 @@ public interface CarTypeService {
 
     CarType findCarTypeById(String id);
 
+    List<CarType> findAllCarTypeList();
+
     List<CarType> findCarTypesByStateOrderBySort(Integer state);
 }

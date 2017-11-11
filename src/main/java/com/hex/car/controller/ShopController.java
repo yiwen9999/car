@@ -13,6 +13,8 @@ import com.hex.car.utils.Md5SaltTool;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,9 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 4s店相关controller
@@ -63,21 +63,39 @@ public class ShopController {
                            String placeId,
                            String username,
                            String password,
+                           @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
                            @RequestParam(value = "files", required = false) List<MultipartFile> files) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Place place = placeService.findPlaceById(placeId);
         shop.setPlace(place);
+        if (null == mainFile) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
         MultipartFile file;
         ImgShop imgShop;
         List<ImgShop> imgShopList = new ArrayList<>();
+        String fileName = mainFile.getOriginalFilename();
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        fileName = UUID.randomUUID() + suffixName;
+        try {
+            FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+            imgShop = new ImgShop();
+            imgShop.setFileName(fileName);
+            imgShop.setMain(new Boolean(true));
+            imgShopList.add(imgShop);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+        }
         for (int i = 0; i < files.size(); i++) {
             file = files.get(i);
-            String fileName = file.getOriginalFilename();
-            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = file.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
                 FileUtil.uploadFile(file.getBytes(), path, fileName);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
+                imgShop.setMain(new Boolean(false));
                 imgShopList.add(imgShop);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -187,27 +205,17 @@ public class ShopController {
     }
 
     /**
-     * 获取4个最新4s店集合（前台页面用）
+     * 根据名称模糊搜索在用4s店集合，按名称排序返回10个（用于快速检索）
      *
+     * @param name 4s店名称
      * @return
      */
-    @GetMapping("/front/get4ShopList")
-    public Object get4ProductList() {
-        List<Shop> shops = shopService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
-//        List<ImgShop> imgShops = new ArrayList<>();
-//        ImgShop imgShop;
-//        Map<String, Object> map = new HashMap<>();
-//        for (int i = 0; i < shops.size(); i++) {
-//            imgShop = new ImgShop();
-//            for (int j = 0; j < shops.get(i).getImgShops().size(); j++) {
-//                if (shops.get(i).getImgShops().get(j).getMain()) {
-//                    imgShop = shops.get(i).getImgShops().get(j);
-//                }
-//            }
-//            imgShops.add(imgShop);
-//        }
-//        map.put("shops", shops);
-//        map.put("imgs", imgShops);
-        return ResultUtil.success(shops);
+    @PostMapping(value = "/searchTop10UsingShopListByName")
+    public Object searchTop10UsingShopListByName(String name) {
+        if (name == null || name.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        return ResultUtil.success(shopService.findTop10ShopsByNameLikeAndStateOrderByName(name, new Integer(2)));
     }
+
 }

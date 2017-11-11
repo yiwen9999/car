@@ -43,8 +43,9 @@ public class Product implements Serializable {
     /**
      * 对应4s店
      */
-    @ManyToOne
+    @ManyToOne(targetEntity = Shop.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
+    @JsonIgnore
     private Shop shop;
 
     /**
@@ -85,6 +86,7 @@ public class Product implements Serializable {
     @Where(clause = "state=2")
     @OrderBy(value = "create_time desc")
     @JoinColumn(name = "evaluate_id")
+    @JsonIgnore
     private List<Evaluate> usingEvaluates = new ArrayList<>();
 
     /**
@@ -196,17 +198,4 @@ public class Product implements Serializable {
         this.commonImgProducts = commonImgProducts;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", details='" + details + '\'' +
-                ", price=" + price +
-                ", shop=" + shop +
-                ", car=" + car +
-                ", state=" + state +
-                ", createTime=" + createTime +
-                '}';
-    }
 }

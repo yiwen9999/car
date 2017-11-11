@@ -1,5 +1,6 @@
 package com.hex.car.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -51,30 +52,35 @@ public class Personnel implements Serializable {
      */
     @OneToOne(optional = false, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "user_id", unique = true)
+    @JsonIgnore
     private User user;
 
     /**
      * 车辆收藏记录
      */
     @OneToMany(targetEntity = FavoritesProduct.class, mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JsonIgnore
     private List<FavoritesProduct> favoritesProducts = new ArrayList<>();
 
     /**
      * 评测文章收藏记录
      */
     @OneToMany(targetEntity = FavoritesEvaluate.class, mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JsonIgnore
     private List<FavoritesEvaluate> favoritesEvaluates = new ArrayList<>();
 
     /**
      * 车辆浏览记录
      */
     @OneToMany(targetEntity = BrowsingHistoryProduct.class, mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JsonIgnore
     private List<BrowsingHistoryProduct> browsingHistoryCars = new ArrayList<>();
 
     /**
      * 文章浏览记录
      */
     @OneToMany(targetEntity = BrowsingHistoryEvaluate.class, mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JsonIgnore
     private List<BrowsingHistoryEvaluate> browsingHistoryEvaluates = new ArrayList<>();
 
     /**

@@ -62,7 +62,7 @@ public class BaseController {
                 childMapList = new ArrayList<>();
                 childMap = new HashMap<>();
                 childMap.put("name", "车辆列表");
-                childMap.put("url", "/toCarListForAdmin");
+                childMap.put("url", "/toProductList");
                 childMapList.add(childMap);
                 map.put("childList", childMapList);
                 mapList.add(map);

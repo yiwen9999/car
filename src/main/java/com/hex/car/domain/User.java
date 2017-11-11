@@ -42,14 +42,14 @@ public class User implements Serializable {
     /**
      * 对应4s店
      */
-    @OneToOne(targetEntity = Shop.class, mappedBy = "user", optional = false)
+    @OneToOne(targetEntity = Shop.class, mappedBy = "user", optional = false, fetch = FetchType.LAZY)
     @JsonIgnore
     private Shop shop;
 
     /**
      * 对应用户
      */
-    @OneToOne(targetEntity = Personnel.class, mappedBy = "user", optional = false)
+    @OneToOne(targetEntity = Personnel.class, mappedBy = "user", optional = false, fetch = FetchType.LAZY)
     @JsonIgnore
     private Personnel personnel;
 

@@ -64,6 +64,16 @@ public class PageController {
     }
 
     /**
+     * 跳转修改密码
+     *
+     * @return
+     */
+    @GetMapping(value = "/toPasswordUpdate")
+    public String toPasswordUpdate() {
+        return "/passwordUpdate";
+    }
+
+    /**
      * 前台主页
      *
      * @return
@@ -200,7 +210,8 @@ public class PageController {
      * @return
      */
     @GetMapping(value = "/toEvaluateList")
-    public String toEvaluateList() {
+    public String toEvaluateList(HttpServletRequest request, Model model) {
+        model.addAttribute("user", HexUtil.getUser(request));
         return "/evaluate/evaluateList";
     }
 
@@ -210,7 +221,8 @@ public class PageController {
      * @return
      */
     @GetMapping(value = "/toEvaluateAdd")
-    public String toEvaluateAdd() {
+    public String toEvaluateAdd(HttpServletRequest request, Model model) {
+        model.addAttribute("user", HexUtil.getUser(request));
         return "/evaluate/evaluateAdd";
     }
 
@@ -231,7 +243,8 @@ public class PageController {
      * @return
      */
     @GetMapping(value = "/toProductList")
-    public String toProductList() {
+    public String toProductList(HttpServletRequest request, Model model) {
+        model.addAttribute("user", HexUtil.getUser(request));
         return "/product/productList";
     }
 
@@ -241,7 +254,8 @@ public class PageController {
      * @return
      */
     @GetMapping(value = "/toProductAdd")
-    public String toProductAdd() {
+    public String toProductAdd(HttpServletRequest request, Model model) {
+        model.addAttribute("user", HexUtil.getUser(request));
         return "/product/productAdd";
     }
 
@@ -254,6 +268,5 @@ public class PageController {
     public String toProductView() {
         return "/product/productView";
     }
-
 
 }

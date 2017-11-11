@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>所售车辆列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>所售车辆管理 <span class="c-gray en">&gt;</span> 所售车辆列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c"> 日期范围：
+		<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
+		-
+		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
+		<input type="text" class="input-text" style="width:250px" placeholder="输入所售车辆名称" id="name" name="">
+		<button type="button" class="btn btn-success radius" id="" name="" onclick="productSearch();"><i class="Hui-iconfont">&#xe665;</i>搜所售卖车辆</button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="productAdd('新建所售车辆','/toProductAdd','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 新建所售车辆</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
+	<div class="mt-16">
+	<table class="table table-border table-bordered table-hover table-bg table-sort">
+		<thead>
+			<tr class="text-c">
+				<th width="80">序号</th>
+				<th width="100">车辆名称</th>
+				<th>售价</th>
+				<th>品牌</th>
+				<th>型号</th>
+				<th width="130">加入时间</th>
+				<th width="70">状态</th>
+				<th width="100">操作</th>
+			</tr>
+		</thead>
+		<tbody id="productTbody">
+		</tbody>
+	</table>
+	<input type="hidden" name="userId" value="" th:value="${user!=null ? user.id:''}">
+	</div>
+</div>
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+var newDate = new Date();
+$(function(){
+	productSearch();
+});
+function createTr(index,product){
+	var tr=$("<tr>").attr("class","text-c").attr("id","productTr_"+product.id)
+	$("#productTbody").append(tr);
+
+	var td=$("<td>").html(index+1);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(product.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(product.price);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(product.car.brand.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(product.car.model.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left");
+	tr.append(td);
+	newDate.setTime(product.createTime);
+    td.html(newDate.toLocaleDateString());
+
+	td=$("<td>").attr("class","td-status");
+	if(product.state==2)
+		td.append("<span class='label label-success radius'>已启用</span>");
+	else
+		td.append("<span class='label radius'>已停用</span>");
+	tr.append(td);
+
+	td=$("<td>").attr("class","td-manage");
+	var stopA=$("<a>").css("text-decoration","none").attr("href","javascript:")
+	.click(function(){
+	  updateProductState(this,product.id);
+	});
+	var stopLi=$("<i>").attr("class","Hui-iconfont");
+	if(product.state==2){
+		stopA.attr("title","停用");
+		stopLi.html("&#xe631;&nbsp;&nbsp;");
+	}
+	else{
+		stopA.attr("title","启用");
+		stopLi.html("&#xe615;&nbsp;&nbsp;");
+	}
+	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
+	.click(function(){
+	  productEdit('车辆修改','/toProductUpdate?id='+product.id,product.id,'800','500');
+	});
+	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
+	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
+	.click(function(){
+	  productDelete(this,product.id);
+	});
+	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
+	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
+
+	tr.append(td);
+}
+function productSearch(){
+	$.ajax({
+        type : "POST",
+        url : "/searchProductListByIdentity",
+        data : {
+        	beginTime : $("#datemin").val(),
+        	endTime : $("#datemax").val(),
+        	name : $("#name").val(),
+        },
+        dataType : "json",
+        success : function(data) {
+            if (data.code == "0") {
+				$.each(data.data, function (index, product) {
+					createTr(index,product);
+            	});
+            } else {
+                alert("获取信息失败");
+            }
+        }
+    });
+}
+function productAdd(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+function productEdit(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+function productDelete(obj,id){
+	layer.confirm('确认要删除吗？',function(index){
+		$.ajax({
+			type: 'POST',
+			url: '/deleteProduct',
+			data : {
+	            "id" : id
+	        },
+			dataType: 'json',
+			success : function(data) {
+	            if (data.code == "0") {
+	            	$(obj).parents("tr").remove();
+	            	layer.msg('已删除!',{icon:1,time:1000});
+	            } else {
+	                layer.msg(data.msg,{icon:1,time:1000});
+	            }
+	        }
+		});		
+	});
+}
+function updateProductState(obj,id){
+	layer.confirm('确认要'+obj.title+'吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		$.ajax({
+			type: 'POST',
+			url: '/updateProductState',
+			data : {
+	            "id" : id
+	        },
+			dataType: 'json',
+			success : function(data) {
+	            if (data.code == "0") {
+	            	if(data.data.state==-1){
+		            	$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateProductState(this,\"'+data.data.id+'\")" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;&nbsp;&nbsp;</i></a>');
+						$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
+						$(obj).remove();
+						layer.msg('已停用!',{icon: 5,time:1000});
+					}else{
+						$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateProductState(this,\"'+data.data.id+'\")" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;&nbsp;&nbsp;</i></a>');
+						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+						$(obj).remove();
+						layer.msg('已启用!', {icon: 6,time:1000});
+					}
+	            } else {
+	                layer.msg(data.msg,{icon:2,time:2000});
+	            }
+	        }
+		});	
+	});
+}
+</script> 
+</body>
+</html>

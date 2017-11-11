@@ -2,15 +2,19 @@ package com.hex.car.controller;
 
 import com.hex.car.domain.Evaluate;
 import com.hex.car.domain.ImgEvaluate;
+import com.hex.car.domain.Product;
 import com.hex.car.domain.User;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.EvaluateService;
 import com.hex.car.service.ImgEvaluateService;
 import com.hex.car.service.ProductService;
 import com.hex.car.utils.FileUtil;
+import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -86,16 +92,15 @@ public class EvaluateController {
     private Object saveEvaluate(Evaluate evaluate,
                                 String productId,
                                 @RequestParam(value = "file") MultipartFile file) {
-        // TODO 商品相关做好后需要恢复以下代码，页面需要添加快捷搜索功能
-//        if (null == productId || productId.equals("")) {
-//            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-//        }
-//        Product product = productService.findProductById(productId);
-//        if (null == product) {
-//            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-//        }
-//        evaluate.setProduct(product);
-
+        if (null == productId || productId.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Product product = productService.findProductById(productId);
+        if (null == product) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        evaluate.setProduct(product);
+        evaluate.setShop(product.getShop());
         if (file != null) {
             if (null == evaluate.getId() && !evaluate.getId().equals("")) {
                 evaluate = evaluateService.findEvaluateById(evaluate.getId());
@@ -186,24 +191,34 @@ public class EvaluateController {
     }
 
     /**
-     * 获取4个最新文章集合（前台页面用）
+     * 根据名称，创建时间查询文章集合
      *
+     * @param beginTime
+     * @param endTime
+     * @param name
      * @return
      */
-    @GetMapping("/front/get4EvaluateList")
-    public Object get4EvaluateList() {
-        List<Evaluate> evaluates = evaluateService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
-//        List<ImgEvaluate> imgEvaluates = new ArrayList<>();
-//        List<ImgUser> imgUsers = new ArrayList<>();
-//        Map<String, Object> map = new HashMap<>();
-//        for (int i = 0; i < evaluates.size(); i++) {
-//            imgEvaluates.add(evaluates.get(i).getImgEvaluate());
-//            imgUsers.add(evaluates.get(i).getProduct().getShop().getUser().getImgUser());
-//        }
-//        map.put("evaluates", evaluates);
-//        map.put("imgs", imgEvaluates);
-//        map.put("headImgs", imgUsers);
-        return ResultUtil.success(evaluates);
+    @PostMapping(value = "/searchEvaluateList")
+    public Object searchEvaluateList(String beginTime, String endTime, String name) {
+        return ResultUtil.success(evaluateService.findEvaluateListByCreateTimeAndNameAndIdentity(HexUtil.formatBeginTimeString(beginTime), HexUtil.formatEndTimeString(endTime), name, null));
+    }
+
+    /**
+     * 根据名称，创建时间，创建人查询文章集合
+     *
+     * @param beginTime
+     * @param endTime
+     * @param name
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/searchEvaluateListByIdentity")
+    public Object searchEvaluateList(String beginTime, String endTime, String name, HttpServletRequest request) {
+        User user = HexUtil.getUser(request);
+        if (null == user || null == user.getShop()) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        return ResultUtil.success(evaluateService.findEvaluateListByCreateTimeAndNameAndIdentity(HexUtil.formatBeginTimeString(beginTime), HexUtil.formatEndTimeString(endTime), name, user.getShop()));
     }
 
 }

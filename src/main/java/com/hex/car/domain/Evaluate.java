@@ -1,5 +1,6 @@
 package com.hex.car.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -46,6 +47,14 @@ public class Evaluate implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    /**
+     * 对应4s店
+     */
+    @ManyToOne(targetEntity = Shop.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    @JsonIgnore
+    private Shop shop;
 
     /**
      * 文章头图
@@ -116,6 +125,14 @@ public class Evaluate implements Serializable {
 
     public void setImgEvaluate(ImgEvaluate imgEvaluate) {
         this.imgEvaluate = imgEvaluate;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     @Override

@@ -37,7 +37,7 @@
 $(function(){
 	$.ajax({
         type : "GET",
-        url : "/getAllEvaluateList", // TODO /getEvaluateListByIdentity实际情况根据身份获取
+        url : "/getEvaluateListByIdentity",
         dataType : "json",
         success : function(data) {
             if (data.code == "0") {

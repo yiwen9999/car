@@ -173,13 +173,4 @@ public class AdvertisingController {
         return ResultUtil.success(advertisingService.findAdvertisingsByStateOrderBySort(new Integer(2)));
     }
 
-    /**
-     * 获取在用广告集合（前台页面用）
-     *
-     * @return
-     */
-    @GetMapping(value = "/front/getAdvertisingList")
-    public Object getAdvertisingListForFront() {
-        return ResultUtil.success(advertisingService.findAdvertisingsByStateOrderBySort(new Integer(2)));
-    }
 }

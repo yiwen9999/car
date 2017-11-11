@@ -2,8 +2,12 @@ package com.hex.car.service;
 
 import com.hex.car.domain.Evaluate;
 import com.hex.car.domain.Shop;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: hexuan
@@ -22,4 +26,8 @@ public interface EvaluateService {
     List<Evaluate> findEvaluatesByProductShop(Shop shop);
 
     List<Evaluate> findTop4ByStateOrderByCreateTimeDesc(Integer state);
+
+    List<Evaluate> findEvaluateListByCreateTimeAndNameAndIdentity(Date beginTime, Date endTime, String name, Shop shop);
+
+    Page<Evaluate> findEvaluates(Map<String, Object> condition, PageRequest pageRequest);
 }

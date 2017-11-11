@@ -7,7 +7,9 @@ public enum ResultEnum {
     UPLOAD_FAIL(102, "上传失败"),
     ERROR_PARAM(103, "传递的参数错误"),
     ERROR_DELETE(104, "未能删除"),
-    ERROR_LOGIN(105, "登录失败"),;
+    ERROR_LOGIN(105, "登录失败"),
+    ERROR_PASSWORD(106, "密码错误"),
+    ERROR_IDENTITY(107, "身份错误"),;
 
     private Integer code;
 

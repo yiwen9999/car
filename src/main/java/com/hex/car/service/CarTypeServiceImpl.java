@@ -3,6 +3,7 @@ package com.hex.car.service;
 import com.hex.car.domain.CarType;
 import com.hex.car.repository.CarTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,12 @@ public class CarTypeServiceImpl implements CarTypeService {
     @Override
     public CarType findCarTypeById(String id) {
         return carTypeRepository.findOne(id);
+    }
+
+    @Override
+    public List<CarType> findAllCarTypeList() {
+        Sort sort = new Sort(Sort.Direction.ASC, "sort");
+        return carTypeRepository.findAll(sort);
     }
 
     @Override

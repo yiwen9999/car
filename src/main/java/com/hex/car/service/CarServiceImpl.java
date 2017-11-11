@@ -51,4 +51,9 @@ public class CarServiceImpl implements CarService {
     public List<Car> saveCarList(List<Car> cars) {
         return carRepository.save(cars);
     }
+
+    @Override
+    public List<Car> findTop10CarsByNameLikeAndStateOrderByName(String name, Integer state) {
+        return carRepository.findTop10CarsByNameLikeAndStateOrderByName("%" + name + "%", state);
+    }
 }

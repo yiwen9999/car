@@ -22,7 +22,7 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>型号名：</label>
 			<div class="formControls col-xs-8 col-sm-9" id="modelDiv">
-				<a onClick="addModelTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a><input type="text" class="input-text" value="" placeholder="" name="modelNames">
+				<a onClick="addModelTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a><input type="text" class="input-text" value="" placeholder="" name="modelNames" style="width:90%;">
 			</div>
 		</div>
 		<div class="row cl">
@@ -90,7 +90,7 @@ function addModelTr(){
 	});
 	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
 	var modelDiv=$("<div>").attr("class","formControls col-xs-8 col-sm-9");
-	modelDiv.append(deleteA.append(deleteLi)).append(modelInput).append("<br/>");
+	modelDiv.append("<br>").append(deleteA.append(deleteLi)).append(modelInput).append("<br/>");
 	$("#modelDiv").append(modelDiv);
 }
 function deleteModelTr(object){

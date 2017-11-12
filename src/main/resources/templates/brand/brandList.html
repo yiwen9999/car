@@ -8,7 +8,7 @@
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 品牌管理<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="brandAdd('添加品牌','/toBrandAdd','','310')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加品牌</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
-	<table class="table table-border table-bordered table-bg">
+	<table class="table table-border table-bordered table-hover table-bg">
 		<thead>
 			<tr>
 				<th scope="col" colspan="7">品牌列表</th>
@@ -17,6 +17,7 @@
 				<th width="40">ID</th>
 				<th width="200">品牌名称</th>
 				<th width="200">型号</th>
+				<th width="200">图片</th>
 				<th width="200">状态</th>
 				<th width="100">操作</th>
 			</tr>
@@ -29,7 +30,8 @@
 <div th:include="common :: footer"></div>
 
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
 $(function(){
 	$.ajax({
@@ -50,10 +52,10 @@ $(function(){
 });
 function createTr(index,brand){
 	var tr=$("<tr>").attr("class","text-c").attr("id","brandTr_"+brand.id).click(function(){
-	  if($("tr[id^='modelTr_"+brand.id+"']").length>0)
-	  	$("tr[id^='modelTr_"+brand.id+"']").remove();
+	  if($("tr[id^=modelTr_"+brand.id+"]").length>0)
+	  	$("tr[id^=modelTr_"+brand.id+"]").remove();
 	  else
-	  	createModelTr(brand.id);
+	  	createModelTr((index+1),brand.id);
 	});
 	$("#brandTbody").append(tr);
 
@@ -65,12 +67,26 @@ function createTr(index,brand){
 
 	td=$("<td>");
 	tr.append(td);
-	var modelAddA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","型号添加").attr("class","btn btn-primary radius")
+	var modelAddA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","添加型号").attr("class","btn btn-primary radius")
 	.click(function(){
-	  modelAdd('型号添加','/toModelAdd?brandId='+brand.id,'','800','300');
+	  modelAdd('添加型号','/toModelAdd?brandId='+brand.id,'','500','300');
 	});
 	var modelAddLi=$("<i>").attr("class","Hui-iconfont").html("&#xe600;");
 	td.append(modelAddA.append(modelAddLi).append("添加型号&nbsp;&nbsp;"));
+
+	td=$("<td>").css("text-align","left");
+	tr.append(td);
+	var imgAddA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","添加图片").attr("class","btn btn-primary radius")
+	.click(function(){
+	  brandImgAdd("添加"+brand.name+"的图片",'/toImgBrandAdd?brandId='+brand.id,'','300','100');
+	});
+	var imgAddLi=$("<i>").attr("class","Hui-iconfont").html("&#xe600;");
+	td.append(imgAddA.append(imgAddLi).append("添加图片&nbsp;&nbsp;"));
+	if(brand.imgBrand!=null){
+		var imgUrl="/"+brand.imgBrand.fileName;
+		var img=$("<img>").attr("src",imgUrl).css("height","30");
+		td.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(img);
+	}
 
 	td=$("<td>").attr("class","td-status");
 	if(brand.state==2)
@@ -95,7 +111,7 @@ function createTr(index,brand){
 	}
 	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
 	.click(function(){
-	  brandEdit('修改品牌','/toBrandUpdate?brandId='+brand.id,brand.id,'800','300');
+	  brandEdit('修改品牌','/toBrandUpdate?brandId='+brand.id,brand.id,'500','300');
 	});
 	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
 	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
@@ -108,7 +124,7 @@ function createTr(index,brand){
 
 	tr.append(td);
 }
-function createModelTr(brandId){
+function createModelTr(brandSort,brandId){
 	$.ajax({
         type: 'POST',
 		url: '/getModelListByBrandId',
@@ -118,18 +134,21 @@ function createModelTr(brandId){
         dataType : "json",
         success : function(data) {
             if (data.code == "0") {
-            	$("tr[id^='modelTr_"+brandId+"']").remove();
+            	$("tr[id^=modelTr_"+brandId+"]").remove();
 				$.each(data.data, function (index,model) {
 					var tr=$("<tr>").attr("class","text-c").attr("id","modelTr_"+brandId+"_"+model.id);
-					$("#brandTr_"+brandId).after(tr);
+					if($("tr[id^=modelTr_"+brandId+"]").length==0)
+						$("#brandTr_"+brandId).after(tr);
+					else
+						$("tr[id^=modelTr_"+brandId+"]:last").after(tr);
 
-					var td=$("<td>").html(index+1);
+					var td=$("<td>").html(brandSort+"—"+(index+1));
 					tr.append(td);
 
 					td=$("<td>");
 					tr.append(td);
 
-					td=$("<td>").css("text-align","left").html("&nbsp;&nbsp;&nbsp;&nbsp;"+model.name);
+					td=$("<td>").css("text-align","left").attr("colspan","2").html("&nbsp;&nbsp;&nbsp;&nbsp;"+model.name);
 					tr.append(td);
 
 					td=$("<td>").attr("class","td-status");
@@ -211,13 +230,13 @@ function updateBrandState(obj,id){
 			dataType: 'json',
 			success : function(data) {
 	            if (data.code == "0") {
-	            	if(data.data.state==-1){
-		            	$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateBrandState(this,\"'+data.data.id+'\")" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;&nbsp;&nbsp;</i></a>');
+					if(data.data.state==-1){
+		            	$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateBrandState(this,\""+data.data.id+"\");' href='javascript:;' title='启用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe615;&nbsp;&nbsp;</i></a>");
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
 						$(obj).remove();
 						layer.msg('已停用!',{icon: 5,time:1000});
 					}else{
-						$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateBrandState(this,\"'+data.data.id+'\")" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;&nbsp;&nbsp;</i></a>');
+						$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateBrandState(this,\""+data.data.id+"\");' href='javascript:;' title='停用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe631;&nbsp;&nbsp;</i></a>");
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
 						$(obj).remove();
 						layer.msg('已启用!', {icon: 6,time:1000});
@@ -267,13 +286,13 @@ function updateModelState(obj,id){
 			dataType: 'json',
 			success : function(data) {
 	            if (data.code == "0") {
-	            	if(data.data.state==-1){
-		            	$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateModelState(this,\"'+data.data.id+'\")" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;&nbsp;&nbsp;</i></a>');
+					if(data.data.state==-1){
+		            	$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateModelState(this,\""+data.data.id+"\");' href='javascript:;' title='启用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe615;&nbsp;&nbsp;</i></a>");
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
 						$(obj).remove();
 						layer.msg('已停用!',{icon: 5,time:1000});
 					}else{
-						$(obj).parents("tr").find(".td-manage").prepend('<a onClick="updateModelState(this,\"'+data.data.id+'\")" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;&nbsp;&nbsp;</i></a>');
+						$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateModelState(this,\""+data.data.id+"\");' href='javascript:;' title='停用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe631;&nbsp;&nbsp;</i></a>");
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
 						$(obj).remove();
 						layer.msg('已启用!', {icon: 6,time:1000});
@@ -284,6 +303,9 @@ function updateModelState(obj,id){
 	        }
 		});	
 	});
+}
+function brandImgAdd(title,url,w,h){
+	layer_show(title,url,w,h);
 }
 </script>
 </body>

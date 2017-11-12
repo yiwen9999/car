@@ -54,18 +54,18 @@
 		<input type="hidden" name="userId" id="userId" value="" th:value="${user!=null ? user.id:''}">
 		<div th:if="${user.id=='root'}">
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3" >4s店：</label>
+				<label class="form-label col-xs-4 col-sm-3">4s店：</label>
 				<div class="formControls col-xs-8 col-sm-9">
-					<input id="shopText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${car!=null&&car.shop!=null ? shop.name:''}">
+					<input id="shopText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${product!=null&&product.shop!=null ? product.shop.name:''}">
 					<div id="shopWord"></div>
-					<input id="shopIdInput" name="shopId" type="hidden" value="" th:value="${car!=null&&car.shop!=null ? shop.id:''}">
+					<input id="shopIdInput" name="shopId" type="hidden" value="" th:value="${product!=null&&product.shop!=null ? product.shop.id:''}">
 				</div>
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">车型库：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input id="carText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${car!=null ? car.name:''}">
+				<input id="carText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${product!=null&&product.car!=null ? product.car.name:''}">
 				<div id="word"></div>
 				<input id="carIdInput" name="carId" type="hidden" value="" th:value="${car!=null ? car.id:''}">
 			</div>
@@ -89,7 +89,7 @@
 				<p class="textarea-numberbar"><em id="store-restriction" class="textarea-length">500</em>/500</p>
 			</div>
 		</div>
-		<div id="imgeProductDiv">
+		<div id="imgeProductDiv" th:if="${product==null}">
 			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3">附件(主图)：</label>
 				<div class="formControls col-xs-8 col-sm-9">
@@ -109,6 +109,7 @@
 		</div>
 		<span id="childPlaceHideSpan" style="display: none;">
 		</span>
+		<input type="hidden" name="id" id="productId" value="" th:value="${product!=null ? product.id:''}">
 	</form>
 	<div class="row cl" id="imgeProductDivClone" style="display:none;">
 		<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
@@ -146,7 +147,12 @@ $(function(){
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
-			var urlStr="/saveProduct";
+			var urlStr="";
+			if($("#productId").val()!=""){
+				urlStr="/updateProduct";
+			}else{
+				urlStr="/saveProduct";
+			}
 			$(form).ajaxSubmit({
 				url: urlStr,
 				type: 'post',

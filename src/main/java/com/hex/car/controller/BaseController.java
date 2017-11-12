@@ -103,6 +103,18 @@ public class BaseController {
                 map.put("childList", childMapList);
                 mapList.add(map);
 
+                map = new HashMap<>();
+                map.put("id", "c7");
+                map.put("name", "车型管理");
+                map.put("url", "/");
+                childMapList = new ArrayList<>();
+                childMap = new HashMap<>();
+                childMap.put("name", "车型列表");
+                childMap.put("url", "/toCarTypeList");
+                childMapList.add(childMap);
+                map.put("childList", childMapList);
+                mapList.add(map);
+
                 return mapList;
             } else {
                 List<Map> childMapList = new ArrayList<>();

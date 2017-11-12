@@ -124,17 +124,26 @@ public class ShopController {
         Shop saveShop = shopService.findShopById(shop.getId());
         if (null != place)
             saveShop.setPlace(place);
+        if (null != shop.getName() && !shop.getName().equals(""))
+            saveShop.setName(shop.getName());
+        if (null != shop.getLinkman() && !shop.getLinkman().equals(""))
+            saveShop.setLinkman(shop.getLinkman());
+        if (null != shop.getAddress() && !shop.getAddress().equals(""))
+            saveShop.setAddress(shop.getAddress());
+        if (null != shop.getCustomService() && !shop.getCustomService().equals(""))
+            saveShop.setCustomService(shop.getCustomService());
+        if (null != shop.getPhone() && !shop.getPhone().equals(""))
+            saveShop.setPhone(shop.getPhone());
+        if (null != shop.getEmail() && !shop.getEmail().equals(""))
+            saveShop.setEmail(shop.getEmail());
+        if (null != shop.getRemark() && !shop.getRemark().equals(""))
+            saveShop.setRemark(shop.getRemark());
         if (null != shop.getLongitude())
             saveShop.setLongitude(shop.getLongitude());
         if (null != shop.getLatitude())
             saveShop.setLatitude(shop.getLatitude());
-        if (null != shop.getPhone() && !shop.getPhone().equals(""))
-            saveShop.setPhone(shop.getPhone());
-        if (null != shop.getAddress() && !shop.getAddress().equals(""))
-            saveShop.setAddress(shop.getAddress());
-        if (null != shop.getName() && !shop.getName().equals(""))
-            saveShop.setName(shop.getName());
-        return ResultUtil.success(saveShop);
+
+        return ResultUtil.success(shopService.saveShop(saveShop));
     }
 
     /**

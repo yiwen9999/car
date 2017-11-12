@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>车型列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>车型管理 <span class="c-gray en">&gt;</span> 车型列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<!--<div class="text-c"> 日期范围：
+		<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
+		-
+		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
+		<input type="text" class="input-text" style="width:250px" placeholder="输入车型名称" id="name" name="">
+		<button type="button" class="btn btn-success radius" id="" name="" onclick="carTypeSearch();"><i class="Hui-iconfont">&#xe665;</i>搜所售卖车辆</button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="carTypeAdd('新建车型','/toCarTypeAdd','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 新建车型</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>-->
+	<div class="mt-16">
+	<table class="table table-border table-bordered table-hover table-bg table-sort">
+		<thead>
+			<tr class="text-c">
+				<th width="80">序号</th>
+				<th>车型名称</th>
+				<th>图片</th>
+				<!-- <th width="130">加入时间</th>
+				<th width="70">状态</th>
+				<th width="100">操作</th> -->
+			</tr>
+		</thead>
+		<tbody id="carTypeTbody">
+		</tbody>
+	</table>
+	<input type="hidden" name="userId" value="" th:value="${user!=null ? user.id:''}">
+	</div>
+</div>
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+var newDate = new Date();
+$(function(){
+	carTypeSearch();
+});
+function createTr(index,carType){
+	var tr=$("<tr>").attr("class","text-c").attr("id","carTypeTr_"+carType.id)
+	$("#carTypeTbody").append(tr);
+
+	var td=$("<td>").html(index+1);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html(carType.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left");
+	tr.append(td);
+	var imgAddA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","添加图片").attr("class","btn btn-primary radius")
+	.click(function(){
+	  carTypeImgAdd("添加"+carType.name+"的图片",'/toImgCarTypeAdd?id='+carType.id,'','300','100');
+	});
+	var imgAddLi=$("<i>").attr("class","Hui-iconfont").html("&#xe600;");
+	td.append(imgAddA.append(imgAddLi).append("添加图片&nbsp;&nbsp;"));
+	if(carType.imgCarType!=null){
+		var imgUrl="/"+carType.imgCarType.fileName;
+		var img=$("<img>").attr("src",imgUrl).css("height","30");
+		td.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(img);
+	}
+
+	/*td=$("<td>").css("text-align","left");
+	tr.append(td);
+	newDate.setTime(carType.createTime);
+    td.html(newDate.toLocaleDateString());
+
+	td=$("<td>").attr("class","td-status");
+	if(carType.state==2)
+		td.append("<span class='label label-success radius'>已启用</span>");
+	else
+		td.append("<span class='label radius'>已停用</span>");
+	tr.append(td);
+
+	td=$("<td>").attr("class","td-manage");
+	var stopA=$("<a>").css("text-decoration","none").attr("href","javascript:")
+	.click(function(){
+	  updatecarTypeState(this,carType.id);
+	});
+	var stopLi=$("<i>").attr("class","Hui-iconfont");
+	if(carType.state==2){
+		stopA.attr("title","停用");
+		stopLi.html("&#xe631;&nbsp;&nbsp;");
+	}
+	else{
+		stopA.attr("title","启用");
+		stopLi.html("&#xe615;&nbsp;&nbsp;");
+	}
+	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
+	.click(function(){
+	  carTypeEdit('车辆修改','/toCarTypeUpdate?id='+carType.id,carType.id,'800','500');
+	});
+	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
+	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
+	.click(function(){
+	  carTypeDelete(this,carType.id);
+	});
+	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
+	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi));
+
+	tr.append(td);*/
+}
+function carTypeSearch(){
+	$.ajax({
+        type : "get",
+        url : "/getAllCarTypeList",
+        dataType : "json",
+        success : function(data) {
+            if (data.code == "0") {
+				$.each(data.data, function (index, carType) {
+					createTr(index,carType);
+            	});
+            } else {
+                alert("获取信息失败");
+            }
+        }
+    });
+}
+function carTypeAdd(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+function carTypeEdit(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+function carTypeDelete(obj,id){
+	layer.confirm('确认要删除吗？',function(index){
+		$.ajax({
+			type: 'POST',
+			url: '/deletecarType',
+			data : {
+	            "id" : id
+	        },
+			dataType: 'json',
+			success : function(data) {
+	            if (data.code == "0") {
+	            	$(obj).parents("tr").remove();
+	            	layer.msg('已删除!',{icon:1,time:1000});
+	            } else {
+	                layer.msg(data.msg,{icon:1,time:1000});
+	            }
+	        }
+		});		
+	});
+}
+function updateCarTypeState(obj,id){
+	layer.confirm('确认要'+obj.title+'吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		$.ajax({
+			type: 'POST',
+			url: '/updatecarTypeState',
+			data : {
+	            "id" : id
+	        },
+			dataType: 'json',
+			success : function(data) {
+	            if (data.code == "0") {
+					if(data.data.state==-1){
+		            	$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateCarTypeState(this,\""+data.data.id+"\");' href='javascript:;' title='启用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe615;&nbsp;&nbsp;</i></a>");
+						$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
+						$(obj).remove();
+						layer.msg('已停用!',{icon: 5,time:1000});
+					}else{
+						$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateCarTypeState(this,\""+data.data.id+"\");' href='javascript:;' title='停用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe631;&nbsp;&nbsp;</i></a>");
+						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+						$(obj).remove();
+						layer.msg('已启用!', {icon: 6,time:1000});
+					}
+	            } else {
+	                layer.msg(data.msg,{icon:2,time:2000});
+	            }
+	        }
+		});	
+	});
+}
+function carTypeImgAdd(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+</script> 
+</body>
+</html>

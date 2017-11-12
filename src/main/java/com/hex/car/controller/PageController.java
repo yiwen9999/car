@@ -2,9 +2,8 @@ package com.hex.car.controller;
 
 import com.hex.car.domain.Advertising;
 import com.hex.car.domain.Brand;
-import com.hex.car.service.AdvertisingService;
-import com.hex.car.service.BrandService;
-import com.hex.car.service.ModelService;
+import com.hex.car.domain.Shop;
+import com.hex.car.service.*;
 import com.hex.car.utils.HexUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +28,12 @@ public class PageController {
 
     @Autowired
     private ModelService modelService;
+
+    @Autowired
+    private ShopService shopService;
+
+    @Autowired
+    private ProductService productService;
 
     /**
      * 默认
@@ -104,6 +109,17 @@ public class PageController {
     }
 
     /**
+     * 跳转品牌图片维护页面
+     *
+     * @return
+     */
+    @GetMapping(value = "/toImgBrandAdd")
+    public String toImgBrandAdd(String brandId, Model model) {
+        model.addAttribute("brandId", brandId);
+        return "/brand/brandImg";
+    }
+
+    /**
      * 跳转型号添加
      *
      * @param brandId 品牌id
@@ -161,6 +177,17 @@ public class PageController {
      */
     @GetMapping(value = "/toShopAdd")
     public String toShopAdd() {
+        return "/shop/shopAdd";
+    }
+
+    /**
+     * 跳转修改4s店页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toShopUpdate")
+    public String toShopUpdate(String id, Model model) {
+        model.addAttribute("shop", shopService.findShopById(id));
         return "/shop/shopAdd";
     }
 
@@ -260,6 +287,18 @@ public class PageController {
     }
 
     /**
+     * 跳转修改商品页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toProductUpdate")
+    public String toProductUpdate(HttpServletRequest request,String id, Model model) {
+        model.addAttribute("product", productService.findProductById(id));
+        model.addAttribute("user", HexUtil.getUser(request));
+        return "/product/productAdd";
+    }
+
+    /**
      * 跳转商品浏览
      *
      * @return
@@ -267,6 +306,27 @@ public class PageController {
     @GetMapping(value = "/toProductView")
     public String toProductView() {
         return "/product/productView";
+    }
+
+    /**
+     * 跳转车型列表
+     *
+     * @return
+     */
+    @GetMapping(value = "/toCarTypeList")
+    public String toCarTypeList() {
+        return "/carType/carTypeList";
+    }
+
+    /**
+     * 跳转车型图片维护页面
+     *
+     * @return
+     */
+    @GetMapping(value = "/toImgCarTypeAdd")
+    public String toImgCarTypeAdd(String id, Model model) {
+        model.addAttribute("id", id);
+        return "/carType/carTypeImg";
     }
 
 }

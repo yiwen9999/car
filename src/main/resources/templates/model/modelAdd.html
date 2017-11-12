@@ -8,11 +8,12 @@
 <article class="page-container">
 	<form action="" method="post" class="form form-horizontal" id="form-model-add">
 		<input type="hidden" id="brandId" name="brandId" value="" th:value="${brandId}">
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>型号名：</label>
-			<div class="formControls col-xs-8 col-sm-9" id="modelDiv">
-				<div>
-					<a onClick="addModelTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a><input type="text" class="input-text" value="" placeholder="" name="modelNames" width="50%">
+		<div id="modelDiv">
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>型号名：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<a onClick="addModelTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a>
+					<input type="text" class="input-text" value="" placeholder="" name="modelNames" style="width:90%;">
 				</div>
 			</div>
 		</div>
@@ -22,6 +23,13 @@
 			</div>
 		</div>
 	</form>
+	<div class="row cl" id="modelDivClone" style="display:none;">
+		<label class="form-label col-xs-4 col-sm-3"></label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<a onClick="deleteModelTr($(this));" href="javascript:;" title="删除" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;&nbsp;&nbsp;</i></a>
+			<input type="text" class="input-text" value="" placeholder="" style="width:90%;">
+		</div>
+	</div>
 </article>
 
 <div th:include="common :: footer"></div>
@@ -63,21 +71,12 @@ $(function(){
 	});
 });
 function addModelTr(){
-	randomId=getRandomId();
-	var modelInput=$("<input>",{"type":"text","id":"fileText_"+randomId,"name":"modelNames"});
-	modelInput.css("width","90%").attr("class","input-text");
-
-	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
-	.click(function(){
-	  deleteModelTr($(this));
-	});
-	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
-	var modelDiv=$("<div>");
-	modelDiv.append(deleteA.append(deleteLi)).append(modelInput).append("<br/>");
+	var modelDiv=$("#modelDivClone").clone().css("display","").attr("id","newModelDiv");
+	modelDiv.find("input[type=text]").attr("name","modelNames");
 	$("#modelDiv").append(modelDiv);
 }
 function deleteModelTr(object){
-	object.parent().remove();
+	object.parents("div#newModelDiv").remove();
 }
 </script> 
 <!--/请在上方写此页面业务相关的脚本-->

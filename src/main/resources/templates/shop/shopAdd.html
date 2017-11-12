@@ -23,11 +23,13 @@
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">4S店账号：</label>
-			<div class="formControls col-xs-8 col-sm-9">
+			<div class="formControls col-xs-8 col-sm-9" th:if="${shop==null}">
 				<input type="text" class="input-text" value="" placeholder="" id="username" name="username">
 			</div>
+			<div class="formControls col-xs-8 col-sm-9" th:if="${shop!=null}" th:text="${shop!=null ? shop.user.username:''}">
+			</div>
 		</div>
-		<div class="row cl">
+		<div class="row cl" th:if="${shop==null}">
 			<label class="form-label col-xs-4 col-sm-3">4S店密码：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="password" name="password">
@@ -47,7 +49,7 @@
 				<input type="text" class="input-text store-contact" value="" placeholder="邮箱@email" id="email" name="email" th:value="${shop!=null ? shop.email:''}">
 			</div>
 		</div>
-		<div class="row cl">
+		<div class="row cl" th:if="${shop==null}">
 			<label class="form-label col-xs-4 col-sm-3">附件(主图)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
@@ -55,7 +57,7 @@
 				<input type="file" name="mainFile" class="input-file">
 				</span> </div>
 		</div>
-		<div class="row cl">
+		<div class="row cl" th:if="${shop==null}">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
@@ -63,7 +65,7 @@
 				<input type="file" name="files" class="input-file">
 				</span> </div>
 		</div>
-		<div class="row cl">
+		<div class="row cl" th:if="${shop==null}">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
@@ -71,7 +73,7 @@
 				<input type="file" name="files" class="input-file">
 				</span> </div>
 		</div>
-		<div class="row cl">
+		<div class="row cl" th:if="${shop==null}">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
@@ -96,7 +98,7 @@
 		<div class="row cl" id="store-description">
 			<label class="form-label col-xs-4 col-sm-3">4S店描述：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<textarea id="store-area" name="remark" cols="" rows="" class="textarea"  placeholder="4S店描述...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,500)"></textarea>
+				<textarea id="store-area" name="remark" cols="" rows="" class="textarea"  placeholder="4S店描述...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,500)" th:text="${shop!=null ? shop.remark:''}"></textarea>
 				<p class="textarea-numberbar"><em id="store-restriction" class="textarea-length">500</em>/500</p>
 			</div>
 		</div>
@@ -107,6 +109,8 @@
 		</div>
 		<span id="childPlaceHideSpan" style="display: none;">
 		</span>
+		<input type="hidden" name="id" id="shopId" value="" th:value="${shop!=null ? shop.id:''}">
+		<input type="hidden" id="placeIdHidden" value="" th:value="${shop!=null ? shop.place.id:''}">
 	</form>
 </article>
 
@@ -124,7 +128,7 @@ $(function(){
         url:"/getBJPlaceList",
         dataType : "json",
         success : function(data) {
-            if (data.code == "0") {console.log(data.data);
+            if (data.code == "0") {
                 var topPlaceSelect=$("<select>",{id:"topPlaceSelect"}).attr("class","select").change(function(){
 					changeTopPlace(projectPointObject.id,this);
 				});;
@@ -141,6 +145,8 @@ $(function(){
 				var childPlaceSelectnNew=$("#childPlaceHideSelect").clone();
 				childPlaceSelectnNew.attr("id","childPlaceSelect").attr("name","placeId").attr("class","select");
 				$("#childPlaceSpan").append(childPlaceSelectnNew);
+			    if($("#placeIdHidden").val()!="")
+			    	$("#childPlaceSelect option[value='"+$("#placeIdHidden").val()+"']").attr("selected",true);
             } else {
                 layer.msg('获取信息失败',{icon:1,time:1000});
             }
@@ -151,8 +157,14 @@ $(function(){
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
+			var url="";
+			if($("#shopId").val()!=""){
+				url="/updateShop";
+			}else{
+				url="/saveShop";
+			}
 			$(form).ajaxSubmit({
-				url: "/saveShop",
+				url: url,
 				type: 'post',
 				dataType:"json",
 				success: function(data){
@@ -178,7 +190,7 @@ $(function(){
         }  
         count = 500 - $this.val().length;  
         $("#store-restriction").text(count);  
-    });  
+    });
 });
 function changeTopPlace(object){
 	$("#childPlaceSelect").find("option").remove();

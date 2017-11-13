@@ -66,7 +66,7 @@ public class UserController {
         if (result) {
             request.getSession().setAttribute("user", user);
         }
-        return ResultUtil.success(result);
+        return ResultUtil.success(user);
     }
 
     /**

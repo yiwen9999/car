@@ -49,7 +49,7 @@ public class User implements Serializable {
     /**
      * 对应用户
      */
-    @OneToOne(targetEntity = Personnel.class, mappedBy = "user", optional = false, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.ALL}, targetEntity = Personnel.class, mappedBy = "user", optional = false, fetch = FetchType.LAZY)
     @JsonIgnore
     private Personnel personnel;
 

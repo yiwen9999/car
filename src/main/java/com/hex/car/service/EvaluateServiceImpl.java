@@ -47,11 +47,6 @@ public class EvaluateServiceImpl implements EvaluateService {
     }
 
     @Override
-    public List<Evaluate> findEvaluatesByProductShop(Shop shop) {
-        return evaluateRepository.findEvaluatesByProductShop(shop);
-    }
-
-    @Override
     public List<Evaluate> findTop4ByStateOrderByCreateTimeDesc(Integer state) {
         return evaluateRepository.findTop4ByStateOrderByCreateTimeDesc(state);
     }

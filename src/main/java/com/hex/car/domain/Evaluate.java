@@ -5,7 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 评测
@@ -42,26 +44,19 @@ public class Evaluate implements Serializable {
     private Integer state = new Integer(2);
 
     /**
-     * 对应商品
-     */
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    /**
-     * 对应4s店
-     */
-    @ManyToOne(targetEntity = Shop.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id")
-    @JsonIgnore
-    private Shop shop;
-
-    /**
      * 文章头图
      */
     @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "img_evaluate_id")
     private ImgEvaluate imgEvaluate;
+
+    /**
+     * 商品集合
+     */
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "product_evaluate", joinColumns = @JoinColumn(name = "evaluate_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @OrderBy(value = "name")
+    private List<Product> products = new ArrayList<>();
 
     /**
      * 创建时间
@@ -103,14 +98,6 @@ public class Evaluate implements Serializable {
         this.state = state;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
@@ -127,12 +114,12 @@ public class Evaluate implements Serializable {
         this.imgEvaluate = imgEvaluate;
     }
 
-    public Shop getShop() {
-        return shop;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override
@@ -142,7 +129,6 @@ public class Evaluate implements Serializable {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", state=" + state +
-                ", product=" + product +
                 ", createTime=" + createTime +
                 '}';
     }

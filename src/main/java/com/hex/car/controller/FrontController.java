@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -70,7 +70,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getAdvertisingList")
+    @PostMapping(value = "/front/getAdvertisingList")
     public Object getAdvertisingListForFront() {
         return ResultUtil.success(advertisingService.findAdvertisingsByStateOrderBySort(new Integer(2)));
     }
@@ -80,7 +80,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getCarTypeList")
+    @PostMapping(value = "/front/getCarTypeList")
     public Object getCarTypeListForFront() {
         List<CarType> carTypeList = carTypeService.findCarTypesByStateOrderBySort(new Integer(2));
         return ResultUtil.success(carTypeList);
@@ -91,7 +91,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping("/front/get4EvaluateList")
+    @PostMapping("/front/get4EvaluateList")
     public Object get4EvaluateList() {
         List<Evaluate> evaluates = evaluateService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
         return ResultUtil.success(evaluates);
@@ -125,7 +125,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping("/front/get4ProductList")
+    @PostMapping("/front/get4ProductList")
     public Object get4ProductList() {
         List<Product> products = productService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
         return ResultUtil.success(products);
@@ -191,7 +191,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getBrandList")
+    @PostMapping(value = "/front/getBrandList")
     public Object getBrandListForFront() {
         List<Brand> brandList = productService.findDistinctBrandByProduct(new Integer(2));
         return ResultUtil.success(brandList);
@@ -202,7 +202,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getModelList")
+    @PostMapping(value = "/front/getModelList")
     public Object getModelListForFront() {
         List<Model> modelList = productService.findDistinctModelByProduct(new Integer(2));
         return ResultUtil.success(modelList);
@@ -213,7 +213,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getEngineTypeList")
+    @PostMapping(value = "/front/getEngineTypeList")
     public Object getEngineTypeList() {
         return ResultUtil.success(parameterService.findFirstByCode(engineTypeCode).getUsingChilds());
     }
@@ -223,7 +223,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getDrivetrainList")
+    @PostMapping(value = "/front/getDrivetrainList")
     public Object getDrivetrainList() {
         return ResultUtil.success(parameterService.findFirstByCode(drivetrainCode).getUsingChilds());
     }
@@ -233,7 +233,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getTransmissionList")
+    @PostMapping(value = "/front/getTransmissionList")
     public Object getTransmissionList() {
         return ResultUtil.success(parameterService.findFirstByCode(transmissionCode).getUsingChilds());
     }
@@ -243,7 +243,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getFuelTypeList")
+    @PostMapping(value = "/front/getFuelTypeList")
     public Object getFuelTypeList() {
         return ResultUtil.success(parameterService.findFirstByCode(fuelTypeCode).getUsingChilds());
     }
@@ -253,7 +253,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getBodyTypeList")
+    @PostMapping(value = "/front/getBodyTypeList")
     public Object getBodyTypeList() {
         return ResultUtil.success(parameterService.findFirstByCode(bodyTypeCode).getUsingChilds());
     }
@@ -263,7 +263,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getSeatsList")
+    @PostMapping(value = "/front/getSeatsList")
     public Object getSeatsList() {
         return ResultUtil.success(parameterService.findFirstByCode(seatsCode).getUsingChilds());
     }
@@ -273,7 +273,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping(value = "/front/getPlaceList")
+    @PostMapping(value = "/front/getPlaceList")
     public Object getPlaceListForFront() {
         Place bjPlace = placeService.findPlaceById("110100");
         if (null == bjPlace) {
@@ -288,7 +288,7 @@ public class FrontController {
      *
      * @return
      */
-    @GetMapping("/front/get4ShopList")
+    @PostMapping("/front/get4ShopList")
     public Object get4ShopList() {
         List<Shop> shops = shopService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
         return ResultUtil.success(shops);

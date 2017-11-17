@@ -1,7 +1,9 @@
 package com.hex.car.controller;
 
+import com.hex.car.domain.Personnel;
 import com.hex.car.domain.User;
 import com.hex.car.enums.ResultEnum;
+import com.hex.car.service.PersonnelService;
 import com.hex.car.service.UserService;
 import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.Md5SaltTool;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: hexuan
@@ -25,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PersonnelService personnelService;
 
     /**
      * 登入
@@ -138,6 +145,94 @@ public class UserController {
         }
         user.setPassword(Md5SaltTool.getEncryptedPwd("000000"));
         return ResultUtil.success(userService.saveUser(user));
+    }
+
+    /**
+     * 注册
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @param name     姓名
+     * @param nickname 昵称
+     * @param mobile   手机号
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    @PostMapping(value = "/register")
+    public Object register(String username, String password, String name, String nickname, String mobile) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        if (null == username || username.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (null == password || password.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (null == mobile || mobile.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Personnel p = personnelService.findFirstPersonnelByMobile(mobile);
+        if (null != p) {
+            return ResultUtil.error(ResultEnum.ERROR_MOBILE.getCode(), ResultEnum.ERROR_MOBILE.getMsg());
+        }
+        User u = userService.findUserByUsername(username);
+        if (null != u) {
+            return ResultUtil.error(ResultEnum.ERROR_USERNAME.getCode(), ResultEnum.ERROR_USERNAME.getMsg());
+        }
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(Md5SaltTool.getEncryptedPwd(password));
+        Personnel personnel = new Personnel();
+        personnel.setName(name);
+        personnel.setNickname(nickname);
+        personnel.setMobile(mobile);
+        personnel.setUser(user);
+        user.setPersonnel(personnel);
+        return ResultUtil.success(userService.saveUser(user));
+    }
+
+    /**
+     * 获取账号信息
+     *
+     * @param id userId
+     * @return
+     */
+    @PostMapping(value = "/getUserInfo")
+    public Object getUserInfo(String id) {
+        if (null == id || id.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        User user = userService.findUserById(id);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", user);
+        map.put("personnel", user.getPersonnel());
+        return ResultUtil.success(map);
+    }
+
+    /**
+     * 校验注册信息
+     *
+     * @param username 登录名
+     * @param mobile   手机号
+     * @return
+     */
+    @PostMapping(value = "/validateRegister")
+    public Object validateRegister(String username, String mobile) {
+        if (null != username && !"".equals(username)) {
+            User u = userService.findUserByUsername(username);
+            if (null != u) {
+                return ResultUtil.error(ResultEnum.ERROR_USERNAME.getCode(), ResultEnum.ERROR_USERNAME.getMsg());
+            }
+        }
+        if (null != mobile && !"".equals(mobile)) {
+            Personnel p = personnelService.findFirstPersonnelByMobile(mobile);
+            if (null != p) {
+                return ResultUtil.error(ResultEnum.ERROR_MOBILE.getCode(), ResultEnum.ERROR_MOBILE.getMsg());
+            }
+        }
+        return ResultUtil.success();
     }
 
 }

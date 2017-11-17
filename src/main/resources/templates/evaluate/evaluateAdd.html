@@ -3,73 +3,11 @@
 <head>
 <div th:include="common :: header"></div>
 <title>文章添加</title>
-<style type="text/css">
-	#shopWord{
-		position: absolute;
-		z-index: 99;
-		width: 245px;
-		height: auto;
-		background-color: white;
-		border: black solid 1px;
-		display: none;
-	}
-	.click_shopWork{
-		padding-bottom: 8px;
-		font-weight:lighter;
-		font-size: 13px;
-		cursor:pointer;/*鼠标放上变成小手*/
-	}
-	.click_shopWork:hover{
-		color: orange;
-		background-color: gray;
-	}
-	#word{
-		position: absolute;
-		z-index: 99;
-		width: 245px;
-		height: auto;
-		background-color: white;
-		border: black solid 1px;
-		display: none;
-	}
-	.click_work{
-		padding-bottom: 8px;
-		font-weight:lighter;
-		font-size: 13px;
-		cursor:pointer;/*鼠标放上变成小手*/
-	}
-	.click_work:hover{
-		color: orange;
-		background-color: gray;
-	}
-	.error{
-		color: gray;
-		cursor:pointer;/*鼠标放上变成小手*/
-	}
-</style>
 </head>
 <body>
 <div class="page-container">
 	<form class="form form-horizontal" id="form-evaluate-add">
 		<input type="hidden" name="userId" id="userId" value="" th:value="${user!=null ? user.id:''}">
-		<div th:if="${user.id=='root'}">
-			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-2" >4s店：</label>
-				<div class="formControls col-xs-8 col-sm-9">
-					<input id="shopText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${evaluate!=null&&evaluate.shop!=null ? shop.name:''}">
-					<div id="shopWord"></div>
-					<input id="shopIdInput" name="shopId" type="hidden" value="" th:value="${evaluate!=null&&evaluate.shop!=null ? shop.id:''}">
-				</div>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2" >所售车辆：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input id="productText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${evaluate!=null&&evaluate.product!=null ? evaluate.product.name:''}">
-				<div id="word"></div>
-				<input id="productIdInput" name="productId" type="hidden" value="" th:value="${evaluate!=null&&evaluate.product!=null ? evaluate.product.id:''}">
-			</div>
-		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2" >文章标题：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -103,10 +41,10 @@
 <div th:include="common :: footer"></div>
 
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
-<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script> 
-<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script> 
-<script type="text/javascript" src="lib/webuploader/0.1.5/webuploader.min.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="/lib/webuploader/0.1.5/webuploader.min.js"></script>
 <script type="text/javascript" src="/kindeditor/kindeditor-all.js"> </script> 
 <script type="text/javascript" src="/kindeditor/lang/zh-CN.js"> </script>  
 <script type="text/javascript">
@@ -119,115 +57,6 @@
 	        allowFileManager : true,
         });         
     });
-
-	$(function(){
-		$("#form-evaluate-add").validate({
-			rules:{
-				name:{
-					required:true
-				},
-				content:{
-					required:true
-				}
-			},
-			onkeyup:false,
-			focusCleanup:true,
-			success:"valid",
-			submitHandler:function(form){
-				editor.sync();
-				$(form).ajaxSubmit({
-					url: "/saveEvaluate",
-					type: 'post',
-					dataType:"json",
-					success: function(data){
-						layer.msg('操作成功!',{icon:1,time:1000});
-						setTimeout("window.parent.location.reload();",1000);
-					},
-	                error: function(XmlHttpRequest, textStatus, errorThrown){
-						layer.msg('操作失败!',{icon:1,time:1000});
-						setTimeout("window.parent.location.reload();",1000);
-					}
-				});
-			}
-		});
-		if($("#userId").val()=="root"){
-			//当键盘键被松开时发送Ajax获取数据
-			$('#shopText').keyup(function(){
-				var keywords = $(this).val();
-				if (keywords=='') { $('#shopWord').hide(); return };
-				$.ajax({
-		            type: 'POST',
-		            url: '/searchTop10UsingShopListByName',
-		            data : {
-		                "name" : keywords
-		            },
-		            dataType: 'json',
-					beforeSend:function(){
-						$('#shopWord').append('<div>正在加载。。。</div>');
-					},
-					success:function(data){
-						$('#shopWord').empty().show();
-						if (data.data=='')
-						{
-							$('#shopWord').append('<div class="error">未找到  "' + keywords + '"</div>');
-						}
-						$.each(data.data, function(index,shop){
-							$('#shopWord').append('<div class="click_shopWork" id="'+ shop.id +'">'+ shop.name +'</div>');
-						})
-					},
-					error:function(){
-						$('#shopWord').empty().show();
-						$('#shopWord').append('<div class="click_shopWork">失败 "' + keywords + '"</div>');
-					}
-				})
-			});
-			//点击赋值shopId
-			$(document).on('click','.click_shopWork',function(){
-				var word = $(this).text();
-				$('#shopText').val(word);
-				$("#shopIdInput").val($(this).attr("id"));
-				$('#shopWord').hide();
-			});
-		}
-		//当键盘键被松开时发送Ajax获取数据
-		$('#productText').keyup(function(){
-			var keywords = $(this).val();
-			if (keywords=='') { $('#word').hide(); return };
-			$.ajax({
-	            type: 'POST',
-	            url: '/searchTop10UsingProductListByNameAndIdentity',
-	            data : {
-	                "name" : keywords,
-	                "shopId":$("#shopIdInput").val()
-	            },
-	            dataType: 'json',
-				beforeSend:function(){
-					$('#word').append('<div>正在加载。。。</div>');
-				},
-				success:function(data){
-					$('#word').empty().show();
-					if (data.data=='')
-					{
-						$('#word').append('<div class="error">未找到  "' + keywords + '"</div>');
-					}
-					$.each(data.data, function(index,product){
-						$('#word').append('<div class="click_work" id="'+ product.id +'">'+ product.name +'</div>');
-					})
-				},
-				error:function(){
-					$('#word').empty().show();
-					$('#word').append('<div class="click_work">失败 "' + keywords + '"</div>');
-				}
-			})
-		});
-		//点击赋值productId
-		$(document).on('click','.click_work',function(){
-			var word = $(this).text();
-			$('#productText').val(word);
-			$("#productIdInput").val($(this).attr("id"));
-			$('#word').hide();
-		});
-	});
 </script>
 </body>
 </html>

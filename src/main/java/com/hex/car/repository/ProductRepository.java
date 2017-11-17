@@ -43,8 +43,12 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     List<Product> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 
     @Query("select distinct car.brand from Product p inner join p.car car where p.state = :state")
-    List<Brand> findDistinctBrandByProduct(@Param("state")Integer state);
+    List<Brand> findDistinctBrandByProduct(@Param("state") Integer state);
 
     @Query("select distinct car.model from Product p inner join p.car car where p.state = :state")
-    List<Model> findDistinctModelByProduct(@Param("state")Integer state);
+    List<Model> findDistinctModelByProduct(@Param("state") Integer state);
+
+    List<Product> findProductsByIdIn(String[] ids);
+
+    List<Product> findProductsByStateOrderByName(Integer state);
 }

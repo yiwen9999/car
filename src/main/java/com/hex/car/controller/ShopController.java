@@ -1,26 +1,24 @@
 package com.hex.car.controller;
 
-import com.hex.car.domain.ImgShop;
-import com.hex.car.domain.Place;
-import com.hex.car.domain.Shop;
-import com.hex.car.domain.User;
+import com.hex.car.domain.*;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.PlaceService;
+import com.hex.car.service.ProductService;
 import com.hex.car.service.ShopService;
 import com.hex.car.service.UserService;
 import com.hex.car.utils.FileUtil;
+import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.Md5SaltTool;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +41,9 @@ public class ShopController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProductService productService;
 
     @Value("${web.upload-path}")
     private String path;
@@ -225,6 +226,60 @@ public class ShopController {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         return ResultUtil.success(shopService.findTop10ShopsByNameLikeAndStateOrderByName(name, new Integer(2)));
+    }
+
+    /**
+     * 根据身份获取在用4s店，商品集合
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/getShopAndProductListByIdentity")
+    public Object getShopAndProductListByIdentity(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        List<Shop> shops = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+        User user = HexUtil.getUser(request);
+        if (null != user) {
+            if ("root".equals(user.getId())) {
+                shops.addAll(shopService.findShopsByStateOrderByName(new Integer(2)));
+                products.addAll(productService.findProductsByStateOrderByName(new Integer(2)));
+            } else if (null != user.getShop()) {
+                shops.add(user.getShop());
+                products.addAll(user.getShop().getUsingProducts());
+            }
+        }
+        map.put("shopList", shops);
+        map.put("productList", products);
+        return ResultUtil.success(map);
+    }
+
+    @GetMapping(value = "/getShopListByIdentity")
+    public Object getShopListByIdentity(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        List<Shop> shops = new ArrayList<>();
+        User user = HexUtil.getUser(request);
+        if (null != user) {
+            if ("root".equals(user.getId())) {
+                shops.addAll(shopService.findShopsByStateOrderByName(new Integer(2)));
+            } else if (null != user.getShop()) {
+                shops.add(user.getShop());
+            }
+        }
+        map.put("shopList", shops);
+        return ResultUtil.success(map);
+    }
+
+    @GetMapping(value = "/getProductListByShopId")
+    public Object getProductListByShopId(String id, HttpServletRequest request) {
+        if (null == id || id.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Shop shop = shopService.findShopById(id);
+        if (null == shop) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        return ResultUtil.success(shop.getUsingProducts());
     }
 
 }

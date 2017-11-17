@@ -80,12 +80,19 @@ public class Product implements Serializable {
     private List<ImgProduct> commonImgProducts = new ArrayList();
 
     /**
+     * 对应的评测文章集合
+     */
+    @ManyToMany(mappedBy = "products")
+    @OrderBy(value = "create_time desc")
+    @JsonIgnore
+    private List<Evaluate> evaluates = new ArrayList<>();
+
+    /**
      * 对应启用的评测文章集合
      */
-    @OneToMany(targetEntity = Evaluate.class, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @ManyToMany(mappedBy = "products")
     @Where(clause = "state=2")
     @OrderBy(value = "create_time desc")
-    @JoinColumn(name = "evaluate_id")
     @JsonIgnore
     private List<Evaluate> usingEvaluates = new ArrayList<>();
 
@@ -198,4 +205,11 @@ public class Product implements Serializable {
         this.commonImgProducts = commonImgProducts;
     }
 
+    public List<Evaluate> getEvaluates() {
+        return evaluates;
+    }
+
+    public void setEvaluates(List<Evaluate> evaluates) {
+        this.evaluates = evaluates;
+    }
 }

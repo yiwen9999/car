@@ -30,4 +30,9 @@ public class PersonnelServiceImpl implements PersonnelService {
     public Personnel findPersonnelById(String id) {
         return personnelRepository.findOne(id);
     }
+
+    @Override
+    public Personnel findFirstPersonnelByMobile(String mobile) {
+        return personnelRepository.findFirstByMobile(mobile);
+    }
 }

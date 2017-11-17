@@ -508,7 +508,6 @@
 		        success : function(data) {
 		            if (data.code == "0") {
 		            	 $.each(data.data, function (index,advertising) {
-		            	 	console.log(advertising.imgAD.fileName);
 		                  $("#advertisingImgDiv").append("<a href='"+advertising.url+"' style='background:url(/"+advertising.imgAD.fileName+") center no-repeat;'></a>");
 		                });
 		            } else {

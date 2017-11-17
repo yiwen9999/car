@@ -2,6 +2,8 @@ package com.hex.car.utils;
 
 
 import com.hex.car.domain.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +52,16 @@ public class HexUtil {
             user = (User) object;
         }
         return user;
+    }
+
+    public static PageRequest getPageRequest(Integer page, Integer size, String sortStr, String asc) {
+        Sort sort;
+        if (asc.equals("asc")) {
+            sort = new Sort(Sort.Direction.ASC, sortStr);
+        } else {
+            sort = new Sort(Sort.Direction.DESC, sortStr);
+        }
+        return new PageRequest(page, size, sort);
     }
 
 }

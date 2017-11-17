@@ -56,4 +56,9 @@ public class ShopServiceImpl implements ShopService {
     public Page<Shop> findShops(Map<String, Object> condition, PageRequest pageRequest) {
         return shopRepository.findAll(MySpec.findShops(condition), pageRequest);
     }
+
+    @Override
+    public List<Shop> findShopsByStateOrderByName(Integer state) {
+        return shopRepository.findShopsByStateOrderByName(state);
+    }
 }

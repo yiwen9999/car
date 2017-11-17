@@ -59,4 +59,8 @@ public interface ProductService {
     List<Brand> findDistinctBrandByProduct(Integer state);
 
     List<Model> findDistinctModelByProduct(Integer state);
+
+    List<Product> findProductsByIdIn(String[] ids);
+
+    List<Product> findProductsByStateOrderByName(Integer state);
 }

@@ -9,7 +9,9 @@ public enum ResultEnum {
     ERROR_DELETE(104, "未能删除"),
     ERROR_LOGIN(105, "登录失败"),
     ERROR_PASSWORD(106, "密码错误"),
-    ERROR_IDENTITY(107, "身份错误"),;
+    ERROR_IDENTITY(107, "身份错误"),
+    ERROR_MOBILE(108, "该手机号已被使用"),
+    ERROR_USERNAME(109, "该用户名已被使用"),;
 
     private Integer code;
 

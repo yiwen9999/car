@@ -13,4 +13,6 @@ public interface PersonnelService {
     void deletePersonnel(Personnel personnel);
 
     Personnel findPersonnelById(String id);
+
+    Personnel findFirstPersonnelByMobile(String mobile);
 }

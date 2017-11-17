@@ -2,7 +2,7 @@ package com.hex.car.controller;
 
 import com.hex.car.domain.Advertising;
 import com.hex.car.domain.Brand;
-import com.hex.car.domain.Shop;
+import com.hex.car.domain.Evaluate;
 import com.hex.car.service.*;
 import com.hex.car.utils.HexUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,9 @@ public class PageController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private EvaluateService evaluateService;
 
     /**
      * 默认
@@ -265,6 +268,21 @@ public class PageController {
     }
 
     /**
+     * 跳转文章选择对应商品页面
+     *
+     * @param id    文章id
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/toEvaluateChooseProduct")
+    public String toEvaluateChooseProduct(String id, Model model) {
+        model.addAttribute("id", id);
+        Evaluate evaluate = evaluateService.findEvaluateById(id);
+        model.addAttribute("productList", evaluate.getProducts());
+        return "/evaluate/evaluateChooseProduct";
+    }
+
+    /**
      * 跳转商品列表
      *
      * @return
@@ -292,7 +310,7 @@ public class PageController {
      * @return
      */
     @GetMapping(value = "/toProductUpdate")
-    public String toProductUpdate(HttpServletRequest request,String id, Model model) {
+    public String toProductUpdate(HttpServletRequest request, String id, Model model) {
         model.addAttribute("product", productService.findProductById(id));
         model.addAttribute("user", HexUtil.getUser(request));
         return "/product/productAdd";

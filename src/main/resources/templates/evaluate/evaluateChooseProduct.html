@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="common :: header"></div>
+<title>选择对应所售车辆</title>
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="form-product-choose" enctype="multipart/form-data">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>对应所售车辆：</label>
+			<div class="formControls col-xs-8 col-sm-9" id=“productDiv”>
+				<ul id="treeDemo" class="ztree">
+			</div>
+			<div id="productIdsDiv"></div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<input type="hidden" name="id" value="" th:value="${id}">
+			</div>
+		</div>
+		<div>
+			<input type="hidden" name="pIds" value="" th:each="product : ${productList}" th:value="${product.id}">
+		</div>
+	</form>
+</article>
+
+<div th:include="common :: footer"></div>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="/lib/webuploader/0.1.5/webuploader.min.js"></script> 
+<script type="text/javascript" src="/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script> 
+<script type="text/javascript">
+	var randomId;
+	var num=0;
+	var treeNodes=[];
+	function getRandomId(){
+		return Math.round(Math.random()*1000000000000000);
+	}
+	function validateProductCheck(){
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+		var nodes = treeObj.getCheckedNodes(true);
+		if(nodes.length>0){
+			for (var i = 0; i < nodes.length; i++) {
+				if(nodes[i].pId!=null&&nodes[i].pId!=""){
+					var input = $("<input>",{"type":"hidden","name":"productIds","value":nodes[i].id});
+					$("#productIdsDiv").append(input);
+				}
+			}
+			return true;
+		}else{
+			return false;
+		}
+	}
+	$(function(){
+		$("#form-product-choose").validate({
+			rules:{
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				validateProductCheck();
+				$(form).ajaxSubmit({
+					type: 'post',
+					url: "/evaluateChooseProducts" ,
+					success: function(data){
+						layer.msg('操作成功!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+						
+					},
+	                error: function(XmlHttpRequest, textStatus, errorThrown){
+						layer.msg('操作失败!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					}
+				});
+			}
+		});
+	    var setting = {
+			check: {
+				enable: true,
+				chkboxType:{"Y":"ps", "N":"ps"}
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+		
+		$.ajax({  
+	        async : false,  
+	        cache:false,  
+	        type: 'GET',  
+	        dataType : "json",  
+	        url: "/getShopListByIdentity",
+	        error: function () {
+	            layer.msg('请求失败!',{icon:1,time:1000});
+	        },  
+	        success:function(data){
+	            $.each(data.data.shopList, function (index, shop) {
+	            	treeNodes[num++]={id:shop.id,pId:"",name:shop.name,open:false};
+	            	getProductTree(shop.id);
+	            });
+	        }
+	    });
+	    $.fn.zTree.init($("#treeDemo"), setting, treeNodes);
+
+	    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+	    var pIdsInputs = $("[name='pIds']");
+	    for(var i=0;i<pIdsInputs.length;i++){
+	    	treeObj.checkNode(treeObj.getNodeByParam("id", pIdsInputs[i].value), true, false, false);
+	    }
+	});
+
+	function getProductTree(shopId){
+		$.ajax({  
+	        async : false,  
+	        cache:false,  
+	        type: 'GET',  
+	        dataType : "json",  
+	        data : {
+	        	id : shopId
+	        },
+	        url: "/getProductListByShopId",
+	        error: function () {
+	            layer.msg('请求失败!',{icon:1,time:1000});
+	        },  
+	        success:function(data){
+	        	$.each(data.data, function (index, product) {
+	            	treeNodes[num++]={id:product.id,pId:shopId,name:product.name,open:false};
+	            });
+	        }
+	    });
+	}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

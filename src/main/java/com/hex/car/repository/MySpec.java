@@ -139,6 +139,7 @@ public class MySpec {
                 predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), new Integer(2)));
 
                 Predicate[] pre = new Predicate[predicate.size()];
+                criteriaQuery.distinct(true);
                 return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
             }
         };
@@ -150,12 +151,18 @@ public class MySpec {
             public Predicate toPredicate(Root<Evaluate> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicate = new ArrayList<>();
                 Integer state = (Integer) condition.get("state");
+                String shopId = (String) condition.get("shopId");
 
                 if (null != state) {
                     predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), state));
                 }
+                if (!StringUtils.isEmpty(shopId)) {
+                    Join<Evaluate, Product> productJoin = root.join("products", JoinType.INNER);
+                    predicate.add(criteriaBuilder.equal(productJoin.get("shop").get("id").as(String.class), shopId));
+                }
 
                 Predicate[] pre = new Predicate[predicate.size()];
+                criteriaQuery.distinct(true);
                 return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
             }
         };
@@ -182,10 +189,6 @@ public class MySpec {
         return new Specification<Product>() {
             @Override
             public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicate = new ArrayList<>();
-                Join<Product, Car> carJoin = root.join("car", JoinType.INNER);
-                Join<Product, Shop> shopJoin = root.join("shop", JoinType.INNER);
-
                 String name = (String) condition.get("name");
                 Double minPrice = (Double) condition.get("minPrice");
                 Double maxPrice = (Double) condition.get("maxPrice");
@@ -201,6 +204,10 @@ public class MySpec {
                 String bodyTypeId = (String) condition.get("bodyTypeId");
                 String seatsId = (String) condition.get("seatsId");
                 String shopId = (String) condition.get("shopId");
+
+                List<Predicate> predicate = new ArrayList<>();
+                Join<Product, Car> carJoin = root.join("car", JoinType.INNER);
+                Join<Product, Shop> shopJoin = root.join("shop", JoinType.INNER);
 
                 if (!StringUtils.isEmpty(name)) {
                     predicate.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
@@ -251,6 +258,7 @@ public class MySpec {
                 predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), new Integer(2)));
 
                 Predicate[] pre = new Predicate[predicate.size()];
+                criteriaQuery.distinct(true);
                 return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
             }
         };

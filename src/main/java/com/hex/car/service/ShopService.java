@@ -26,4 +26,6 @@ public interface ShopService {
     List<Shop> findTop10ShopsByNameLikeAndStateOrderByName(String name, Integer state);
 
     Page<Shop> findShops(Map<String, Object> condition, PageRequest pageRequest);
+
+    List<Shop> findShopsByStateOrderByName(Integer state);
 }

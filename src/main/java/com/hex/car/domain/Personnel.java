@@ -50,7 +50,7 @@ public class Personnel implements Serializable {
     /**
      * 登录账号
      */
-    @OneToOne(optional = false, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToOne(optional = false, orphanRemoval = true)
     @JoinColumn(name = "user_id", unique = true)
     @JsonIgnore
     private User user;

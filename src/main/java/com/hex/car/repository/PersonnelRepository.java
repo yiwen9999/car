@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 上午9:39
  */
 public interface PersonnelRepository extends JpaRepository<Personnel, String> {
+    Personnel findFirstByMobile(String mobile);
 }

@@ -17,4 +17,6 @@ public interface ShopRepository extends JpaRepository<Shop, String>, JpaSpecific
     List<Shop> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 
     List<Shop> findTop10ShopsByNameLikeAndStateOrderByName(String name, Integer state);
+
+    List<Shop> findShopsByStateOrderByName(Integer state);
 }

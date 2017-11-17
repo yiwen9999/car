@@ -97,4 +97,14 @@ public class ProductServiceImpl implements ProductService {
     public List<Model> findDistinctModelByProduct(Integer state) {
         return productRepository.findDistinctModelByProduct(state);
     }
+
+    @Override
+    public List<Product> findProductsByIdIn(String[] ids) {
+        return productRepository.findProductsByIdIn(ids);
+    }
+
+    @Override
+    public List<Product> findProductsByStateOrderByName(Integer state) {
+        return productRepository.findProductsByStateOrderByName(new Integer(2));
+    }
 }

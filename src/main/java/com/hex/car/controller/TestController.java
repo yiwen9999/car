@@ -3,6 +3,7 @@ package com.hex.car.controller;
 import com.hex.car.service.CarService;
 import com.hex.car.service.ImgProductService;
 import com.hex.car.service.ShopService;
+import com.hex.car.utils.ResultUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,11 @@ public class TestController {
 
     @Value("${web.upload-path}")
     private String path;
+
+    public Object testSms(){
+
+        return ResultUtil.success();
+    }
 
 //    /**
 //     * 保存4s店

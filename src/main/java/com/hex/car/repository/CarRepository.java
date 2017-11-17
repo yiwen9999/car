@@ -1,6 +1,5 @@
 package com.hex.car.repository;
 
-import com.hex.car.domain.Brand;
 import com.hex.car.domain.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 

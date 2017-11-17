@@ -2,7 +2,6 @@ package com.hex.car.controller;
 
 import com.hex.car.domain.Evaluate;
 import com.hex.car.domain.ImgEvaluate;
-import com.hex.car.domain.Product;
 import com.hex.car.domain.User;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.EvaluateService;
@@ -13,8 +12,6 @@ import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,10 +36,10 @@ public class EvaluateController {
     private EvaluateService evaluateService;
 
     @Autowired
-    private ProductService productService;
+    private ImgEvaluateService imgEvaluateService;
 
     @Autowired
-    private ImgEvaluateService imgEvaluateService;
+    private ProductService productService;
 
     @Value("${web.upload-path}")
     private String path;
@@ -65,16 +61,18 @@ public class EvaluateController {
      * @return
      */
     @GetMapping(value = "/getEvaluateListByIdentity")
-    private Object getEvaluateListByIdentity(HttpServletRequest request) {
+    private Object getEvaluateListByIdentity(Integer page, Integer size, String sortStr, String asc, HttpServletRequest request) {
         Object object = request.getSession().getAttribute("user");
         if (null == object) {
             return ResultUtil.error(ResultEnum.UN_LOGIN.getCode(), ResultEnum.UN_LOGIN.getMsg());
         }
         User user = (User) object;
+        Map<String, Object> condition = new HashMap<>();
         if (user.getId().equals("root")) {
-            return ResultUtil.success(evaluateService.findAllEvaluateList());
+            return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         } else if (null != user.getShop()) {
-            return ResultUtil.success(evaluateService.findEvaluatesByProductShop(user.getShop()));
+            condition.put("shopId", user.getShop().getId());
+            return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         } else {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
@@ -83,24 +81,13 @@ public class EvaluateController {
     /**
      * 保存修改文章
      *
-     * @param evaluate  文章
-     * @param productId 对应商品id
-     * @param file      文章头图
+     * @param evaluate 文章
+     * @param file     文章头图
      * @return
      */
     @PostMapping(value = "/saveEvaluate")
     private Object saveEvaluate(Evaluate evaluate,
-                                String productId,
                                 @RequestParam(value = "file") MultipartFile file) {
-        if (null == productId || productId.equals("")) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-        Product product = productService.findProductById(productId);
-        if (null == product) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-        evaluate.setProduct(product);
-        evaluate.setShop(product.getShop());
         if (file != null) {
             if (null == evaluate.getId() && !evaluate.getId().equals("")) {
                 evaluate = evaluateService.findEvaluateById(evaluate.getId());
@@ -221,4 +208,35 @@ public class EvaluateController {
         return ResultUtil.success(evaluateService.findEvaluateListByCreateTimeAndNameAndIdentity(HexUtil.formatBeginTimeString(beginTime), HexUtil.formatEndTimeString(endTime), name, user.getShop()));
     }
 
+    /**
+     * 文章与商品配对
+     *
+     * @param id         文章id
+     * @param productIds 商品id集合
+     * @return
+     */
+    @PostMapping(value = "/evaluateChooseProducts")
+    public Object evaluateChooseProducts(String id, String[] productIds) {
+        if (null == id || "".equals(id)) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Evaluate evaluate = evaluateService.findEvaluateById(id);
+        if (null == evaluate) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        evaluate.setProducts(productService.findProductsByIdIn(productIds));
+        return ResultUtil.success(evaluateService.saveEvaluate(evaluate));
+    }
+
+//    @GetMapping(value = "/getProductsByEvaluate")
+//    public Object getProductsByEvaluate(String id){
+//        if (null == id || "".equals(id)) {
+//            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+//        }
+//        Evaluate evaluate = evaluateService.findEvaluateById(id);
+//        if (null == evaluate) {
+//            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+//        }
+//        return ResultUtil.success(evaluate.getProducts());
+//    }
 }

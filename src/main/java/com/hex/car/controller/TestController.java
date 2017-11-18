@@ -30,7 +30,7 @@ public class TestController {
     @Value("${web.upload-path}")
     private String path;
 
-    public Object testSms(){
+    public Object testSms() {
 
         return ResultUtil.success();
     }

@@ -1,14 +1,11 @@
 package com.hex.car.controller;
 
-import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.hex.car.utils.SmsDemo.querySendDetails;
 import static com.hex.car.utils.SmsDemo.sendSms;
 
 /**
@@ -27,7 +24,7 @@ public class SmsController {
             sendSms(phone, randomNum.toString());
         } catch (ClientException e) {
             e.printStackTrace();
-            return ResultUtil.error(ResultEnum.UN_KNOW_ERRO.getCode(),ResultEnum.UN_KNOW_ERRO.getMsg());
+            return ResultUtil.error(ResultEnum.UN_KNOW_ERRO.getCode(), ResultEnum.UN_KNOW_ERRO.getMsg());
         }
         return ResultUtil.success(randomNum.toString());
 //

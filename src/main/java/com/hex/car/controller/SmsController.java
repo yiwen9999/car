@@ -1,14 +1,15 @@
 package com.hex.car.controller;
 
-//import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
-//import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-//import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.hex.car.enums.ResultEnum;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//import static com.hex.car.utils.SmsDemo.querySendDetails;
-//import static com.hex.car.utils.SmsDemo.sendSms;
+import static com.hex.car.utils.SmsDemo.querySendDetails;
+import static com.hex.car.utils.SmsDemo.sendSms;
 
 /**
  * User: hexuan
@@ -17,12 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class SmsController {
-//    @PostMapping(value = "/front/sendSMS")
-//    public Object sendSMS(String phone) throws InterruptedException, ClientException {
-//        Integer randomNum = (int) ((Math.random() * 9 + 1) * 100000);
+    @PostMapping(value = "/front/sendSMS")
+    public Object sendSMS(String phone) throws InterruptedException, ClientException {
+        Integer randomNum = (int) ((Math.random() * 9 + 1) * 100000);
+
+        //发短信
+        try {
+            sendSms(phone, randomNum.toString());
+        } catch (ClientException e) {
+            e.printStackTrace();
+            return ResultUtil.error(ResultEnum.UN_KNOW_ERRO.getCode(),ResultEnum.UN_KNOW_ERRO.getMsg());
+        }
+        return ResultUtil.success(randomNum.toString());
 //
-//        //发短信
-//        SendSmsResponse response = sendSms(phone, randomNum.toString());
 //        System.out.println("短信接口返回的数据----------------");
 //        System.out.println("Code=" + response.getCode());
 //        System.out.println("Message=" + response.getMessage());
@@ -52,6 +60,6 @@ public class SmsController {
 //            System.out.println("TotalCount=" + querySendDetailsResponse.getTotalCount());
 //            System.out.println("RequestId=" + querySendDetailsResponse.getRequestId());
 //        }
-//        return ResultUtil.success(randomNum.toString());
-//    }
+
+    }
 }

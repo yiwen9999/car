@@ -5,8 +5,8 @@ import com.hex.car.domain.ImgBrand;
 import com.hex.car.domain.Model;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.BrandService;
+import com.hex.car.service.ImgBrandService;
 import com.hex.car.service.ModelService;
-import com.hex.car.service.ProductService;
 import com.hex.car.utils.FileUtil;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -35,7 +36,7 @@ public class BrandController {
     private ModelService modelService;
 
     @Autowired
-    private ProductService productService;
+    private ImgBrandService imgBrandService;
 
     @Value("${web.upload-path}")
     private String path;
@@ -111,6 +112,8 @@ public class BrandController {
         Brand brand = new Brand();
         brand.setName(brandName);
         brand.setInitial(brandInitial);
+        ImgBrand imgBrand = new ImgBrand();
+        brand.setImgBrand(imgBrand);
         brandService.saveBrand(brand);
         if (null == modelNames || 0 == modelNames.length) {
             ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
@@ -258,6 +261,17 @@ public class BrandController {
             FileUtil.uploadFile(file.getBytes(), path, fileName);
             imgBrand = new ImgBrand();
             imgBrand.setFileName(fileName);
+
+            ImgBrand oldImgBrand = brand.getImgBrand();
+            if (null != oldImgBrand) {
+                if (oldImgBrand.getFileName().indexOf("default") < 0) {
+                    File deleteFile = new File(path + oldImgBrand.getFileName());
+                    if (deleteFile.exists()) {
+                        deleteFile.delete();
+                    }
+                }
+                imgBrandService.deleteImgBrand(oldImgBrand);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());

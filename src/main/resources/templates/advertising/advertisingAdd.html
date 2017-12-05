@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="page-container">
-	<form class="form form-horizontal" id="form-advertising-add">
+	<form class="form form-horizontal" id="form-advertising-add" enctype="multipart/form-data">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2" >广告名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -68,7 +68,7 @@ $(function(){
 		success:"valid",
 		submitHandler:function(form){
 			var urlStr="";
-			if($("#id").value!=""){
+			if($("#id").val()!=""){
 				urlStr="/updateAdvertising";
 			}else{
 				urlStr="/saveAdvertising";

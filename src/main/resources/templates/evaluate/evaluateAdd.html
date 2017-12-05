@@ -15,10 +15,9 @@
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
+			<label class="form-label col-xs-4 col-sm-2">文章简介：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-                <textarea id="editor" name="content" th:text="${evaluate!=null ? evaluate.content:''}">
-				</textarea>
+                <textarea name="intro" class="textarea" th:text="${evaluate!=null ? evaluate.intro:''}"></textarea>
             </div>
 		</div>
 		<div class="row cl">
@@ -27,7 +26,24 @@
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:600px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
 				<input type="file" name="file" class="input-file">
-				</span> </div>
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">作者头像上传：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:600px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" name="authorFile" class="input-file">
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+                <textarea id="editor" name="content" th:text="${evaluate!=null ? evaluate.content:''}">
+				</textarea>
+            </div>
 		</div>
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
@@ -57,6 +73,38 @@
 	        allowFileManager : true,
         });         
     });
+
+	$(function(){
+		$("#form-evaluate-add").validate({
+			rules:{
+				name:{
+					required:true
+				},
+				content:{
+					required:true
+				}
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				editor.sync();
+				$(form).ajaxSubmit({
+					url: "/saveEvaluate",
+					type: 'post',
+					dataType:"json",
+					success: function(data){
+						layer.msg('操作成功!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					},
+	                error: function(XmlHttpRequest, textStatus, errorThrown){
+						layer.msg('操作失败!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					}
+				});
+			}
+		});
+	});
 </script>
 </body>
 </html>

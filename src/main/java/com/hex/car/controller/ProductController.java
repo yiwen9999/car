@@ -1,11 +1,9 @@
 package com.hex.car.controller;
 
-import com.hex.car.domain.ImgProduct;
-import com.hex.car.domain.Product;
-import com.hex.car.domain.Shop;
-import com.hex.car.domain.User;
+import com.hex.car.domain.*;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.CarService;
+import com.hex.car.service.ImgProductService;
 import com.hex.car.service.ProductService;
 import com.hex.car.service.ShopService;
 import com.hex.car.utils.FileUtil;
@@ -41,6 +39,9 @@ public class ProductController {
 
     @Autowired
     private ShopService shopService;
+
+    @Autowired
+    private ImgProductService imgProductService;
 
     @Value("${web.upload-path}")
     private String path;
@@ -159,6 +160,49 @@ public class ProductController {
         }
         product.getImgProducts().addAll(imgProductList);
         return ResultUtil.success(productService.saveProduct(product));
+    }
+
+    /**
+     * 修改所售车辆
+     *
+     * @param product
+     * @param carId
+     * @param shopId
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/updateProduct")
+    public Object updateProduct(Product product,
+                                String carId,
+                                String shopId,
+                                HttpServletRequest request) {
+        if (carId == null || carId.equals("") || null == product.getId() || "".equals(product.getId())) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        User user = HexUtil.getUser(request);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Shop shop;
+        Car car = carService.findCarById(carId);
+        Product saveProduct = productService.findProductById(product.getId());
+        if ("root".equals(user.getId())) {
+            if (null == shopId || "".equals(shopId)) {
+                return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+            }
+            shop = shopService.findShopById(shopId);
+        } else {
+            shop = user.getShop();
+        }
+        if (null == shop || null == saveProduct || null == car) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        saveProduct.setCar(car);
+        saveProduct.setShop(shop);
+        saveProduct.setName(product.getName());
+        saveProduct.setPrice(product.getPrice());
+        saveProduct.setDetails(product.getDetails());
+        return ResultUtil.success(productService.saveProduct(saveProduct));
     }
 
     /**
@@ -293,6 +337,93 @@ public class ProductController {
         } else {
             return ResultUtil.error(ResultEnum.ERROR_IDENTITY.getCode(), ResultEnum.ERROR_IDENTITY.getMsg());
         }
+    }
+
+    /**
+     * 在售车辆图片编辑
+     *
+     * @param id
+     * @param mainFile
+     * @param files
+     * @return
+     */
+    @PostMapping(value = "/editImgProduct")
+    public Object editImgProduct(String id,
+                                 @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
+                                 @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        if (null == id || "".equals(id)) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Product product = productService.findProductById(id);
+        if (null == product) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        String fileName;
+        String suffixName;
+        ImgProduct imgProduct;
+        ImgProduct oldImgProduct;
+        List<ImgProduct> imgProductList = new ArrayList<>();
+        if (null != mainFile) {
+            fileName = mainFile.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                if (null != product.getMainImgProducts() && !product.getMainImgProducts().isEmpty()) {
+                    oldImgProduct = product.getMainImgProducts().iterator().next();
+                    File deleteFile = new File(path + oldImgProduct.getFileName());
+                    if (deleteFile.exists()) {
+                        deleteFile.delete();
+                    }
+                    product.getMainImgProducts().clear();
+                    imgProductService.deleteImgProduct(oldImgProduct);
+                }
+                FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+                imgProduct = new ImgProduct();
+                imgProduct.setFileName(fileName);
+                imgProduct.setMain(new Boolean(true));
+                imgProductList.add(imgProduct);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
+
+        MultipartFile file;
+        for (int i = 0; i < files.size(); i++) {
+            file = files.get(i);
+            fileName = file.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                imgProduct = new ImgProduct();
+                imgProduct.setFileName(fileName);
+                imgProduct.setMain(new Boolean(false));
+                imgProductList.add(imgProduct);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
+        product.getImgProducts().addAll(imgProductList);
+        return ResultUtil.success(productService.saveProduct(product));
+    }
+
+    @PostMapping(value = "/deleteImgProduct")
+    public Object deleteImgProduct(String id) {
+        if (null == id || "".equals(id)) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        ImgProduct imgProduct = imgProductService.findImgProductById(id);
+        if (null == imgProduct) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        File deleteFile = new File(path + imgProduct.getFileName());
+        if (deleteFile.exists()) {
+            deleteFile.delete();
+        }
+        imgProductService.deleteImgProduct(imgProduct);
+        return ResultUtil.success();
     }
 
 }

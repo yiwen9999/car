@@ -87,15 +87,32 @@ public class EvaluateController {
      */
     @PostMapping(value = "/saveEvaluate")
     private Object saveEvaluate(Evaluate evaluate,
-                                @RequestParam(value = "file") MultipartFile file) {
-        if (file != null) {
-            if (null == evaluate.getId() && !evaluate.getId().equals("")) {
-                evaluate = evaluateService.findEvaluateById(evaluate.getId());
-                File deleteFile = new File(path + evaluate.getImgEvaluate().getFileName());
-                deleteFile.delete();
-                imgEvaluateService.deleteImgEvaluate(evaluate.getImgEvaluate());
+                                @RequestParam(value = "file", required = false) MultipartFile file,
+                                @RequestParam(value = "authorFile", required = false) MultipartFile authorFile) {
+        Evaluate saveEvaluate = new Evaluate();
+        if (null != evaluate.getId() && !evaluate.getId().equals("")) {
+            saveEvaluate = evaluateService.findEvaluateById(evaluate.getId());
+            if (null != file && null != saveEvaluate.getImgEvaluate()) {
+                File deleteFile = new File(path + saveEvaluate.getImgEvaluate().getFileName());
+                if (deleteFile.exists())
+                    deleteFile.delete();
+                imgEvaluateService.deleteImgEvaluate(saveEvaluate.getImgEvaluate());
             }
+            /**
+             * 已存在作者头像，且头像不是默认头像的，删除旧头像文件
+             */
+            if (null != authorFile && null != saveEvaluate.getImgAuthor() && !"".equals(saveEvaluate.getImgAuthor()) && saveEvaluate.getImgAuthor().indexOf("default") < 0) {
+                File deleteFile = new File(path + saveEvaluate.getImgAuthor());
+                if (deleteFile.exists())
+                    deleteFile.delete();
+            }
+        }
 
+        saveEvaluate.setTitle(evaluate.getTitle());
+        saveEvaluate.setIntro(evaluate.getIntro());
+        saveEvaluate.setContent(evaluate.getContent());
+
+        if (null != file) {
             String fileName = file.getOriginalFilename();
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
@@ -104,13 +121,27 @@ public class EvaluateController {
                 FileUtil.uploadFile(file.getBytes(), path, fileName);
                 imgEvaluate = new ImgEvaluate();
                 imgEvaluate.setFileName(fileName);
-                evaluate.setImgEvaluate(imgEvaluate);
+                saveEvaluate.setImgEvaluate(imgEvaluate);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
             }
         }
-        return ResultUtil.success(evaluateService.saveEvaluate(evaluate));
+
+        if (null != authorFile) {
+            String fileName = authorFile.getOriginalFilename();
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                FileUtil.uploadFile(authorFile.getBytes(), path, fileName);
+                saveEvaluate.setImgAuthor(fileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
+
+        return ResultUtil.success(evaluateService.saveEvaluate(saveEvaluate));
     }
 
     /**
@@ -152,6 +183,10 @@ public class EvaluateController {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         File deleteFile = new File(path + evaluate.getImgEvaluate().getFileName());
+        if (deleteFile.exists()) {
+            deleteFile.delete();
+        }
+        deleteFile = new File(path + evaluate.getImgAuthor());
         if (deleteFile.exists()) {
             deleteFile.delete();
         }

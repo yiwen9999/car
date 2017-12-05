@@ -30,6 +30,11 @@ public class Evaluate implements Serializable {
     private String title;
 
     /**
+     * 简介
+     */
+    private String intro;
+
+    /**
      * 评测内容
      */
     @Lob
@@ -41,6 +46,11 @@ public class Evaluate implements Serializable {
      * 状态
      */
     private Integer state = new Integer(2);
+
+    /**
+     * 作者头像
+     */
+    private String imgAuthor = new String("defaultUserImg.jpg");
 
     /**
      * 文章头图
@@ -119,6 +129,22 @@ public class Evaluate implements Serializable {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getImgAuthor() {
+        return imgAuthor;
+    }
+
+    public void setImgAuthor(String imgAuthor) {
+        this.imgAuthor = imgAuthor;
     }
 
     @Override

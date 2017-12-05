@@ -36,5 +36,5 @@ public interface CarService {
      * @param state
      * @return
      */
-    List<Car> findTop10CarsByNameLikeAndStateOrderByName(String name, Integer state);
+    List<Car> findTop10CarsByNameLikeAndStateOrderByNameDesc(String name, Integer state);
 }

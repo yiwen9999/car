@@ -1,5 +1,6 @@
 package com.hex.car.controller;
 
+import com.hex.car.domain.ImgUser;
 import com.hex.car.domain.Personnel;
 import com.hex.car.domain.User;
 import com.hex.car.enums.ResultEnum;
@@ -9,7 +10,7 @@ import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.Md5SaltTool;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,7 @@ import java.util.Map;
  * Date: 2017/10/17
  * Time: 上午11:35
  */
+@CrossOrigin
 @RestController
 public class UserController {
 
@@ -60,7 +62,7 @@ public class UserController {
              * 先判断操作帐号是否启用
              * 再判断密码是否正确
              */
-            if (2 == user.getState()) {
+            if (null != user && 2 == user.getState()) {
                 result = Md5SaltTool.validPassword(password, user.getPassword());
             }
         } catch (NoSuchAlgorithmException e) {
@@ -72,6 +74,8 @@ public class UserController {
         }
         if (result) {
             request.getSession().setAttribute("user", user);
+        } else {
+            return ResultUtil.error(ResultEnum.ERROR_LOGIN.getCode(), ResultEnum.ERROR_LOGIN.getMsg());
         }
         return ResultUtil.success(user);
     }
@@ -82,7 +86,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @GetMapping(value = "/logout")
+    @PostMapping(value = "/logout")
     public Object logout(HttpServletRequest request) {
         request.getSession().removeAttribute("user");
         return ResultUtil.success();
@@ -99,6 +103,7 @@ public class UserController {
     @PostMapping(value = "/saveUser")
     public Object saveUser(User user) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         user.setPassword(Md5SaltTool.getEncryptedPwd(user.getPassword()));
+        user.setImgUser(new ImgUser());
         return ResultUtil.success(userService.saveUser(user));
     }
 
@@ -148,6 +153,50 @@ public class UserController {
     }
 
     /**
+     * 忘记密码 设置新密码
+     *
+     * @param username
+     * @param password
+     * @param smsCode
+     * @param request
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    @PostMapping(value = "/newPassword")
+    public Object newPassword(String username, String password, String smsCode, HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        if (null == username || username.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (null == password || password.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (null == smsCode || smsCode.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+
+        String cPhone = "", cSmsCode = "";
+        if (null != request.getSession().getAttribute("car_phone")) {
+            cPhone = (String) request.getSession().getAttribute("car_phone");
+        }
+        if (null != request.getSession().getAttribute("car_smsCode")) {
+            cSmsCode = (String) request.getSession().getAttribute("car_smsCode");
+        }
+        if (!cPhone.equals(username) || !cSmsCode.equals(smsCode)) {
+            return ResultUtil.error(ResultEnum.ERROR_SMSCODE.getCode(), ResultEnum.ERROR_SMSCODE.getMsg());
+        }
+
+        User user = userService.findUserByUsername(username);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        user.setPassword(Md5SaltTool.getEncryptedPwd(password));
+        userService.saveUser(user);
+        request.getSession().setAttribute("user", user);
+        return ResultUtil.success(user);
+    }
+
+    /**
      * 注册
      *
      * @param username 用户名
@@ -160,7 +209,7 @@ public class UserController {
      * @throws NoSuchAlgorithmException
      */
     @PostMapping(value = "/register")
-    public Object register(String username, String password, String name, String nickname, String mobile) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Object register(String username, String password, String name, String nickname, String mobile, String smsCode, HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if (null == username || username.equals("")) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
@@ -170,6 +219,21 @@ public class UserController {
         if (null == mobile || mobile.equals("")) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
+        if (null == smsCode || smsCode.equals("")) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+
+        String cPhone = "", cSmsCode = "";
+        if (null != request.getSession().getAttribute("car_phone")) {
+            cPhone = (String) request.getSession().getAttribute("car_phone");
+        }
+        if (null != request.getSession().getAttribute("car_smsCode")) {
+            cSmsCode = (String) request.getSession().getAttribute("car_smsCode");
+        }
+        if (!cPhone.equals(mobile) || !cSmsCode.equals(smsCode)) {
+            return ResultUtil.error(ResultEnum.ERROR_SMSCODE.getCode(), ResultEnum.ERROR_SMSCODE.getMsg());
+        }
+
         Personnel p = personnelService.findFirstPersonnelByMobile(mobile);
         if (null != p) {
             return ResultUtil.error(ResultEnum.ERROR_MOBILE.getCode(), ResultEnum.ERROR_MOBILE.getMsg());
@@ -187,23 +251,24 @@ public class UserController {
         personnel.setMobile(mobile);
         personnel.setUser(user);
         user.setPersonnel(personnel);
-        return ResultUtil.success(userService.saveUser(user));
+        user.setImgUser(new ImgUser());
+        userService.saveUser(user);
+
+        request.getSession().setAttribute("user", user);
+
+        return ResultUtil.success(user);
     }
 
     /**
      * 获取账号信息
      *
-     * @param id userId
      * @return
      */
     @PostMapping(value = "/getUserInfo")
-    public Object getUserInfo(String id) {
-        if (null == id || id.equals("")) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-        User user = userService.findUserById(id);
+    public Object getUserInfo(HttpServletRequest request) {
+        User user = HexUtil.getUser(request);
         if (null == user) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+            return ResultUtil.error(ResultEnum.UN_LOGIN.getCode(), ResultEnum.UN_LOGIN.getMsg());
         }
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);

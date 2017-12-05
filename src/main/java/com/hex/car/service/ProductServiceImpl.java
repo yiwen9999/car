@@ -99,6 +99,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Model> findDistinctModelByProductAndBrandId(Integer state, String brandId) {
+        return productRepository.findDistinctModelByProductAndBrandId(state, brandId);
+    }
+
+    @Override
     public List<Product> findProductsByIdIn(String[] ids) {
         return productRepository.findProductsByIdIn(ids);
     }
@@ -106,5 +111,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findProductsByStateOrderByName(Integer state) {
         return productRepository.findProductsByStateOrderByName(new Integer(2));
+    }
+
+    @Override
+    public Product findFirstByStateOrderByPriceAsc(Integer state) {
+        return productRepository.findFirstByStateOrderByPriceAsc(state);
+    }
+
+    @Override
+    public Product findFirstByStateOrderByPriceDesc(Integer state) {
+        return productRepository.findFirstByStateOrderByPriceDesc(state);
     }
 }

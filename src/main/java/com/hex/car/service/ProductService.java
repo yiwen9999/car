@@ -60,7 +60,13 @@ public interface ProductService {
 
     List<Model> findDistinctModelByProduct(Integer state);
 
+    List<Model> findDistinctModelByProductAndBrandId(Integer state, String brandId);
+
     List<Product> findProductsByIdIn(String[] ids);
 
     List<Product> findProductsByStateOrderByName(Integer state);
+
+    Product findFirstByStateOrderByPriceAsc(Integer state);
+
+    Product findFirstByStateOrderByPriceDesc(Integer state);
 }

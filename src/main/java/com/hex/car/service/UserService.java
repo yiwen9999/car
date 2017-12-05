@@ -2,6 +2,8 @@ package com.hex.car.service;
 
 import com.hex.car.domain.User;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/10/9
@@ -15,4 +17,6 @@ public interface UserService {
     User findUserById(String id);
 
     User findUserByUsername(String username);
+
+    List<User> findAllUser();
 }

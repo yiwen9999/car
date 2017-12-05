@@ -20,6 +20,6 @@ public interface CarRepository extends JpaRepository<Car, String> {
      */
     List<Car> findCarsByNameLikeAndStateOrderByName(String name, Integer state);
 
-    List<Car> findTop10CarsByNameLikeAndStateOrderByName(String name, Integer state);
+    List<Car> findTop10CarsByNameLikeAndStateOrderByNameDesc(String name, Integer state);
 
 }

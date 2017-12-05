@@ -6,7 +6,7 @@
 </head>
 <body>
 <article class="page-container">
-	<form action="" method="post" class="form form-horizontal" id="form-product-add"  enctype="multipart/form-data">
+	<form action="" method="post" class="form form-horizontal" id="formAdd"  enctype="multipart/form-data">
 		<div th:if="${product!=null}">
 			<div id="imgeProductDiv">
 				<div class="row cl">
@@ -21,31 +21,17 @@
 					</div>
 				</div>
 			</div>
-			<div id="imgeProductViewDiv" class="portfolio-content">
-				<ul class="cl portfolio-area">
-					<li class="item">
-						<div class="portfoliobox">
-							<input class="checkbox" name="" type="checkbox" value="">
-							<div class="picbox"><a href="temp/big/keting.jpg" data-lightbox="gallery" data-title="客厅1"><img src="temp/Thumb/keting.jpg"></a></div>
-							<div class="textbox">客厅 </div>
-						</div>
-					</li>
-					<li class="item">
-						<div class="portfoliobox">
-							<input class="checkbox" name="" type="checkbox" value="">
-							<div class="picbox "><a href="temp/big/keting2.jpg" data-lightbox="gallery" data-title="客厅2"><img src="temp/Thumb/keting2.jpg"></a></div>
-							<div class="textbox">客厅 </div>
-						</div>
-					</li>
-					<li class="item">
-						<div class="portfoliobox">
-							<input class="checkbox" name="" type="checkbox" value="">
-							<div class="picbox"><a href="temp/big/keting3.jpg" data-lightbox="gallery" data-title="客厅3"><img src="temp/Thumb/keting3.jpg"></a></div>
-							<div class="textbox">客厅 </div>
-						</div>
-					</li>
-				</ul>
-			</div>
+			<div class="row cl">
+			   <label class="form-label col-xs-4 col-sm-3">图片：</label>
+			   <span th:each="imgProduct:${product.mainImgProducts}">
+				    <a th:href="${imgProduct.fileName}" target="_blank"><img th:src="${imgProduct.fileName}" width="100" height="100"></a>
+				    <br>
+			   </span>
+			   <span th:each="imgProduct:${product.commonImgProducts}">
+				    <a th:href="${imgProduct.fileName}" target="_blank"><img th:src="${imgProduct.fileName}" width="100" height="100"></a>
+				    <a onClick="imgProductDelete($(this));" th:id="${imgProduct.id}" href="javascript:;" title="删除" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;&nbsp;&nbsp;</i></a>
+			   </span>
+		  	</div>
 			<div class="row cl">
 				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 					<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
@@ -75,26 +61,22 @@
 <script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
 <script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
-var randomId;
-function getRandomId(){
-	return Math.round(Math.random()*1000000000000000);
-}
 $(function(){
-	$("#form-product-add").validate({
+	$("#formAdd").validate({
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
-			var urlStr="";
-			if($("#productId").val()!=""){
-				urlStr="/updateProduct";
-			}
 			$(form).ajaxSubmit({
-				url: urlStr,
+				url: "/editImgProduct",
 				type: 'post',
 				dataType:"json",
 				success: function(data){
-					layer.msg('操作成功!',{icon:1,time:1000});
+					if(data.code==0){
+						layer.msg('操作成功!',{icon:1,time:1000});
+					}else{
+						layer.msg(data.msg,{icon:1,time:1000});
+					}
 					setTimeout("window.parent.location.reload();",1000);
 				},
                 error: function(XmlHttpRequest, textStatus, errorThrown){
@@ -112,6 +94,26 @@ function addImgProductFileTr(){
 }
 function deleteFile(object){
 	object.parents("div#newImgeProductDiv").remove();
+}
+function imgProductDelete(obj){
+	layer.confirm('确认要删除吗？',function(index){
+		$.ajax({
+			type: 'POST',
+			url: '/deleteImgProduct',
+			data : {
+				"id" : obj.attr("id")
+		    },
+			dataType: 'json',
+			success : function(data) {
+		          if (data.code == "0") {
+		           obj.parents("span").remove();
+		           layer.msg('已删除!',{icon:1,time:1000});
+		          } else {
+		              alert("删除失败");
+		          }
+		      }
+		}); 
+	});
 }
 </script> 
 <!--/请在上方写此页面业务相关的脚本-->

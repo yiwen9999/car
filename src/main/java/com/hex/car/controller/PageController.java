@@ -45,7 +45,7 @@ public class PageController {
      */
     @GetMapping(value = "/")
     public String main() {
-        return "redirect:/toFrontMain";
+        return "redirect:/toLogin";
     }
 
     /**
@@ -195,6 +195,19 @@ public class PageController {
     }
 
     /**
+     * 跳转4s店图片编辑页面
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/toShopImgEdit")
+    public String toShopImgEdit(String id, Model model) {
+        model.addAttribute("shop", shopService.findShopById(id));
+        return "/shop/shopImgEdit";
+    }
+
+    /**
      * 跳转广告列表页
      *
      * @return
@@ -257,6 +270,19 @@ public class PageController {
     }
 
     /**
+     * 跳转修改文章页
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/toEvaluateUpdate")
+    public String toEvaluateUpdate(String id, Model model) {
+        model.addAttribute("evaluate", evaluateService.findEvaluateById(id));
+        return "/evaluate/evaluateAdd";
+    }
+
+    /**
      * 跳转文章浏览页
      *
      * @return
@@ -314,6 +340,19 @@ public class PageController {
         model.addAttribute("product", productService.findProductById(id));
         model.addAttribute("user", HexUtil.getUser(request));
         return "/product/productAdd";
+    }
+
+    /**
+     * 跳转在售车辆图片管理
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/toProductImgEdit")
+    public String toProductImgEdit(String id, Model model) {
+        model.addAttribute("product", productService.findProductById(id));
+        return "/product/productImgEdit";
     }
 
     /**

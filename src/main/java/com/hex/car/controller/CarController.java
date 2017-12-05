@@ -143,7 +143,7 @@ public class CarController {
         if (name == null || name.equals("")) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
-        return ResultUtil.success(carService.findTop10CarsByNameLikeAndStateOrderByName(name, new Integer(2)));
+        return ResultUtil.success(carService.findTop10CarsByNameLikeAndStateOrderByNameDesc(name, new Integer(2)));
     }
 
     /**

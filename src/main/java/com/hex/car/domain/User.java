@@ -5,7 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 登录账号
@@ -59,6 +61,22 @@ public class User implements Serializable {
     @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "img_user_id")
     private ImgUser imgUser;
+
+    /**
+     * 车辆收藏记录
+     */
+    @OneToMany(targetEntity = FavoritesProduct.class, mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OrderBy("create_time desc")
+    //    @JsonIgnore
+    private List<FavoritesProduct> favoritesProducts = new ArrayList<>();
+
+    /**
+     * 车辆浏览记录
+     */
+    @OneToMany(targetEntity = BrowsingHistoryProduct.class, mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OrderBy("create_time desc")
+    //    @JsonIgnore
+    private List<BrowsingHistoryProduct> browsingHistoryCars = new ArrayList<>();
 
     /**
      * 创建时间
@@ -130,6 +148,22 @@ public class User implements Serializable {
 
     public void setImgUser(ImgUser imgUser) {
         this.imgUser = imgUser;
+    }
+
+    public List<FavoritesProduct> getFavoritesProducts() {
+        return favoritesProducts;
+    }
+
+    public void setFavoritesProducts(List<FavoritesProduct> favoritesProducts) {
+        this.favoritesProducts = favoritesProducts;
+    }
+
+    public List<BrowsingHistoryProduct> getBrowsingHistoryCars() {
+        return browsingHistoryCars;
+    }
+
+    public void setBrowsingHistoryCars(List<BrowsingHistoryProduct> browsingHistoryCars) {
+        this.browsingHistoryCars = browsingHistoryCars;
     }
 
     @Override

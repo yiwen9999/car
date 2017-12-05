@@ -1,5 +1,6 @@
 package com.hex.car.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class BrowsingHistoryProduct implements Serializable {
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     /**

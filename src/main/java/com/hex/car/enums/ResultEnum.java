@@ -11,7 +11,8 @@ public enum ResultEnum {
     ERROR_PASSWORD(106, "密码错误"),
     ERROR_IDENTITY(107, "身份错误"),
     ERROR_MOBILE(108, "该手机号已被使用"),
-    ERROR_USERNAME(109, "该用户名已被使用"),;
+    ERROR_USERNAME(109, "该用户名已被使用"),
+    ERROR_SMSCODE(110, "手机号或验证码错误"),;
 
     private Integer code;
 

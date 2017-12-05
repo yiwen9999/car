@@ -115,7 +115,7 @@ function createTr(index,shop){
 	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");*/
 	var imgA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改图片")
 	.click(function(){
-	  shopImgEdit('4s店图片修改','/toShopFile?id='+shop.id,shop.id,'800','500');
+	  shopImgEdit('4s店图片修改','/toShopImgEdit?id='+shop.id,shop.id,'800','500');
 	});
 	var imgLi=$("<i>").attr("class","Hui-iconfont").html("&#xe613;&nbsp;&nbsp;");
 	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(imgA.append(imgLi));

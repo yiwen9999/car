@@ -53,7 +53,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> findTop10CarsByNameLikeAndStateOrderByName(String name, Integer state) {
-        return carRepository.findTop10CarsByNameLikeAndStateOrderByName("%" + name + "%", state);
+    public List<Car> findTop10CarsByNameLikeAndStateOrderByNameDesc(String name, Integer state) {
+        return carRepository.findTop10CarsByNameLikeAndStateOrderByNameDesc("%" + name + "%", state);
     }
 }

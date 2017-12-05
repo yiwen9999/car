@@ -3,8 +3,11 @@ package com.hex.car.controller;
 import com.aliyuncs.exceptions.ClientException;
 import com.hex.car.enums.ResultEnum;
 import com.hex.car.utils.ResultUtil;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static com.hex.car.utils.SmsDemo.sendSms;
 
@@ -13,10 +16,11 @@ import static com.hex.car.utils.SmsDemo.sendSms;
  * Date: 2017/11/16
  * Time: 下午4:19
  */
+@CrossOrigin
 @RestController
 public class SmsController {
     @PostMapping(value = "/front/sendSMS")
-    public Object sendSMS(String phone) throws InterruptedException, ClientException {
+    public Object sendSMS(String phone, HttpServletRequest request) throws InterruptedException, ClientException {
         Integer randomNum = (int) ((Math.random() * 9 + 1) * 100000);
 
         //发短信
@@ -26,6 +30,10 @@ public class SmsController {
             e.printStackTrace();
             return ResultUtil.error(ResultEnum.UN_KNOW_ERRO.getCode(), ResultEnum.UN_KNOW_ERRO.getMsg());
         }
+
+        request.getSession().setAttribute("car_phone", phone);
+        request.getSession().setAttribute("car_smsCode", randomNum.toString());
+
         return ResultUtil.success(randomNum.toString());
 //
 //        System.out.println("短信接口返回的数据----------------");

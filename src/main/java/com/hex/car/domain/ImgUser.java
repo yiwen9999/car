@@ -28,7 +28,7 @@ public class ImgUser implements Serializable {
      * 图片文件名称
      */
     @Column(length = 50)
-    private String fileName;
+    private String fileName = new String("defaultUserImg.jpg");
 
     /**
      * 创建时间

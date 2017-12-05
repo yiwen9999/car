@@ -5,6 +5,8 @@ import com.hex.car.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * User: hexuan
  * Date: 2017/10/9
@@ -34,5 +36,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<User> findAllUser() {
+        return userRepository.findAll();
     }
 }

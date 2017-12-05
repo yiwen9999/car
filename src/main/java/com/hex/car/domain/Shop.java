@@ -64,6 +64,7 @@ public class Shop implements Serializable {
     /**
      * 简介
      */
+    @Column(columnDefinition = "TEXT")
     private String remark;
 
     /**

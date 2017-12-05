@@ -2,10 +2,7 @@ package com.hex.car.controller;
 
 import com.hex.car.domain.*;
 import com.hex.car.enums.ResultEnum;
-import com.hex.car.service.PlaceService;
-import com.hex.car.service.ProductService;
-import com.hex.car.service.ShopService;
-import com.hex.car.service.UserService;
+import com.hex.car.service.*;
 import com.hex.car.utils.FileUtil;
 import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.Md5SaltTool;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -45,6 +43,9 @@ public class ShopController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ImgShopService imgShopService;
+
     @Value("${web.upload-path}")
     private String path;
 
@@ -59,6 +60,7 @@ public class ShopController {
      * @throws UnsupportedEncodingException
      * @throws NoSuchAlgorithmException
      */
+    @Transactional
     @PostMapping(value = "/saveShop")
     public Object saveShop(Shop shop,
                            String placeId,
@@ -106,6 +108,7 @@ public class ShopController {
         User user = new User();
         user.setUsername(username);
         user.setPassword(Md5SaltTool.getEncryptedPwd(password));
+        user.setImgUser(new ImgUser());
         userService.saveUser(user);
         shop.setUser(user);
         shop.setImgShops(imgShopList);
@@ -280,6 +283,99 @@ public class ShopController {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         return ResultUtil.success(shop.getUsingProducts());
+    }
+
+    /**
+     * 编辑4s店图片
+     *
+     * @param id
+     * @param mainFile
+     * @param files
+     * @return
+     */
+    @PostMapping(value = "/editImgShop")
+    public Object editImgShop(String id,
+                              @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
+                              @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        if (null == id || "".equals(id)) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        Shop shop = shopService.findShopById(id);
+        if (null == shop) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        String fileName;
+        String suffixName;
+        ImgShop imgShop;
+        ImgShop oldImgShop;
+        List<ImgShop> imgShopList = new ArrayList<>();
+        if (null != mainFile) {
+            fileName = mainFile.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                if (null != shop.getMainImgShops() && !shop.getMainImgShops().isEmpty()) {
+                    oldImgShop = shop.getMainImgShops().iterator().next();
+                    File deleteFile = new File(path + oldImgShop.getFileName());
+                    if (deleteFile.exists()) {
+                        deleteFile.delete();
+                    }
+                    shop.getMainImgShops().clear();
+                    imgShopService.deleteImgShop(oldImgShop);
+                }
+                FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+                imgShop = new ImgShop();
+                imgShop.setFileName(fileName);
+                imgShop.setMain(new Boolean(true));
+                imgShopList.add(imgShop);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
+
+        MultipartFile file;
+        for (int i = 0; i < files.size(); i++) {
+            file = files.get(i);
+            fileName = file.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                imgShop = new ImgShop();
+                imgShop.setFileName(fileName);
+                imgShop.setMain(new Boolean(false));
+                imgShopList.add(imgShop);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
+        shop.getImgShops().addAll(imgShopList);
+        return ResultUtil.success(shopService.saveShop(shop));
+    }
+
+    /**
+     * 删除4s店图片
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/deleteImgShop")
+    public Object deleteImgShop(String id) {
+        if (null == id || "".equals(id)) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        ImgShop imgShop = imgShopService.findImgShopById(id);
+        if (null == imgShop) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        File deleteFile = new File(path + imgShop.getFileName());
+        if (deleteFile.exists()) {
+            deleteFile.delete();
+        }
+        imgShopService.deleteImgShop(imgShop);
+        return ResultUtil.success();
     }
 
 }

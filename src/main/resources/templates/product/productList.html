@@ -93,7 +93,7 @@ function createTr(index,product){
 	}
 	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
 	.click(function(){
-	  productEdit('车辆修改','/toProductUpdate?id='+product.id,product.id,'800','500');
+	  productEdit('['+product.name+'] 修改','/toProductUpdate?id='+product.id,product.id,'800','500');
 	});
 	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
 	var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
@@ -103,7 +103,7 @@ function createTr(index,product){
 	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");
 	var imgA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改图片")
 	.click(function(){
-	  shopImgEdit('车辆图片修改','/toProductImgEdit?id='+product.id,product.id,'800','500');
+	  shopImgEdit('['+product.name+'] 图片修改','/toProductImgEdit?id='+product.id,product.id,'800','500');
 	});
 	var imgLi=$("<i>").attr("class","Hui-iconfont").html("&#xe613;&nbsp;&nbsp;");
 	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(deleteA.append(deleteLi)).append(imgA.append(imgLi));

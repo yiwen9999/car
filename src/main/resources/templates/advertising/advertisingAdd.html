@@ -8,30 +8,34 @@
 <div class="page-container">
 	<form class="form form-horizontal" id="form-advertising-add" enctype="multipart/form-data">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2" >广告名称：</label>
+			<label class="form-label col-xs-4 col-sm-3">广告名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="name" name="name" th:value="${advertising!=null ? advertising.name:''}">
 			</div>
 		</div>
 		<div class="row cl" id="popup_banner_description">
-			<label class="form-label col-xs-4 col-sm-2">广告URL：</label>
+			<label class="form-label col-xs-4 col-sm-3">广告URL：</label>
 			<div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="url" name="url" th:value="${advertising!=null ? advertising.url:''}">
             </div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">广告排序：</label>
+			<label class="form-label col-xs-4 col-sm-3">广告排序：</label>
 			<div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="sort" name="sort" th:value="${advertising!=null ? advertising.sort:''}">
             </div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">广告banner上传：</label>
+			<label class="form-label col-xs-4 col-sm-3">广告banner上传：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
-				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:200px">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
 				<input type="file" name="file" class="input-file">
 				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"></label>
+			<div class="formControls col-xs-8 col-sm-9" style="color:red;">图片格式：jpg格式；图片比例：5:2；图片尺寸：1500x600。</div>
 		</div>
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">

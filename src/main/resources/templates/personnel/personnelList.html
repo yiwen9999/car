@@ -2,34 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="common :: header"></div>
-<title>4S店列表</title>
+<title>会员列表</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>4S店管理 <span class="c-gray en">&gt;</span> 4S店列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>会员管理 <span class="c-gray en">&gt;</span> 会员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-	<div class="text-c"> 日期范围：
-		<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
-		-
-		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
-		<input type="text" class="input-text" style="width:250px" placeholder="输入4S店名称、电话、邮箱" id="" name="">
-		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i>搜4S店</button>
+	<div class="text-c"> 
+		<input type="text" class="input-text" style="width:250px" placeholder="输入会员姓名" id="name" name="">
+		<input type="text" class="input-text" style="width:250px" placeholder="输入会员手机号" id="mobile" name="">
+		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i>搜会员</button>
 	</div>
-	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="shopAdd('新建4S店','/toShopAdd','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 新建4S店</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
+		<span class="l">
+			<a href="javascript:;" onclick="exportExcel();" class="btn btn-primary radius">
+				<i class="Hui-iconfont">&#xe600;</i> 导出excel
+			</a>
+		</span>
+		<span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> 
+	</div>
 	<div class="mt-16">
 	<table class="table table-border table-bordered table-hover table-bg table-sort">
 		<thead>
 			<tr class="text-c">
 				<th width="80">ID</th>
-				<th width="100">4S店名称</th>
-				<th width="100">门店负责人</th>
-				<th width="100">联系电话</th>
-				<th width="">地址</th>
-				<th width="130">加入时间</th>
+				<th width="100">登录名</th>
+				<th width="100">姓名</th>
+				<th width="100">昵称</th>
+				<th width="100">手机号</th>
+				<th width="130">创建时间</th>
 				<th width="70">状态</th>
 				<th width="100">操作</th>
 			</tr>
 		</thead>
-		<tbody id="shopTbody">
+		<tbody id="personnelTbody">
 		</tbody>
 	</table>
 	</div>
@@ -44,46 +49,55 @@
 var newDate = new Date();
 $(function(){
 	$.ajax({
-        type : "GET",
-        url : "/getAllShopList",
+        type : "POST",
+        url : "/searchPersonnel",
         dataType : "json",
+        data : {
+        	name : $("#name").val(),
+        	mobile : $("#mobile").val(),
+        	page : "0",
+        	size : "100",
+        	sortStr : "mobile",
+        	asc : "asc"
+        },
         success : function(data) {
             if (data.code == "0") {
-				$.each(data.data, function (index, shop) {
-					createTr(index,shop);
+				$.each(data.data, function (index, personnel) {
+					createTr(index,personnel);
             	});
+            	$("#list_quantity").html(data.data.length);
             } else {
-                alert("获取信息失败");
+                alert(data.msg);
             }
         }
     });
 });
-function createTr(index,shop){
-	var tr=$("<tr>").attr("class","text-c").attr("id","shopTr_"+shop.id)
-	$("#shopTbody").append(tr);
+function createTr(index,personnel){
+	var tr=$("<tr>").attr("class","text-c").attr("id","personnelTr_"+personnel.id)
+	$("#personnelTbody").append(tr);
 
 	var td=$("<td>").html(index+1);
 	tr.append(td);
 
-	td=$("<td>").css("text-align","left").html(shop.name);
+	td=$("<td>").html(personnel.username);
 	tr.append(td);
 
-	td=$("<td>").css("text-align","left").html(shop.linkman);
+	td=$("<td>").html(personnel.name);
 	tr.append(td);
 
-	td=$("<td>").css("text-align","left").html(shop.phone);
+	td=$("<td>").html(personnel.nickname);
 	tr.append(td);
 
-	td=$("<td>").css("text-align","left").html(shop.address);
+	td=$("<td>").html(personnel.mobile);
 	tr.append(td);
 
-	td=$("<td>").css("text-align","left");
+	td=$("<td>");
 	tr.append(td);
-	newDate.setTime(shop.createTime);
+	newDate.setTime(personnel.createTime);
     td.html(newDate.toLocaleDateString());
 
 	td=$("<td>").attr("class","td-status");
-	if(shop.state==2)
+	if(personnel.state==2)
 		td.append("<span class='label label-success radius'>已启用</span>");
 	else
 		td.append("<span class='label radius'>已停用</span>");
@@ -92,10 +106,10 @@ function createTr(index,shop){
 	td=$("<td>").attr("class","td-manage");
 	var stopA=$("<a>").css("text-decoration","none").attr("href","javascript:")
 	.click(function(){
-	  updateShopState(this,shop.id);
+	  updatePersonnelState(this,personnel.id);
 	});
 	var stopLi=$("<i>").attr("class","Hui-iconfont");
-	if(shop.state==2){
+	if(personnel.state==2){
 		stopA.attr("title","停用");
 		stopLi.html("&#xe631;&nbsp;&nbsp;");
 	}
@@ -103,39 +117,15 @@ function createTr(index,shop){
 		stopA.attr("title","启用");
 		stopLi.html("&#xe615;&nbsp;&nbsp;");
 	}
-	var editA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改")
-	.click(function(){
-	  shopEdit('['+shop.name+'] 修改','/toShopUpdate?id='+shop.id,shop.id,'800','500');
-	});
-	var editLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6df;&nbsp;&nbsp;");
-	/*var deleteA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","删除")
-	.click(function(){
-	  shopDelete(this,shop.id);
-	});
-	var deleteLi=$("<i>").attr("class","Hui-iconfont").html("&#xe6e2;&nbsp;&nbsp;");*/
-	var imgA=$("<a>").css("text-decoration","none").attr("href","javascript:").attr("title","修改图片")
-	.click(function(){
-	  shopImgEdit('['+shop.name+'] 图片修改','/toShopImgEdit?id='+shop.id,shop.id,'800','500');
-	});
-	var imgLi=$("<i>").attr("class","Hui-iconfont").html("&#xe613;&nbsp;&nbsp;");
-	td.append(stopA.append(stopLi)).append(editA.append(editLi)).append(imgA.append(imgLi));
+	td.append(stopA.append(stopLi));
 
 	tr.append(td);
 }
-function shopAdd(title,url,w,h){
-	layer_show(title,url,w,h);
-}
-function shopEdit(title,url,id,w,h){
-	layer_show(title,url,w,h);
-}
-function shopImgEdit(title,url,id,w,h){
-	layer_show(title,url,w,h);
-}
-function shopDelete(obj,id){
+function personnelDelete(obj,id){
 	layer.confirm('确认要删除吗？',function(index){
 		$.ajax({
 			type: 'POST',
-			url: '/deleteShop',
+			url: '/deletePersonnel',
 			data : {
 	            "id" : id
 	        },
@@ -151,12 +141,12 @@ function shopDelete(obj,id){
 		});		
 	});
 }
-function updateShopState(obj,id){
+function updatePersonnelState(obj,id){
 	layer.confirm('确认要'+obj.title+'吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
 		$.ajax({
 			type: 'POST',
-			url: '/updateShopState',
+			url: '/updatePersonnelState',
 			data : {
 	            "id" : id
 	        },
@@ -180,6 +170,9 @@ function updateShopState(obj,id){
 	        }
 		});	
 	});
+}
+function exportExcel(){
+	window.open("/exportPersonnelExcel","_blank");
 }
 </script> 
 </body>

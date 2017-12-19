@@ -1,6 +1,9 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.BrowsingHistoryProduct;
+import com.hex.car.domain.Product;
+
+import java.util.List;
 
 /**
  * User: hexuan
@@ -13,4 +16,6 @@ public interface BrowsingHistoryProductService {
     void deleteBrowsingHistoryProduct(BrowsingHistoryProduct browsingHistoryProduct);
 
     BrowsingHistoryProduct findBrowsingHistoryProductById(String id);
+
+    List<Product> findProductsByBrowsingHistoryCountDesc();
 }

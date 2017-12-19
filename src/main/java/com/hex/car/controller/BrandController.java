@@ -41,6 +41,9 @@ public class BrandController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     /**
      * 获取所有品牌集合，按首字母，名称排序
      *
@@ -258,7 +261,7 @@ public class BrandController {
         fileName = UUID.randomUUID() + suffixName;
         ImgBrand imgBrand;
         try {
-            FileUtil.uploadFile(file.getBytes(), path, fileName);
+            FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
             imgBrand = new ImgBrand();
             imgBrand.setFileName(fileName);
 

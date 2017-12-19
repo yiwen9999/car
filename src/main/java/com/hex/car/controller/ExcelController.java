@@ -1,24 +1,26 @@
 package com.hex.car.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.hex.car.domain.Car;
 import com.hex.car.domain.CarType;
 import com.hex.car.domain.Parameter;
+import com.hex.car.domain.Personnel;
 import com.hex.car.service.*;
+import com.hex.car.utils.ExcelUtil;
 import com.hex.car.utils.ResultUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: hexuan
@@ -42,6 +44,9 @@ public class ExcelController {
 
     @Autowired
     private CarTypeService carTypeService;
+
+    @Autowired
+    private PersonnelService personnelService;
 
     @PostMapping(value = "/importCarExcel")
     public Object importCarExcel(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
@@ -115,6 +120,45 @@ public class ExcelController {
         return ResultUtil.success();
     }
 
+    @GetMapping(value = "exportPersonnelExcel")
+    public Object exportPersonnelExcel(HttpServletResponse response) throws IOException {
+        List<Personnel> personnels = personnelService.findAllOrderByCreateTimeDesc();
+        int num = 1;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String title = "会员列表";
+        Map<String, String> headMap = new LinkedHashMap<>();
+        headMap.put("number", "序号");
+        headMap.put("username", "登录名");
+        headMap.put("name", "姓名");
+        headMap.put("nickname", "昵称");
+        headMap.put("mobile", "手机号");
+        headMap.put("createTime", "创建时间");
+        headMap.put("state", "状态");
+        JSONArray ja = new JSONArray();
+        for (Personnel personnel : personnels) {
+            String username = "";
+            if (null != personnel.getUser()) {
+                username = personnel.getUser().getUsername();
+            }
+            String state = "停用";
+            if (2 == personnel.getState()) {
+                state = "启用";
+            }
+
+            SimpleData simpleData = new SimpleData();
+            simpleData.setNumber(num++);
+            simpleData.setUsername(username);
+            simpleData.setName(personnel.getName());
+            simpleData.setNickname(personnel.getNickname());
+            simpleData.setMobile(personnel.getMobile());
+            simpleData.setCreateTime(simpleDateFormat.format(personnel.getCreateTime()));
+            simpleData.setState(state);
+            ja.add(simpleData);
+        }
+        ExcelUtil.downloadExcelFile(title, headMap, ja, response);
+        return "success";
+    }
+
     protected static String getCellValue(Cell cell) {
         String cellValue = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -148,5 +192,71 @@ public class ExcelController {
             }
         }
         return cellValue;
+    }
+}
+
+class SimpleData {
+    private Integer number;
+    private String username;
+    private String name;
+    private String nickname;
+    private String mobile;
+    private String createTime;
+    private String state;
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

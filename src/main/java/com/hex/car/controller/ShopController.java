@@ -49,6 +49,9 @@ public class ShopController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     /**
      * 添加4s店
      *
@@ -80,7 +83,7 @@ public class ShopController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = UUID.randomUUID() + suffixName;
         try {
-            FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+            FileUtil.uploadImgFile(mainFile,path,fileName,zipFileLimit);
             imgShop = new ImgShop();
             imgShop.setFileName(fileName);
             imgShop.setMain(new Boolean(true));
@@ -95,7 +98,7 @@ public class ShopController {
             suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
                 imgShop.setMain(new Boolean(false));
@@ -323,7 +326,7 @@ public class ShopController {
                     shop.getMainImgShops().clear();
                     imgShopService.deleteImgShop(oldImgShop);
                 }
-                FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(mainFile,path,fileName,zipFileLimit);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
                 imgShop.setMain(new Boolean(true));
@@ -341,7 +344,7 @@ public class ShopController {
             suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
                 imgShop.setMain(new Boolean(false));

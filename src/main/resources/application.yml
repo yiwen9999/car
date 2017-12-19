@@ -1,5 +1,6 @@
 web:
   upload-path: /Users/hexuan/Desktop/develop/car_upload_file/
+  zip-file-limit: 1000000
 
 spring:
   datasource:
@@ -18,6 +19,10 @@ spring:
     static-path-pattern: /**
   resources:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+  http:
+      multipart:
+        max-file-size: 10Mb
+        max-request-size: 20Mb
 
 parameter:
   engineTypeCode : engineType

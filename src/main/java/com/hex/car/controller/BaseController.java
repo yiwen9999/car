@@ -28,11 +28,11 @@ public class BaseController {
 
     private List<Map> getChannelMapByUser(User user) {
         List<Map> mapList = new ArrayList<>();
+        List<Map> childMapList = new ArrayList<>();
+        Map<String, Object> map;
+        Map<String, String> childMap = new HashMap<>();
         if (null != user) {
-            if (user.getId().equals("root")) {
-                List<Map> childMapList = new ArrayList<>();
-                Map<String, Object> map;
-                Map<String, String> childMap = new HashMap<>();
+            if (user.getId().equals("root")) { // admin账号
                 map = new HashMap<>();
                 map.put("id", "c1");
                 map.put("name", "会员管理");
@@ -114,12 +114,7 @@ public class BaseController {
                 childMapList.add(childMap);
                 map.put("childList", childMapList);
                 mapList.add(map);
-
-                return mapList;
-            } else {
-                List<Map> childMapList = new ArrayList<>();
-                Map<String, Object> map;
-                Map<String, String> childMap = new HashMap<>();
+            } else if (null != user.getShop()) { // 4s店账号
                 map = new HashMap<>();
                 map.put("id", "c1");
                 map.put("name", "所售车辆管理");
@@ -141,8 +136,20 @@ public class BaseController {
                 childMapList.add(childMap);
                 map.put("childList", childMapList);
                 mapList.add(map);
+            } else if (null != user.getPersonnel()) { // 用户账号
 
-                return mapList;
+            } else { // 编辑文章账号
+                map = new HashMap<>();
+                map.put("id", "c2");
+                map.put("name", "文章管理");
+                map.put("url", "/");
+                childMapList = new ArrayList<>();
+                childMap = new HashMap<>();
+                childMap.put("name", "文章列表");
+                childMap.put("url", "/toEvaluateList");
+                childMapList.add(childMap);
+                map.put("childList", childMapList);
+                mapList.add(map);
             }
         }
         return mapList;

@@ -29,6 +29,9 @@ public class CarTypeController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     @GetMapping(value = "/getAllCarTypeList")
     public Object getAllCarTypeList() {
         return ResultUtil.success(carTypeService.findAllCarTypeList());
@@ -59,7 +62,7 @@ public class CarTypeController {
         fileName = UUID.randomUUID() + suffixName;
         ImgCarType imgCarType;
         try {
-            FileUtil.uploadFile(file.getBytes(), path, fileName);
+            FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
             imgCarType = new ImgCarType();
             imgCarType.setFileName(fileName);
         } catch (Exception e) {

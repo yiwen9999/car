@@ -86,6 +86,9 @@ public class FrontController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     /**
      * 获取在用广告集合
      *
@@ -105,17 +108,6 @@ public class FrontController {
     public Object getCarTypeListForFront() {
         List<CarType> carTypeList = carTypeService.findCarTypesByStateOrderBySort(new Integer(2));
         return ResultUtil.success(carTypeList);
-    }
-
-    /**
-     * 获取4个最新文章集合（准备废弃）
-     *
-     * @return
-     */
-    @PostMapping("/front/get4EvaluateList")
-    public Object get4EvaluateList() {
-        List<Evaluate> evaluates = evaluateService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
-        return ResultUtil.success(evaluates);
     }
 
     /**
@@ -139,17 +131,6 @@ public class FrontController {
         Map<String, Object> condition = new HashMap<>();
         condition.put("state", new Integer(2));
         return ResultUtil.success(evaluateService.findEvaluates(condition, pageRequest));
-    }
-
-    /**
-     * 获取4个最新商品集合（准备废弃）
-     *
-     * @return
-     */
-    @PostMapping("/front/get4ProductList")
-    public Object get4ProductList() {
-        List<Product> products = productService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
-        return ResultUtil.success(products);
     }
 
     /**
@@ -348,17 +329,6 @@ public class FrontController {
     }
 
     /**
-     * 获取4个最新4s店集合（准备废弃）
-     *
-     * @return
-     */
-    @PostMapping("/front/get4ShopList")
-    public Object get4ShopList() {
-        List<Shop> shops = shopService.findTop4ByStateOrderByCreateTimeDesc(new Integer(2));
-        return ResultUtil.success(shops);
-    }
-
-    /**
      * 搜索4s店
      *
      * @param page    页数（从0开始）
@@ -393,6 +363,13 @@ public class FrontController {
         return ResultUtil.success(shop);
     }
 
+    /**
+     * 获取车辆信息
+     *
+     * @param id
+     * @param request
+     * @return
+     */
     @PostMapping(value = "/front/getProductInfo")
     public Object getProductInfoForFront(String id, HttpServletRequest request) {
         if (null == id || id.equals("")) {
@@ -431,6 +408,35 @@ public class FrontController {
         map.put("shop", shop);
         map.put("evaluateList", product.getUsingEvaluates());
         return ResultUtil.success(map);
+    }
+
+    /**
+     * 获取最热车辆集合
+     *
+     * @param showNumber 显示个数
+     * @return
+     */
+    @PostMapping(value = "/front/getProductListForHot")
+    public Object getProductListForHot(@RequestParam(defaultValue = "4") Integer showNumber) {
+        List<Product> productList = browsingHistoryProductService.findProductsByBrowsingHistoryCountDesc();
+        if (showNumber < productList.size())
+            productList = productList.subList(0, showNumber);
+        return ResultUtil.success(productList);
+    }
+
+    /**
+     * 获取促销车辆集合
+     *
+     * @param showNumber 显示个数
+     * @return
+     */
+    @PostMapping(value = "/front/getProductListForPromotion")
+    public Object getProductListForPromotion(@RequestParam(defaultValue = "4") Integer showNumber) {
+        // TODO 目前未做促销功能，返回内容和最热相同
+        List<Product> productList = browsingHistoryProductService.findProductsByBrowsingHistoryCountDesc();
+        if (showNumber < productList.size())
+            productList = productList.subList(0, showNumber);
+        return ResultUtil.success(productList);
     }
 
     /**
@@ -678,7 +684,7 @@ public class FrontController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = UUID.randomUUID() + suffixName;
         try {
-            FileUtil.uploadFile(file.getBytes(), path, fileName);
+            FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
             imgUser = new ImgUser();
             imgUser.setFileName(fileName);
             user.setImgUser(imgUser);
@@ -703,7 +709,7 @@ public class FrontController {
             String fileName = UUID.randomUUID() + "." + imgType;
             try {
                 String oleFileName = user.getImgUser().getFileName();
-                FileUtil.uploadFile(Base64Util.GenerateImage(imgStr), path, fileName);
+                FileUtil.uploadImgFile64(Base64Util.GenerateImage(imgStr), path, fileName, zipFileLimit);
                 user.getImgUser().setFileName(fileName);
 
                 // 若之前头像不是默认头像，则删除老头像

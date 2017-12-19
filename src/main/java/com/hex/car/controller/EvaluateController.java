@@ -44,6 +44,9 @@ public class EvaluateController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     /**
      * 获取全部文章集合
      *
@@ -118,7 +121,7 @@ public class EvaluateController {
             fileName = UUID.randomUUID() + suffixName;
             ImgEvaluate imgEvaluate;
             try {
-                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 imgEvaluate = new ImgEvaluate();
                 imgEvaluate.setFileName(fileName);
                 saveEvaluate.setImgEvaluate(imgEvaluate);
@@ -133,7 +136,7 @@ public class EvaluateController {
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadFile(authorFile.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 saveEvaluate.setImgAuthor(fileName);
             } catch (Exception e) {
                 e.printStackTrace();

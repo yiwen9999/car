@@ -1,9 +1,12 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.BrowsingHistoryProduct;
+import com.hex.car.domain.Product;
 import com.hex.car.repository.BrowsingHistoryProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * User: hexuan
@@ -29,5 +32,10 @@ public class BrowsingHistoryProductServiceImpl implements BrowsingHistoryProduct
     @Override
     public BrowsingHistoryProduct findBrowsingHistoryProductById(String id) {
         return browsingHistoryProductRepository.findOne(id);
+    }
+
+    @Override
+    public List<Product> findProductsByBrowsingHistoryCountDesc() {
+        return browsingHistoryProductRepository.findProductsByBrowsingHistoryCountDesc();
     }
 }

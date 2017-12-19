@@ -58,12 +58,9 @@
 				</span> </div>
 		</div>
 		<div class="row cl" th:if="${shop==null}">
-			<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
-			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
-				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
-				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" name="files" class="input-file">
-				</span> </div>
+			<label class="form-label col-xs-4 col-sm-3"></label>
+			<div class="formControls col-xs-8 col-sm-9" style="color:red;">主图格式：jpg格式；主图比例：5:4；主图尺寸：500x400或等比例扩大
+。</div>
 		</div>
 		<div class="row cl" th:if="${shop==null}">
 			<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
@@ -80,6 +77,19 @@
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
 				<input type="file" name="files" class="input-file">
 				</span> </div>
+		</div>
+		<div class="row cl" th:if="${shop==null}">
+			<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
+				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
+				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+				<input type="file" name="files" class="input-file">
+				</span> </div>
+		</div>
+		<div class="row cl" th:if="${shop==null}">
+			<label class="form-label col-xs-4 col-sm-3"></label>
+			<div class="formControls col-xs-8 col-sm-9" style="color:red;">图片格式：jpg格式；图片比例：5:3；图片尺寸：1200x720
+。</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">所在城市：</label>

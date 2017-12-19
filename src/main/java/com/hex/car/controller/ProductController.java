@@ -46,6 +46,9 @@ public class ProductController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     /**
      * 根据名称查询启用商品集合
      *
@@ -131,7 +134,7 @@ public class ProductController {
         ImgProduct imgProduct;
         List<ImgProduct> imgProductList = new ArrayList<>();
         try {
-            FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+            FileUtil.uploadImgFile(mainFile,path,fileName,zipFileLimit);
             imgProduct = new ImgProduct();
             imgProduct.setFileName(fileName);
             imgProduct.setMain(new Boolean(true));
@@ -148,7 +151,7 @@ public class ProductController {
             suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
                 imgProduct.setMain(new Boolean(false));
@@ -377,7 +380,7 @@ public class ProductController {
                     product.getMainImgProducts().clear();
                     imgProductService.deleteImgProduct(oldImgProduct);
                 }
-                FileUtil.uploadFile(mainFile.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(mainFile,path,fileName,zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
                 imgProduct.setMain(new Boolean(true));
@@ -395,7 +398,7 @@ public class ProductController {
             suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
                 imgProduct.setMain(new Boolean(false));

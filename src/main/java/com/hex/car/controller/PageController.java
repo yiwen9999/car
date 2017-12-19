@@ -164,6 +164,16 @@ public class PageController {
     }
 
     /**
+     * 跳转用户列表页
+     *
+     * @return
+     */
+    @GetMapping(value = "/toPersonnelList")
+    public String toPersonnelList() {
+        return "/personnel/personnelList";
+    }
+
+    /**
      * 跳转4s店列表页
      *
      * @return

@@ -36,6 +36,9 @@ public class AdvertisingController {
     @Value("${web.upload-path}")
     private String path;
 
+    @Value("${web.zip-file-limit}")
+    private Long zipFileLimit;
+
     /**
      * 广告保存
      *
@@ -50,7 +53,7 @@ public class AdvertisingController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = UUID.randomUUID() + suffixName;
         try {
-            FileUtil.uploadFile(file.getBytes(), path, fileName);
+            FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
             imgAd.setFileName(fileName);
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +86,7 @@ public class AdvertisingController {
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadFile(file.getBytes(), path, fileName);
+                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
                 imgAd.setFileName(fileName);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -137,7 +137,6 @@ public class UploadController {
             msg.put("url", saveUrl + newFileName);
             writer.println(objectMapper.writeValueAsString(msg));
             return;
-
         }
         return;
     }

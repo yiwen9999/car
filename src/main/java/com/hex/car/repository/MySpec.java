@@ -386,4 +386,25 @@ public class MySpec {
         };
     }
 
+    public static Specification<Personnel> findPersonnels(Map<String, Object> condition) {
+        return new Specification<Personnel>() {
+            @Override
+            public Predicate toPredicate(Root<Personnel> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicate = new ArrayList<>();
+                String name = (String) condition.get("name");
+                String mobile = (String) condition.get("mobile");
+
+                if (!StringUtils.isEmpty(name)) {
+                    predicate.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
+                }
+                if (!StringUtils.isEmpty(mobile)) {
+                    predicate.add(criteriaBuilder.like(root.get("mobile").as(String.class), "%" + mobile + "%"));
+                }
+
+                Predicate[] pre = new Predicate[predicate.size()];
+                return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
+            }
+        };
+    }
+
 }

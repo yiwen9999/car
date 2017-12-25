@@ -114,6 +114,18 @@ public class BaseController {
                 childMapList.add(childMap);
                 map.put("childList", childMapList);
                 mapList.add(map);
+
+                map = new HashMap<>();
+                map.put("id", "c8");
+                map.put("name", "账号管理");
+                map.put("url", "/");
+                childMapList = new ArrayList<>();
+                childMap = new HashMap<>();
+                childMap.put("name", "账号列表");
+                childMap.put("url", "/toUserList");
+                childMapList.add(childMap);
+                map.put("childList", childMapList);
+                mapList.add(map);
             } else if (null != user.getShop()) { // 4s店账号
                 map = new HashMap<>();
                 map.put("id", "c1");

@@ -1,5 +1,6 @@
 package com.hex.car.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -71,6 +72,14 @@ public class Evaluate implements Serializable {
      * 创建时间
      */
     private Date createTime = new Date();
+
+    /**
+     * 创建人
+     */
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    @JsonIgnore
+    private User creator;
 
     public Evaluate() {
     }
@@ -145,6 +154,14 @@ public class Evaluate implements Serializable {
 
     public void setImgAuthor(String imgAuthor) {
         this.imgAuthor = imgAuthor;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
     @Override

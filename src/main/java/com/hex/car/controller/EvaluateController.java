@@ -63,8 +63,12 @@ public class EvaluateController {
      * @param request request获取登录账号
      * @return
      */
-    @GetMapping(value = "/getEvaluateListByIdentity")
-    private Object getEvaluateListByIdentity(Integer page, Integer size, String sortStr, String asc, HttpServletRequest request) {
+    @GetMapping(value = "/searchEvaluateListByIdentity")
+    private Object searchEvaluateListByIdentity(@RequestParam(defaultValue = "0") Integer page,
+                                                @RequestParam(defaultValue = "1000") Integer size,
+                                                @RequestParam(defaultValue = "createTime") String sortStr,
+                                                @RequestParam(defaultValue = "desc") String asc,
+                                                HttpServletRequest request) {
         Object object = request.getSession().getAttribute("user");
         if (null == object) {
             return ResultUtil.error(ResultEnum.UN_LOGIN.getCode(), ResultEnum.UN_LOGIN.getMsg());
@@ -74,10 +78,12 @@ public class EvaluateController {
         if (user.getId().equals("root")) {
             return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         } else if (null != user.getShop()) {
+            // shopId作为条件时，会查询与该店所售车辆配对的文章，以及创建人为该店的文章
             condition.put("shopId", user.getShop().getId());
             return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         } else {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+            condition.put("creatorId", user.getId());
+            return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         }
     }
 
@@ -91,8 +97,18 @@ public class EvaluateController {
     @PostMapping(value = "/saveEvaluate")
     private Object saveEvaluate(Evaluate evaluate,
                                 @RequestParam(value = "file", required = false) MultipartFile file,
-                                @RequestParam(value = "authorFile", required = false) MultipartFile authorFile) {
+                                @RequestParam(value = "authorFile", required = false) MultipartFile authorFile,
+                                HttpServletRequest request) {
         Evaluate saveEvaluate = new Evaluate();
+        if (!HexUtil.validateString(evaluate.getTitle())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "文章标题" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (!HexUtil.validateString(evaluate.getIntro())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "文章简介" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (!HexUtil.validateString(evaluate.getContent())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "文章内容" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
         if (null != evaluate.getId() && !evaluate.getId().equals("")) {
             saveEvaluate = evaluateService.findEvaluateById(evaluate.getId());
             if (null != file && null != saveEvaluate.getImgEvaluate()) {
@@ -109,11 +125,16 @@ public class EvaluateController {
                 if (deleteFile.exists())
                     deleteFile.delete();
             }
+        } else {
+            if (null == file) {
+                return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "文章图片" + ResultEnum.ERROR_NULLPARAM.getMsg());
+            }
         }
 
         saveEvaluate.setTitle(evaluate.getTitle());
         saveEvaluate.setIntro(evaluate.getIntro());
         saveEvaluate.setContent(evaluate.getContent());
+        saveEvaluate.setCreator(HexUtil.getUser(request));
 
         if (null != file) {
             String fileName = file.getOriginalFilename();
@@ -121,7 +142,7 @@ public class EvaluateController {
             fileName = UUID.randomUUID() + suffixName;
             ImgEvaluate imgEvaluate;
             try {
-                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+                FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgEvaluate = new ImgEvaluate();
                 imgEvaluate.setFileName(fileName);
                 saveEvaluate.setImgEvaluate(imgEvaluate);
@@ -136,7 +157,7 @@ public class EvaluateController {
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+                FileUtil.uploadImgFile(authorFile, path, fileName, zipFileLimit);
                 saveEvaluate.setImgAuthor(fileName);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -213,37 +234,6 @@ public class EvaluateController {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         return ResultUtil.success(evaluate);
-    }
-
-    /**
-     * 根据名称，创建时间查询文章集合
-     *
-     * @param beginTime
-     * @param endTime
-     * @param name
-     * @return
-     */
-    @PostMapping(value = "/searchEvaluateList")
-    public Object searchEvaluateList(String beginTime, String endTime, String name) {
-        return ResultUtil.success(evaluateService.findEvaluateListByCreateTimeAndNameAndIdentity(HexUtil.formatBeginTimeString(beginTime), HexUtil.formatEndTimeString(endTime), name, null));
-    }
-
-    /**
-     * 根据名称，创建时间，创建人查询文章集合
-     *
-     * @param beginTime
-     * @param endTime
-     * @param name
-     * @param request
-     * @return
-     */
-    @PostMapping(value = "/searchEvaluateListByIdentity")
-    public Object searchEvaluateList(String beginTime, String endTime, String name, HttpServletRequest request) {
-        User user = HexUtil.getUser(request);
-        if (null == user || null == user.getShop()) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-        return ResultUtil.success(evaluateService.findEvaluateListByCreateTimeAndNameAndIdentity(HexUtil.formatBeginTimeString(beginTime), HexUtil.formatEndTimeString(endTime), name, user.getShop()));
     }
 
     /**

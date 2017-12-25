@@ -8,29 +8,29 @@
 <div class="page-container">
 	<form class="form form-horizontal" id="form-advertising-add" enctype="multipart/form-data">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">广告名称：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>广告名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="name" name="name" th:value="${advertising!=null ? advertising.name:''}">
 			</div>
 		</div>
 		<div class="row cl" id="popup_banner_description">
-			<label class="form-label col-xs-4 col-sm-3">广告URL：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>广告URL：</label>
 			<div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="" placeholder="" id="url" name="url" th:value="${advertising!=null ? advertising.url:''}">
             </div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">广告排序：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>广告排序：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="sort" name="sort" th:value="${advertising!=null ? advertising.sort:''}">
+                <input type="text" class="input-text" value="" placeholder="请输入正整数" id="sort" name="sort" th:value="${advertising!=null ? advertising.sort:''}">
             </div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">广告banner上传：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>广告banner上传：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" name="file" class="input-file">
+				<input type="file" name="file" id="bannerFileId" class="input-file">
 				</span> </div>
 		</div>
 		<div class="row cl">
@@ -71,25 +71,36 @@ $(function(){
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
-			var urlStr="";
-			if($("#id").val()!=""){
-				urlStr="/updateAdvertising";
-			}else{
-				urlStr="/saveAdvertising";
+			var isFlag=true;
+			if($("#id").val()==""&&$("#bannerFileId").length>0&&$("#bannerFileId").val()==""){
+				isFlag=false;
+				layer.msg("广告banner为必传项",{icon:2,time:2000});
 			}
-			$(form).ajaxSubmit({
-				url: urlStr,
-				type: 'post',
-				dataType:"json",
-				success: function(data){
-					layer.msg('操作成功!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
-				},
-                error: function(XmlHttpRequest, textStatus, errorThrown){
-					layer.msg('error!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
+			if(isFlag){
+				var urlStr="";
+				if($("#id").val()!=""){
+					urlStr="/updateAdvertising";
+				}else{
+					urlStr="/saveAdvertising";
 				}
-			});
+				$(form).ajaxSubmit({
+					url: urlStr,
+					type: 'post',
+					dataType:"json",
+					success: function(data){
+					    if(data.code==0){
+	                        layer.msg('操作成功!',{icon:1,time:1000});
+	                        setTimeout("window.parent.location.reload();",1000);
+						}else{
+	                        layer.msg(data.msg,{icon:2,time:2000});
+						}
+					},
+	                error: function(XmlHttpRequest, textStatus, errorThrown){
+						layer.msg('操作失败!',{icon:2,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					}
+				});
+			}
 		}
 	});
 });

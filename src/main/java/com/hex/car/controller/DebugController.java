@@ -5,10 +5,10 @@ import com.hex.car.domain.ImgBrand;
 import com.hex.car.domain.ImgUser;
 import com.hex.car.domain.User;
 import com.hex.car.service.BrandService;
-import com.hex.car.service.ImgBrandService;
 import com.hex.car.service.UserService;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,12 +28,9 @@ public class DebugController {
     @Autowired
     private BrandService brandService;
 
-    @Autowired
-    private ImgBrandService imgBrandService;
-
     @GetMapping("/debug/defaultImgUser")
     public Object defaultImgUser() {
-        List<User> users = userService.findAllUser();
+        List<User> users = userService.findAllUser(new Sort(Sort.Direction.ASC, "createTime"));
         for (User user : users) {
             if (null == user.getImgUser()) {
                 user.setImgUser(new ImgUser());

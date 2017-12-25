@@ -25,7 +25,5 @@ public interface EvaluateService {
 
     List<Evaluate> findTop4ByStateOrderByCreateTimeDesc(Integer state);
 
-    List<Evaluate> findEvaluateListByCreateTimeAndNameAndIdentity(Date beginTime, Date endTime, String name, Shop shop);
-
     Page<Evaluate> findEvaluates(Map<String, Object> condition, PageRequest pageRequest);
 }

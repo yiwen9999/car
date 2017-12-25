@@ -54,50 +54,49 @@
 		<input type="hidden" name="userId" id="userId" value="" th:value="${user!=null ? user.id:''}">
 		<div th:if="${user.id=='root'}">
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3">4s店：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>4s店：</label>
 				<div class="formControls col-xs-8 col-sm-9">
-					<input id="shopText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${product!=null&&product.shop!=null ? product.shop.name:''}">
+					<input id="shopText" class="input-text" onblur="hideDiv('shopWord')" type="text" placeholder="请选择4s店" autocomplete="off" th:value="${product!=null&&product.shop!=null ? product.shop.name:''}">
 					<div id="shopWord"></div>
 					<input id="shopIdInput" name="shopId" type="hidden" value="" th:value="${product!=null&&product.shop!=null ? product.shop.id:''}">
 				</div>
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">车型库：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>车型库：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input id="carText" class="input-text" type="text" placeholder="" autocomplete="off" th:value="${product!=null&&product.car!=null ? product.car.name:''}">
+				<input id="carText" class="input-text" onblur="hideDiv('word')" type="text" placeholder="请选择车型" autocomplete="off" th:value="${product!=null&&product.car!=null ? product.car.name:''}" >
 				<div id="word"></div>
 				<input id="carIdInput" name="carId" type="hidden" value="" th:value="${product!=null&&product.car!=null ? product.car.id:''}">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">车辆名称：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>车辆名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="name" name="name" th:value="${product!=null ? product.name:''}">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">售价：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>售价：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="price" name="price" th:value="${product!=null ? product.price:''}">
+				<input type="text" class="input-text" value="" placeholder="请输入数字" id="price" name="price" th:value="${product!=null ? product.price:''}">
 			</div>
 		</div>
 		<div class="row cl" id="store-description">
-			<label class="form-label col-xs-4 col-sm-3">详情说明：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>详情说明：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<textarea id="store-area" name="details" cols="" rows="" class="textarea"  placeholder="详情说明...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="详情说明不能为空！" onKeyUp="$.Huitextarealength(this,500)" th:text="${product!=null ? product.details:''}"></textarea>
-				<p class="textarea-numberbar"><em id="store-restriction" class="textarea-length">500</em>/500</p>
+				<textarea id="store-area" name="details" cols="" rows="" class="textarea"  placeholder="详情说明...最少输入10个字符" th:text="${product!=null ? product.details:''}"></textarea>
 			</div>
 		</div>
 		<div id="imgeProductDiv" th:if="${product==null}">
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3">附件(主图)：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>附件(主图)：</label>
 				<div class="formControls col-xs-8 col-sm-9">
 					<a onClick="addImgProductFileTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a>
 					<span class="btn-upload form-group">
 						<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
 						<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-						<input type="file" name="mainFile" class="input-file">
+						<input type="file" name="mainFile" id="mainFileId" class="input-file">
 					</span>
 				</div>
 			</div>
@@ -147,68 +146,58 @@ $(function(){
 		rules:{
 			name:{
 				required:true
+			},
+			price:{
+				required:true
+			},
+			details:{
+				required:true
 			}
 		},
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
-			var urlStr="";
-			if($("#productId").val()!=""){
-				urlStr="/updateProduct";
-			}else{
-				urlStr="/saveProduct";
+			var isFlag=true;
+			if($("#shopIdInput").val()==""){
+				layer.msg("4s店为必选项",{icon:2,time:2000});
+				isFlag=false;
+			}else if($("#carIdInput").val()==""){
+				layer.msg("车型库为必选项",{icon:2,time:2000});
+				isFlag=false;
+			}else if($("#mainFileId").length>0&&$("#mainFileId").val()==""){
+				layer.msg("附件(主图)为必传项",{icon:2,time:2000});
+				isFlag=false;
 			}
-			$(form).ajaxSubmit({
-				url: urlStr,
-				type: 'post',
-				dataType:"json",
-				success: function(data){
-					if(data.code==0){
-						layer.msg('操作成功!',{icon:1,time:1000});
-					}else{
-						layer.msg(data.msg,{icon:1,time:1000});
-					}
-					setTimeout("window.parent.location.reload();",1000);
-				},
-                error: function(XmlHttpRequest, textStatus, errorThrown){
-					layer.msg('操作失败!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
+			if(isFlag){
+				var urlStr="";
+				if($("#productId").val()!=""){
+					urlStr="/updateProduct";
+				}else{
+					urlStr="/saveProduct";
 				}
-			});
+				$(form).ajaxSubmit({
+					url: urlStr,
+					type: 'post',
+					dataType:"json",
+					success: function(data){
+						if(data.code==0){
+							layer.msg('操作成功!',{icon:1,time:1000});
+	                        setTimeout("window.parent.location.reload();",1000);
+						}else{
+							layer.msg(data.msg,{icon:2,time:2000});
+						}
+					},
+	                error: function(XmlHttpRequest, textStatus, errorThrown){
+						layer.msg('操作失败!',{icon:2,time:1000});
+					}
+				});
+			}
 		}
 	});
 	if($("#userId").val()=="root"){
 		//当键盘键被松开时发送Ajax获取数据
-		$('#shopText').keyup(function(){
-			var keywords = $(this).val();
-			if (keywords=='') { $('#shopWord').hide(); return };
-			$.ajax({
-	            type: 'POST',
-	            url: '/searchTop10UsingShopListByName',
-	            data : {
-	                "name" : keywords
-	            },
-	            dataType: 'json',
-				beforeSend:function(){
-					$('#shopWord').append('<div>正在加载。。。</div>');
-				},
-				success:function(data){
-					$('#shopWord').empty().show();
-					if (data.data=='')
-					{
-						$('#shopWord').append('<div class="error">未找到  "' + keywords + '"</div>');
-					}
-					$.each(data.data, function(index,shop){
-						$('#shopWord').append('<div class="click_shopWork" id="'+ shop.id +'">'+ shop.name +'</div>');
-					})
-				},
-				error:function(){
-					$('#shopWord').empty().show();
-					$('#shopWord').append('<div class="click_shopWork">失败 "' + keywords + '"</div>');
-				}
-			})
-		});
+		$('#shopText').keyup(function(){searchShop()}).focus(function(){searchShop()});
 		//点击赋值shopId
 		$(document).on('click','.click_shopWork',function(){
 			var word = $(this).text();
@@ -218,35 +207,7 @@ $(function(){
 		});
 	}
 	//当键盘键被松开时发送Ajax获取数据
-	$('#carText').keyup(function(){
-		var keywords = $(this).val();
-		if (keywords=='') { $('#word').hide(); return };
-		$.ajax({
-            type: 'POST',
-            url: '/searchTop10UsingCarListByName',
-            data : {
-                "name" : keywords
-            },
-            dataType: 'json',
-			beforeSend:function(){
-				$('#word').append('<div>正在加载。。。</div>');
-			},
-			success:function(data){
-				$('#word').empty().show();
-				if (data.data=='')
-				{
-					$('#word').append('<div class="error">未找到  "' + keywords + '"</div>');
-				}
-				$.each(data.data, function(index,car){
-					$('#word').append('<div class="click_work" id="'+ car.id +'">'+ car.name +'</div>');
-				})
-			},
-			error:function(){
-				$('#word').empty().show();
-				$('#word').append('<div class="click_work">失败 "' + keywords + '"</div>');
-			}
-		})
-	});
+	$('#carText').keyup(function(){searchCar()}).focus(function(){searchCar()});
 	//点击赋值customerId
 	$(document).on('click','.click_work',function(){
 		var word = $(this).text();
@@ -262,6 +223,67 @@ function addImgProductFileTr(){
 }
 function deleteFile(object){
 	object.parents("div#newImgeProductDiv").remove();
+}
+function hideDiv(objId) {
+    setTimeout("$('#"+objId+"').hide();",500);
+}
+function searchCar(){
+	var keywords = $('#carText').val();
+	if (keywords=='') { $('#word').hide(); return };
+	$.ajax({
+        type: 'POST',
+        url: '/searchTop10UsingCarListByName',
+        data : {
+            "name" : keywords
+        },
+        dataType: 'json',
+		beforeSend:function(){
+			$('#word').append('<div>正在加载。。。</div>');
+		},
+		success:function(data){
+			$('#word').empty().show();
+			if (data.data=='')
+			{
+				$('#word').append('<div class="error">未找到  "' + keywords + '"</div>');
+			}
+			$.each(data.data, function(index,car){
+				$('#word').append('<div class="click_work" id="'+ car.id +'">'+ car.name +'</div>');
+			})
+		},
+		error:function(){
+			$('#word').empty().show();
+			$('#word').append('<div class="click_work">失败 "' + keywords + '"</div>');
+		}
+	})
+}
+function searchShop(){
+	var keywords = $('#shopText').val();
+	if (keywords=='') { $('#shopWord').hide(); return };
+	$.ajax({
+        type: 'POST',
+        url: '/searchTop10UsingShopListByName',
+        data : {
+            "name" : keywords
+        },
+        dataType: 'json',
+		beforeSend:function(){
+			$('#shopWord').append('<div>正在加载。。。</div>');
+		},
+		success:function(data){
+			$('#shopWord').empty().show();
+			if (data.data=='')
+			{
+				$('#shopWord').append('<div class="error">未找到  "' + keywords + '"</div>');
+			}
+			$.each(data.data, function(index,shop){
+				$('#shopWord').append('<div class="click_shopWork" id="'+ shop.id +'">'+ shop.name +'</div>');
+			})
+		},
+		error:function(){
+			$('#shopWord').empty().show();
+			$('#shopWord').append('<div class="click_shopWork">失败 "' + keywords + '"</div>');
+		}
+	})
 }
 </script> 
 <!--/请在上方写此页面业务相关的脚本-->

@@ -52,12 +52,6 @@ public class EvaluateServiceImpl implements EvaluateService {
     }
 
     @Override
-    public List<Evaluate> findEvaluateListByCreateTimeAndNameAndIdentity(Date beginTime, Date endTime, String name, Shop shop) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
-        return evaluateRepository.findAll(MySpec.findEvaluatesByCreateTimeAndNameAndIdentity(beginTime, endTime, name, shop), sort);
-    }
-
-    @Override
     public Page<Evaluate> findEvaluates(Map<String, Object> condition, PageRequest pageRequest) {
         return evaluateRepository.findAll(MySpec.findEvaluates(condition), pageRequest);
     }

@@ -64,4 +64,19 @@ public class HexUtil {
         return new PageRequest(page, size, sort);
     }
 
+    public static Boolean validateString(String string) {
+        if (null == string || "".equals(string)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static Boolean validateDouble(Double d) {
+        if (null == d || 0 == d) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

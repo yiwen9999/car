@@ -2,39 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="common :: header"></div>
-<title>会员列表</title>
+<title>账号列表</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>会员管理 <span class="c-gray en">&gt;</span> 会员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>账号管理 <span class="c-gray en">&gt;</span> 账号列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-	<div class="text-c"> 
-		<input type="text" class="input-text" style="width:250px" placeholder="输入会员姓名" id="name" name="">
-		<input type="text" class="input-text" style="width:250px" placeholder="输入会员手机号" id="mobile" name="">
-		<button type="button" class="btn btn-success radius" id="" name="" onclick="searchPersonnel();"><i class="Hui-iconfont">&#xe665;</i>搜会员</button>
-	</div>
-	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
-		<span class="l">
-			<a href="javascript:;" onclick="exportExcel();" class="btn btn-primary radius">
-				<i class="Hui-iconfont">&#xe600;</i> 导出excel
-			</a>
-		</span>
-		<span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> 
-	</div>
+	<!-- <div class="text-c"> 日期范围：
+		<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
+		-
+		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
+		<input type="text" class="input-text" style="width:250px" placeholder="输入4S店名称、电话、邮箱" id="" name="">
+		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i>搜4S店</button>
+	</div> -->
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="userAdd('新建账号','/toUserAdd','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 新建账号</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
 	<div class="mt-16">
 	<table class="table table-border table-bordered table-hover table-bg table-sort">
 		<thead>
 			<tr class="text-c">
 				<th width="80">ID</th>
 				<th width="100">登录名</th>
-				<th width="100">姓名</th>
-				<th width="100">昵称</th>
-				<th width="100">手机号</th>
-				<th width="130">创建时间</th>
-				<th width="70">状态</th>
+				<th width="100">身份</th>
+				<th width="100">状态</th>
 				<th width="100">操作</th>
 			</tr>
 		</thead>
-		<tbody id="personnelTbody">
+		<tbody id="userTbody">
 		</tbody>
 	</table>
 	</div>
@@ -48,56 +40,36 @@
 <script type="text/javascript">
 var newDate = new Date();
 $(function(){
-	searchPersonnel();
-});
-function searchPersonnel(){
-	$("#personnelTbody").html("");
 	$.ajax({
-        type : "POST",
-        url : "/searchPersonnelList",
+        type : "GET",
+        url : "/getUserList",
         dataType : "json",
-        data : {
-        	name : $("#name").val(),
-        	mobile : $("#mobile").val()
-        },
         success : function(data) {
             if (data.code == "0") {
-				$.each(data.data, function (index, personnel) {
-					createTr(index,personnel);
+				$.each(data.data, function (index, user) {
+					createTr(index,user);
             	});
-            	$("#list_quantity").html(data.data.length);
             } else {
                 alert(data.msg);
             }
         }
     });
-}
-function createTr(index,personnel){
-	var tr=$("<tr>").attr("class","text-c").attr("id","personnelTr_"+personnel.id)
-	$("#personnelTbody").append(tr);
+});
+function createTr(index,user){
+	var tr=$("<tr>").attr("class","text-c").attr("id","userTr_"+user.id)
+	$("#userTbody").append(tr);
 
 	var td=$("<td>").html(index+1);
 	tr.append(td);
 
-	td=$("<td>").html(personnel.username);
+	td=$("<td>").html(user.username);
 	tr.append(td);
 
-	td=$("<td>").html(personnel.name);
+	td=$("<td>").html(user.identity);
 	tr.append(td);
-
-	td=$("<td>").html(personnel.nickname);
-	tr.append(td);
-
-	td=$("<td>").html(personnel.mobile);
-	tr.append(td);
-
-	td=$("<td>");
-	tr.append(td);
-	newDate.setTime(personnel.createTime);
-    td.html(newDate.toLocaleDateString());
 
 	td=$("<td>").attr("class","td-status");
-	if(personnel.state==2)
+	if(user.state==2)
 		td.append("<span class='label label-success radius'>已启用</span>");
 	else
 		td.append("<span class='label radius'>已停用</span>");
@@ -106,10 +78,10 @@ function createTr(index,personnel){
 	td=$("<td>").attr("class","td-manage");
 	var stopA=$("<a>").css("text-decoration","none").attr("href","javascript:")
 	.click(function(){
-	  updatePersonnelState(this,personnel.id);
+	  updateUserState(this,user.id);
 	});
 	var stopLi=$("<i>").attr("class","Hui-iconfont");
-	if(personnel.state==2){
+	if(user.state==2){
 		stopA.attr("title","停用");
 		stopLi.html("&#xe631;&nbsp;&nbsp;");
 	}
@@ -118,14 +90,17 @@ function createTr(index,personnel){
 		stopLi.html("&#xe615;&nbsp;&nbsp;");
 	}
 	td.append(stopA.append(stopLi));
-
 	tr.append(td);
 }
-function personnelDelete(obj,id){
+function userAdd(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+
+function userDelete(obj,id){
 	layer.confirm('确认要删除吗？',function(index){
 		$.ajax({
 			type: 'POST',
-			url: '/deletePersonnel',
+			url: '/deleteUser',
 			data : {
 	            "id" : id
 	        },
@@ -141,12 +116,12 @@ function personnelDelete(obj,id){
 		});		
 	});
 }
-function updatePersonnelState(obj,id){
+function updateUserState(obj,id){
 	layer.confirm('确认要'+obj.title+'吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
 		$.ajax({
 			type: 'POST',
-			url: '/updatePersonnelState',
+			url: '/updateUserState',
 			data : {
 	            "id" : id
 	        },
@@ -154,12 +129,12 @@ function updatePersonnelState(obj,id){
 			success : function(data) {
 	            if (data.code == "0") {
 					if(data.data.state==-1){
-		            	$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateShopState(this,\""+data.data.id+"\");' href='javascript:;' title='启用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe615;&nbsp;&nbsp;</i></a>");
+		            	$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateUserState(this,\""+data.data.id+"\");' href='javascript:;' title='启用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe615;&nbsp;&nbsp;</i></a>");
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
 						$(obj).remove();
 						layer.msg('已停用!',{icon: 5,time:1000});
 					}else{
-						$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateShopState(this,\""+data.data.id+"\");' href='javascript:;' title='停用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe631;&nbsp;&nbsp;</i></a>");
+						$(obj).parents("tr").find(".td-manage").prepend("<a onClick='updateUserState(this,\""+data.data.id+"\");' href='javascript:;' title='停用' style='text-decoration:none'><i class='Hui-iconfont'>&#xe631;&nbsp;&nbsp;</i></a>");
 						$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
 						$(obj).remove();
 						layer.msg('已启用!', {icon: 6,time:1000});
@@ -170,9 +145,6 @@ function updatePersonnelState(obj,id){
 	        }
 		});	
 	});
-}
-function exportExcel(){
-	window.open("/exportPersonnelExcel","_blank");
 }
 </script> 
 </body>

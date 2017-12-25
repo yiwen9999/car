@@ -62,7 +62,7 @@ public class CarTypeController {
         fileName = UUID.randomUUID() + suffixName;
         ImgCarType imgCarType;
         try {
-            FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+            FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
             imgCarType = new ImgCarType();
             imgCarType.setFileName(fileName);
         } catch (Exception e) {

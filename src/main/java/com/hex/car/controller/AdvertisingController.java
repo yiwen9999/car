@@ -6,6 +6,7 @@ import com.hex.car.enums.ResultEnum;
 import com.hex.car.service.AdvertisingService;
 import com.hex.car.service.ImgADService;
 import com.hex.car.utils.FileUtil;
+import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,12 +49,24 @@ public class AdvertisingController {
     @PostMapping(value = "/saveAdvertising")
     public Object saveAdvertising(Advertising advertising,
                                   @RequestParam(value = "file", required = false) MultipartFile file) {
+        if (!HexUtil.validateString(advertising.getName())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "广告名称" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (null == advertising.getSort()) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "排序" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (!HexUtil.validateString(advertising.getUrl())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "URL" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (null == file) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "广告图片" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
         ImgAD imgAd = new ImgAD();
         String fileName = file.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = UUID.randomUUID() + suffixName;
         try {
-            FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+            FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
             imgAd.setFileName(fileName);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,13 +93,28 @@ public class AdvertisingController {
         if (null == saveAdvertising) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
+        if (null != advertising.getName() && !advertising.getName().equals("")) {
+            saveAdvertising.setName(advertising.getName());
+        } else {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "广告名称" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (null != advertising.getSort()) {
+            saveAdvertising.setSort(advertising.getSort());
+        } else {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "排序" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (null != advertising.getUrl() && !advertising.getUrl().equals("")) {
+            saveAdvertising.setUrl(advertising.getUrl());
+        } else {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "URL" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
         if (null != file) {
             ImgAD imgAd = new ImgAD();
             String fileName = file.getOriginalFilename();
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+                FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgAd.setFileName(fileName);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -96,15 +124,6 @@ public class AdvertisingController {
             deleteFile.delete();
             imgADService.deleteImgAD(saveAdvertising.getImgAD());
             saveAdvertising.setImgAD(imgAd);
-        }
-        if (null != advertising.getName() && !advertising.getName().equals("")) {
-            saveAdvertising.setName(advertising.getName());
-        }
-        if (null != advertising.getSort()) {
-            saveAdvertising.setSort(advertising.getSort());
-        }
-        if (null != advertising.getUrl() && !advertising.getUrl().equals("")) {
-            saveAdvertising.setUrl(advertising.getUrl());
         }
         return ResultUtil.success(advertisingService.saveAdvertising(saveAdvertising));
     }

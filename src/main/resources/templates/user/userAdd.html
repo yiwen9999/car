@@ -2,18 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <div th:include="common :: header"></div>
-<title>修改型号</title>
+<title>账号添加</title>
 </head>
 <body>
 <article class="page-container">
-	<form action="" method="post" class="form form-horizontal" id="form-model-update">
-		<input type="hidden" id="modelId" name="modelId" value="" th:value="${model.id}">
+	<form action="" method="post" class="form form-horizontal" id="form-user-add">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>型号名：</label>
-			<div class="formControls col-xs-8 col-sm-9" id="modelDiv">
-				<div>
-					<input type="text" class="input-text" value="" th:value="${model.name}" placeholder="" name="modelName" width="80%">
-				</div>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="username" name="username" >
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录密码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="password" class="input-text" value="" placeholder="" id="password" name="password">
 			</div>
 		</div>
 		<div class="row cl">
@@ -26,43 +29,47 @@
 
 <div th:include="common :: footer"></div>
 
-<!--请在下方写此页面业务相关的脚本-->
+<!--请在下方写此页面业务相关的脚本--> 
 <script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
 <script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
 <script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
 $(function(){
-	$("#form-model-update").validate({
+	$("#form-user-add").validate({
 		rules:{
-			modelName:{
+			username:{
 				required:true
-			},			
+			},
+			password:{
+				required:true
+			}
 		},
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
+			var url="/saveUser";
 			$(form).ajaxSubmit({
-				url: "/updateModel",
+				url: url,
 				type: 'post',
 				dataType:"json",
 				success: function(data){
 					if(data.code==0){
-                        layer.msg('添加成功!',{icon:1,time:1000});
-                        setTimeout("window.parent.location.reload();",1000);
+						layer.msg('添加成功!',{icon:1,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
 					}else{
-                        layer.msg(data.msg,{icon:2,time:2000});
-                        setTimeout("window.parent.location.reload();",2000);
+						layer.msg(data.msg,{icon:2,time:2000});
 					}
 				},
                 error: function(XmlHttpRequest, textStatus, errorThrown){
-					layer.msg('error!',{icon:2,time:1000});
+					layer.msg('操作失败!',{icon:2,time:1000});
 					setTimeout("window.parent.location.reload();",1000);
 				}
 			});
 		}
 	});
 });
+
 </script> 
 <!--/请在上方写此页面业务相关的脚本-->
 </body>

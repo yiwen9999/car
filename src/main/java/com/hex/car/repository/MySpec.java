@@ -28,43 +28,12 @@ public class MySpec {
                 if (!StringUtils.isEmpty(name)) {
                     predicate.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
                 }
-
                 if (null != shop) {
                     predicate.add(criteriaBuilder.equal(root.get("shop").as(Shop.class), shop));
                 }
-
                 if (null != beginTime) {
                     predicate.add(criteriaBuilder.greaterThan(root.get("createTime").as(Date.class), beginTime));
                 }
-
-                if (null != endTime) {
-                    predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), endTime));
-                }
-
-                Predicate[] pre = new Predicate[predicate.size()];
-                return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
-            }
-        };
-    }
-
-    public static Specification<Evaluate> findEvaluatesByCreateTimeAndNameAndIdentity(Date beginTime, Date endTime, String name, Shop shop) {
-        return new Specification<Evaluate>() {
-            @Override
-            public Predicate toPredicate(Root<Evaluate> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicate = new ArrayList<>();
-
-                if (!StringUtils.isEmpty(name)) {
-                    predicate.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
-                }
-
-                if (null != shop) {
-                    predicate.add(criteriaBuilder.equal(root.get("shop").as(Shop.class), shop));
-                }
-
-                if (null != beginTime) {
-                    predicate.add(criteriaBuilder.greaterThan(root.get("createTime").as(Date.class), beginTime));
-                }
-
                 if (null != endTime) {
                     predicate.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class), endTime));
                 }
@@ -149,13 +118,19 @@ public class MySpec {
                 List<Predicate> predicate = new ArrayList<>();
                 Integer state = (Integer) condition.get("state");
                 String shopId = (String) condition.get("shopId");
+                String creatorId = (String) condition.get("creatorId");
 
                 if (null != state) {
                     predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), state));
                 }
                 if (!StringUtils.isEmpty(shopId)) {
                     Join<Evaluate, Product> productJoin = root.join("products", JoinType.INNER);
-                    predicate.add(criteriaBuilder.equal(productJoin.get("shop").get("id").as(String.class), shopId));
+                    Predicate predicate1 = criteriaBuilder.equal(productJoin.get("shop").get("id").as(String.class), shopId);
+                    Predicate predicate2 = criteriaBuilder.equal(root.get("creator").get("id").as(String.class), shopId);
+                    predicate.add(criteriaBuilder.or(predicate1, predicate2));
+                }
+                if (!StringUtils.isEmpty(creatorId)) {
+                    predicate.add(criteriaBuilder.equal(root.get("creator").get("id").as(String.class), creatorId));
                 }
 
                 Predicate[] pre = new Predicate[predicate.size()];
@@ -171,9 +146,21 @@ public class MySpec {
             public Predicate toPredicate(Root<Shop> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicate = new ArrayList<>();
                 Integer state = (Integer) condition.get("state");
+                String name = (String) condition.get("name");
+                Date minCreateTime = (Date) condition.get("minCreateTime");
+                Date maxCreateTime = (Date) condition.get("maxCreateTime");
 
                 if (null != state) {
                     predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), state));
+                }
+                if (!StringUtils.isEmpty(name)) {
+                    predicate.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
+                }
+                if (null != minCreateTime) {
+                    predicate.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class), minCreateTime));
+                }
+                if (null != maxCreateTime) {
+                    predicate.add(criteriaBuilder.lessThanOrEqualTo(root.get("createTime").as(Date.class), maxCreateTime));
                 }
 
                 Predicate[] pre = new Predicate[predicate.size()];
@@ -203,6 +190,8 @@ public class MySpec {
                 String shopId = (String) condition.get("shopId");
                 Double minDisplacement = (Double) condition.get("minDisplacement");
                 Double maxDisplacement = (Double) condition.get("maxDisplacement");
+                Date minCreateTime = (Date) condition.get("minCreateTime");
+                Date maxCreateTime = (Date) condition.get("maxCreateTime");
                 String[] brandIds = (String[]) condition.get("brandIds");
                 String[] modelIds = (String[]) condition.get("modelIds");
                 String[] carTypeIds = (String[]) condition.get("carTypeIds");
@@ -271,7 +260,12 @@ public class MySpec {
                 if (null != maxDisplacement) {
                     predicate.add(criteriaBuilder.lessThanOrEqualTo(carJoin.get("displacement").as(Double.class), maxDisplacement));
                 }
-                // TODO 下面方法还需要调，in的方法该如何写，还需要去查。
+                if (null != minCreateTime) {
+                    predicate.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class), minCreateTime));
+                }
+                if (null != maxCreateTime) {
+                    predicate.add(criteriaBuilder.lessThanOrEqualTo(root.get("createTime").as(Date.class), maxCreateTime));
+                }
                 if (null != brandIds && brandIds.length > 0) {
                     CriteriaBuilder.In<String> brandIn = criteriaBuilder.in(carJoin.get("brand").get("id").as(String.class));
                     for (String id : brandIds) {
@@ -399,6 +393,23 @@ public class MySpec {
                 }
                 if (!StringUtils.isEmpty(mobile)) {
                     predicate.add(criteriaBuilder.like(root.get("mobile").as(String.class), "%" + mobile + "%"));
+                }
+
+                Predicate[] pre = new Predicate[predicate.size()];
+                return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
+            }
+        };
+    }
+
+    public static Specification<User> findUsers(Map<String, Object> condition) {
+        return new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicate = new ArrayList<>();
+                String username = (String) condition.get("username");
+
+                if (!StringUtils.isEmpty(username)) {
+                    predicate.add(criteriaBuilder.like(root.get("username").as(String.class), "%" + username + "%"));
                 }
 
                 Predicate[] pre = new Predicate[predicate.size()];

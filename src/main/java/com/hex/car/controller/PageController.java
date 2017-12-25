@@ -396,4 +396,14 @@ public class PageController {
         return "/carType/carTypeImg";
     }
 
+    @GetMapping(value = "/toUserList")
+    public String toUserList() {
+        return "/user/userList";
+    }
+
+    @GetMapping(value = "/toUserAdd")
+    public String toUserAdd(){
+        return "/user/userAdd";
+    }
+
 }

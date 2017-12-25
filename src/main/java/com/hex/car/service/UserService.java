@@ -1,8 +1,12 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: hexuan
@@ -18,5 +22,7 @@ public interface UserService {
 
     User findUserByUsername(String username);
 
-    List<User> findAllUser();
+    List<User> findAllUser(Sort sort);
+
+    Page<User> findUsers(Map<String, Object> condition, PageRequest pageRequest);
 }

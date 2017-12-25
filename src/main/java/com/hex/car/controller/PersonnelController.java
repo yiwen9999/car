@@ -90,11 +90,11 @@ public class PersonnelController {
         return ResultUtil.success();
     }
 
-    @PostMapping(value = "/searchPersonnel")
-    public Object searchPersonnel(@RequestParam(defaultValue = "0") Integer page,
-                                  @RequestParam(defaultValue = "100") Integer size,
-                                  @RequestParam(defaultValue = "mobile") String sortStr,
-                                  @RequestParam(defaultValue = "asc") String asc,
+    @PostMapping(value = "/searchPersonnelList")
+    public Object searchPersonnelList(@RequestParam(defaultValue = "0") Integer page,
+                                  @RequestParam(defaultValue = "1000") Integer size,
+                                  @RequestParam(defaultValue = "createTime") String sortStr,
+                                  @RequestParam(defaultValue = "desc") String asc,
                                   String name, String mobile) {
         Sort sort;
         if (asc.equals("asc")) {

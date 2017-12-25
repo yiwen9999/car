@@ -10,14 +10,16 @@ import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.Md5SaltTool;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -102,6 +104,15 @@ public class UserController {
      */
     @PostMapping(value = "/saveUser")
     public Object saveUser(User user) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        if (!HexUtil.validateString(user.getUsername())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "登录名" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (!HexUtil.validateString(user.getPassword())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "登录密码" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (null != userService.findUserByUsername(user.getUsername())) {
+            return ResultUtil.error(ResultEnum.ERROR_USERNAME.getCode(), ResultEnum.ERROR_USERNAME.getMsg());
+        }
         user.setPassword(Md5SaltTool.getEncryptedPwd(user.getPassword()));
         user.setImgUser(new ImgUser());
         return ResultUtil.success(userService.saveUser(user));
@@ -300,4 +311,60 @@ public class UserController {
         return ResultUtil.success();
     }
 
+    @GetMapping(value = "/getUserList")
+    public Object getUserList() {
+        Map<String, String> map;
+        List<Map<String, String>> mapList = new ArrayList<>();
+        for (User user : userService.findAllUser(new Sort(Sort.Direction.DESC, "createTime"))) {
+            map = new HashMap<>();
+            map.put("id", user.getId());
+            map.put("username", user.getUsername());
+            String s;
+            if (null != user.getShop()) {
+                s = "4S店";
+            } else if (null != user.getPersonnel()) {
+                s = "注册用户";
+            } else if (user.getId().equals("root")) {
+                s = "管理员";
+            } else {
+                s = "文章编辑号";
+            }
+            map.put("identity", s);
+            map.put("state", user.getState().toString());
+            mapList.add(map);
+        }
+        return ResultUtil.success(mapList);
+    }
+
+    @PostMapping(value = "/updateUserState")
+    public Object updateUserState(String id) {
+        User user = userService.findUserById(id);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        if (2 == user.getState()) {
+            user.setState(new Integer(-1));
+        } else {
+            user.setState(new Integer(2));
+        }
+        return ResultUtil.success(userService.saveUser(user));
+    }
+
+    @PostMapping(value = "/searchUserList")
+    public Object searchUserList(String username,
+                             @RequestParam(defaultValue = "0") Integer page,
+                             @RequestParam(defaultValue = "1000") Integer size,
+                             @RequestParam(defaultValue = "createTime") String sortStr,
+                             @RequestParam(defaultValue = "desc") String asc) {
+        Sort sort;
+        if (asc.equals("asc")) {
+            sort = new Sort(Sort.Direction.ASC, sortStr);
+        } else {
+            sort = new Sort(Sort.Direction.DESC, sortStr);
+        }
+        PageRequest pageRequest = new PageRequest(page, size, sort);
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("username", username);
+        return ResultUtil.success(userService.findUsers(condition, pageRequest));
+    }
 }

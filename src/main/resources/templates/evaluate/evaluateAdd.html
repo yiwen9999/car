@@ -9,23 +9,23 @@
 	<form class="form form-horizontal" id="form-evaluate-add">
 		<input type="hidden" name="userId" id="userId" value="" th:value="${user!=null ? user.id:''}">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2" >文章标题：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章标题：</label>
 			<div class="formControls col-xs-8 col-sm-10">
 				<input type="text" class="input-text" value="" placeholder="" id="title" name="title" th:value="${evaluate!=null ? evaluate.title:''}">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">文章简介：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章简介：</label>
 			<div class="formControls col-xs-8 col-sm-10">
                 <textarea name="intro" class="textarea" th:text="${evaluate!=null ? evaluate.intro:''}"></textarea>
             </div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">图片上传：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>图片上传：</label>
 			<div class="formControls col-xs-8 col-sm-10"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:500px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" name="file" class="input-file">
+				<input type="file" name="file" id="fileId" class="input-file">
 				</span> 
 			</div>
 		</div>
@@ -34,11 +34,11 @@
 			<div class="formControls col-xs-8 col-sm-10" style="color:red;">图片格式：jpg格式；图片比例：2:1；图片尺寸：1000x500。</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">作者头像上传：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>作者头像上传：</label>
 			<div class="formControls col-xs-8 col-sm-10"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:500px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" name="authorFile" class="input-file">
+				<input type="file" name="authorFile" id="authorFileId" class="input-file">
 				</span> 
 			</div>
 		</div>
@@ -47,7 +47,7 @@
 			<div class="formControls col-xs-8 col-sm-10" style="color:red;">头像格式：jpg格式；头像比例：1:1；头像尺寸：500x500。</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章内容：</label>
 			<div class="formControls col-xs-8 col-sm-10">
                 <textarea id="editor" name="content" th:text="${evaluate!=null ? evaluate.content:''}">
 				</textarea>
@@ -86,10 +86,10 @@
 	$(function(){
 		$("#form-evaluate-add").validate({
 			rules:{
-				name:{
+				title:{
 					required:true
 				},
-				content:{
+				intro:{
 					required:true
 				}
 			},
@@ -97,20 +97,36 @@
 			focusCleanup:true,
 			success:"valid",
 			submitHandler:function(form){
-				editor.sync();
-				$(form).ajaxSubmit({
-					url: "/saveEvaluate",
-					type: 'post',
-					dataType:"json",
-					success: function(data){
-						layer.msg('操作成功!',{icon:1,time:1000});
-						setTimeout("window.parent.location.reload();",1000);
-					},
-	                error: function(XmlHttpRequest, textStatus, errorThrown){
-						layer.msg('操作失败!',{icon:1,time:1000});
-						setTimeout("window.parent.location.reload();",1000);
+				var isFlag=true;
+				if($("#id").val()==""){
+					if($("#fileId").length>0&&$("#fileId").val()==""){
+						isFlag=false;
+						layer.msg("图片为必传项",{icon:2,time:2000});
+					}else if($("#authorFileId").length>0&&$("#authorFileId").val()==""){
+						isFlag=false;
+						layer.msg("作者头像为必传项",{icon:2,time:2000});
 					}
-				});
+				}
+				if(isFlag){
+					editor.sync();
+					$(form).ajaxSubmit({
+						url: "/saveEvaluate",
+						type: 'post',
+						dataType:"json",
+						success: function(data){
+							if(data.code==0){
+	                            layer.msg('操作成功!',{icon:1,time:1000});
+	                            setTimeout("window.parent.location.reload();",1000);
+							}else{
+	                            layer.msg(data.msg,{icon:2,time:2000});
+							}
+						},
+		                error: function(XmlHttpRequest, textStatus, errorThrown){
+							layer.msg('操作失败!',{icon:2,time:1000});
+							setTimeout("window.parent.location.reload();",1000);
+						}
+					});
+				}
 			}
 		});
 	});

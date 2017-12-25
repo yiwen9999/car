@@ -16,13 +16,13 @@
 <article class="page-container">
 	<form action="" method="post" class="form form-horizontal" id="form-shop-add"  enctype="multipart/form-data">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">4S店名称：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>4S店名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="name" name="name" th:value="${shop!=null ? shop.name:''}">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">4S店账号：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>4S店账号：</label>
 			<div class="formControls col-xs-8 col-sm-9" th:if="${shop==null}">
 				<input type="text" class="input-text" value="" placeholder="" id="username" name="username">
 			</div>
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		<div class="row cl" th:if="${shop==null}">
-			<label class="form-label col-xs-4 col-sm-3">4S店密码：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>4S店密码：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="password" name="password">
 			</div>
@@ -42,7 +42,7 @@
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><!-- <span class="c-red">*</span> -->联系方式:</label>
+			<label class="form-label col-xs-4 col-sm-3"><!-- <span class="c-red">*</span> -->联系方式: </label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text store-contact" value="" placeholder="客服电话(Phone)" id="customService" name="customService" th:value="${shop!=null ? shop.customService:''}">
 				<input type="text" class="input-text store-contact" value="" placeholder="联系电话(Mobile)" id="phone" name="phone" th:value="${shop!=null ? shop.phone:''}">
@@ -50,11 +50,11 @@
 			</div>
 		</div>
 		<div class="row cl" th:if="${shop==null}">
-			<label class="form-label col-xs-4 col-sm-3">附件(主图)：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>附件(主图)：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="btn-upload form-group">
 				<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
 				<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
-				<input type="file" name="mainFile" class="input-file">
+				<input type="file" name="mainFile" id="mainFileId" class="input-file">
 				</span> </div>
 		</div>
 		<div class="row cl" th:if="${shop==null}">
@@ -92,21 +92,21 @@
 。</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">所在城市：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所在城市：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span id="topPlaceSpan" class="select-box"></span></div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">所在区：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所在区：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span id="childPlaceSpan" class="select-box"></span> </div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">街道名称：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>街道名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="address" name="address" th:value="${shop!=null ? shop.address:''}" onblur="searchByStationName();">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">地图定位：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>地图定位：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				经度：<input type="text" class="input-text" style="width: 35%;" value="" placeholder="" id="longitude" name="longitude" th:value="${shop!=null ? shop.longitude:''}" readonly>
 				纬度：<input type="text" class="input-text" style="width: 35%;" value="" placeholder="" id="latitude" name="latitude" th:value="${shop!=null ? shop.latitude:''}" readonly>
@@ -119,10 +119,9 @@
 			</div>
 		</div>
 		<div class="row cl" id="store-description">
-			<label class="form-label col-xs-4 col-sm-3">4S店描述：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>4S店描述：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<textarea id="store-area" name="remark" cols="" rows="" class="textarea"  placeholder="4S店描述...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,500)" th:text="${shop!=null ? shop.remark:''}"></textarea>
-				<p class="textarea-numberbar"><em id="store-restriction" class="textarea-length">500</em>/500</p>
+				<textarea id="store-area" name="remark" cols="" rows="" class="textarea"  placeholder="4S店描述...最少输入10个字符" th:text="${shop!=null ? shop.remark:''}"></textarea>
 			</div>
 		</div>
 		<div class="row cl">
@@ -173,7 +172,7 @@ $(function(){
                 var childPlaceSelect=$("<select>",{id:"childPlaceHideSelect"});
                 $("#topPlaceSpan").append(topPlaceSelect);
 				$("#childPlaceHideSpan").append(childPlaceSelect);
-                childPlaceSelect.append("<option id='firstOption'>请选择区域</option>");
+                childPlaceSelect.append("<option id='firstOption' value=''>请选择区域</option>");
                 $.each(data.data.topPlaceList, function (index,topPlace) {
                     topPlaceSelect.append("<option id='"+topPlace.id+"' value='"+topPlace.id+"'>"+topPlace.name+"</option>");
                 });
@@ -186,34 +185,68 @@ $(function(){
 			    if($("#placeIdHidden").val()!="")
 			    	$("#childPlaceSelect option[value='"+$("#placeIdHidden").val()+"']").attr("selected",true);
             } else {
-                layer.msg('获取信息失败',{icon:1,time:1000});
+                layer.msg('获取信息失败',{icon:2,time:1000});
             }
         }
     });
 	$("#form-shop-add").validate({
+		rules:{
+			name:{
+				required:true
+			},
+			username:{
+				required:true
+			},
+			password:{
+				required:true
+			},
+			address:{
+				required:true
+			},
+			remark:{
+				required:true
+			}
+		},
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",
 		submitHandler:function(form){
-			var url="";
-			if($("#shopId").val()!=""){
-				url="/updateShop";
-			}else{
-				url="/saveShop";
+			var isFlag=true;
+			if($("#childPlaceSelect").val()==""){
+				isFlag=false;
+				layer.msg("所在区域为必选项",{icon:2,time:2000});
+			}else if($("#longitude").val()==""||$("#latitude").val()==""){
+				isFlag=false;
+				layer.msg("地图定位为必填项，请输入正确街道名称",{icon:2,time:2000});
+			}else if($("#mainFileId").length>0&&$("#mainFileId").val()==""){
+				isFlag=false;
+				layer.msg("附件(主图)为必传项",{icon:2,time:2000});
 			}
-			$(form).ajaxSubmit({
-				url: url,
-				type: 'post',
-				dataType:"json",
-				success: function(data){
-					layer.msg('添加成功!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
-				},
-                error: function(XmlHttpRequest, textStatus, errorThrown){
-					layer.msg('error!',{icon:1,time:1000});
-					setTimeout("window.parent.location.reload();",1000);
+			if(isFlag){
+				var url="";
+				if($("#shopId").val()!=""){
+					url="/updateShop";
+				}else{
+					url="/saveShop";
 				}
-			});
+				$(form).ajaxSubmit({
+					url: url,
+					type: 'post',
+					dataType:"json",
+					success: function(data){
+						if(data.code==0){
+	                        layer.msg('添加成功!',{icon:1,time:1000});
+	                        setTimeout("window.parent.location.reload();",1000);
+						}else{
+	                        layer.msg(data.msg,{icon:2,time:2000});
+						}
+					},
+	                error: function(XmlHttpRequest, textStatus, errorThrown){
+						layer.msg('操作失败!',{icon:2,time:1000});
+						setTimeout("window.parent.location.reload();",1000);
+					}
+				});
+			}
 		}
 	});
 	/*门店描述字数限制*/  

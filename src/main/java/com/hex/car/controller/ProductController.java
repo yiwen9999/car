@@ -11,6 +11,8 @@ import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,9 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * User: hexuan
@@ -50,46 +50,6 @@ public class ProductController {
     private Long zipFileLimit;
 
     /**
-     * 根据名称查询启用商品集合
-     *
-     * @param name 商品名称
-     * @return
-     */
-    @PostMapping(value = "/searchUsingProductListByName")
-    public Object searchUsingProductListByName(String name) {
-        if (null == name) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-        return ResultUtil.success(productService.findProductsByNameLikeAndStateOrderByName(name, new Integer(2)));
-    }
-
-    /**
-     * 根据商品名称，登录人身份，查询启用商品集合（暂未用）
-     *
-     * @param name    商品名称
-     * @param request request获取登录账号
-     * @return
-     */
-    @PostMapping(value = "/searchUsingProductListByNameAndIdentity")
-    public Object searchUsingProductListByNameAndIdentity(String name, HttpServletRequest request) {
-        Object object = request.getSession().getAttribute("user");
-        if (null == object) {
-            return ResultUtil.error(ResultEnum.UN_LOGIN.getCode(), ResultEnum.UN_LOGIN.getMsg());
-        }
-        User user = (User) object;
-        if (null == name) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-        if (user.getId().equals("root")) {
-            return ResultUtil.success(productService.findProductsByNameLikeAndStateOrderByName(name, new Integer(2)));
-        } else if (null != user.getShop()) {
-            return ResultUtil.success(productService.findProductsByNameLikeAndStateAndShopOrderByName(name, new Integer(2), user.getShop()));
-        } else {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
-        }
-    }
-
-    /**
      * 保存商品
      *
      * @param product 商品
@@ -104,8 +64,14 @@ public class ProductController {
                               HttpServletRequest request,
                               @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
                               @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        if (!HexUtil.validateDouble(product.getPrice())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "售价" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (!HexUtil.validateString(product.getDetails())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "详情说明" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
         if (carId == null || carId.equals("")) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "车型库选择" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
         User user = HexUtil.getUser(request);
         if (null == user) {
@@ -114,19 +80,19 @@ public class ProductController {
         Shop shop;
         if ("root".equals(user.getId())) {
             if (null == shopId || "".equals(shopId)) {
-                return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+                return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "4S店" + ResultEnum.ERROR_NULLPARAM.getMsg());
             }
             shop = shopService.findShopById(shopId);
         } else {
             shop = user.getShop();
         }
         if (null == shop) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "4S店" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
         product.setCar(carService.findCarById(carId));
         product.setShop(shop);
         if (null == mainFile) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "主图" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
         String fileName = mainFile.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
@@ -134,7 +100,7 @@ public class ProductController {
         ImgProduct imgProduct;
         List<ImgProduct> imgProductList = new ArrayList<>();
         try {
-            FileUtil.uploadImgFile(mainFile,path,fileName,zipFileLimit);
+            FileUtil.uploadImgFile(mainFile, path, fileName, zipFileLimit);
             imgProduct = new ImgProduct();
             imgProduct.setFileName(fileName);
             imgProduct.setMain(new Boolean(true));
@@ -143,7 +109,6 @@ public class ProductController {
             e.printStackTrace();
             return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
         }
-
         MultipartFile file;
         for (int i = 0; i < files.size(); i++) {
             file = files.get(i);
@@ -151,7 +116,7 @@ public class ProductController {
             suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+                FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
                 imgProduct.setMain(new Boolean(false));
@@ -179,6 +144,12 @@ public class ProductController {
                                 String carId,
                                 String shopId,
                                 HttpServletRequest request) {
+        if (!HexUtil.validateDouble(product.getPrice())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "售价" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        if (!HexUtil.validateString(product.getDetails())) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "详情说明" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
         if (carId == null || carId.equals("") || null == product.getId() || "".equals(product.getId())) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
@@ -258,19 +229,6 @@ public class ProductController {
     }
 
     /**
-     * 根据名称，创建时间查询商品集合
-     *
-     * @param beginTime
-     * @param endTime
-     * @param name
-     * @return
-     */
-    @PostMapping(value = "/searchProductList")
-    public Object searchProductList(String beginTime, String endTime, String name) {
-        return ResultUtil.success(productService.findProductListByCreateTimeAndNameAndIdentity(HexUtil.formatBeginTimeString(beginTime), HexUtil.formatEndTimeString(endTime), name, null));
-    }
-
-    /**
      * 根据名称，创建时间，创建人查询商品集合
      *
      * @param beginTime
@@ -280,7 +238,7 @@ public class ProductController {
      * @return
      */
     @PostMapping(value = "/searchProductListByIdentity")
-    public Object searchProductList(String beginTime, String endTime, String name, HttpServletRequest request) {
+    public Object searchProductListByIdentity(String beginTime, String endTime, String name, HttpServletRequest request) {
         User user = HexUtil.getUser(request);
         if (null == user) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
@@ -292,6 +250,33 @@ public class ProductController {
         } else {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
+    }
+
+    @PostMapping(value = "/searchProductList")
+    public Object searchProductList(String beginTime, String endTime, String name, HttpServletRequest request,
+                                    @RequestParam(defaultValue = "0") Integer page,
+                                    @RequestParam(defaultValue = "1000") Integer size,
+                                    @RequestParam(defaultValue = "createTime") String sortStr,
+                                    @RequestParam(defaultValue = "desc") String asc) {
+        User user = HexUtil.getUser(request);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.ERROR_IDENTITY.getCode(), ResultEnum.ERROR_IDENTITY.getMsg());
+        }
+        Sort sort;
+        if (asc.equals("asc")) {
+            sort = new Sort(Sort.Direction.ASC, sortStr);
+        } else {
+            sort = new Sort(Sort.Direction.DESC, sortStr);
+        }
+        PageRequest pageRequest = new PageRequest(page, size, sort);
+        Map<String, Object> condition = new HashMap<>();
+        if (null != user.getShop()) {
+            condition.put("shopId", user.getShop().getId());
+        }
+        condition.put("minCreateTime", HexUtil.formatBeginTimeString(beginTime));
+        condition.put("maxCreateTime", HexUtil.formatEndTimeString(endTime));
+        condition.put("name", name);
+        return ResultUtil.success(productService.findProducts(condition, pageRequest));
     }
 
     @GetMapping(value = "getAllProductList")
@@ -380,7 +365,7 @@ public class ProductController {
                     product.getMainImgProducts().clear();
                     imgProductService.deleteImgProduct(oldImgProduct);
                 }
-                FileUtil.uploadImgFile(mainFile,path,fileName,zipFileLimit);
+                FileUtil.uploadImgFile(mainFile, path, fileName, zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
                 imgProduct.setMain(new Boolean(true));
@@ -398,7 +383,7 @@ public class ProductController {
             suffixName = fileName.substring(fileName.lastIndexOf("."));
             fileName = UUID.randomUUID() + suffixName;
             try {
-                FileUtil.uploadImgFile(file,path,fileName,zipFileLimit);
+                FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
                 imgProduct.setMain(new Boolean(false));

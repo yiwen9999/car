@@ -69,12 +69,16 @@
 					type: 'post',
 					url: "/evaluateChooseProducts" ,
 					success: function(data){
-						layer.msg('操作成功!',{icon:1,time:1000});
-						setTimeout("window.parent.location.reload();",1000);
-						
+						if(data.code==0){
+                            layer.msg('操作成功!',{icon:1,time:1000});
+                            setTimeout("window.parent.location.reload();",1000);
+						}else{
+                            layer.msg(data.msg,{icon:2,time:2000});
+                            setTimeout("window.parent.location.reload();",2000);
+						}
 					},
 	                error: function(XmlHttpRequest, textStatus, errorThrown){
-						layer.msg('操作失败!',{icon:1,time:1000});
+						layer.msg('操作失败!',{icon:2,time:1000});
 						setTimeout("window.parent.location.reload();",1000);
 					}
 				});
@@ -99,7 +103,7 @@
 	        dataType : "json",  
 	        url: "/getShopListByIdentity",
 	        error: function () {
-	            layer.msg('请求失败!',{icon:1,time:1000});
+	            layer.msg('请求失败!',{icon:2,time:1000});
 	        },  
 	        success:function(data){
 	            $.each(data.data.shopList, function (index, shop) {
@@ -128,7 +132,7 @@
 	        },
 	        url: "/getProductListByShopId",
 	        error: function () {
-	            layer.msg('请求失败!',{icon:1,time:1000});
+	            layer.msg('请求失败!',{icon:2,time:1000});
 	        },  
 	        success:function(data){
 	        	$.each(data.data, function (index, product) {

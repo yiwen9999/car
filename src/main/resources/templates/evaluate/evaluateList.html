@@ -18,6 +18,7 @@
 					<th>对应选择对应车辆</th>
 					<th>文章头图</th>
 					<th>作者头像</th>
+					<th>URL</th>
 					<th width="60">状态</th>
 					<th width="60">浏览</th>
 					<th width="100">操作</th>
@@ -105,6 +106,9 @@ function createTr(index,evaluate){
 	td.append(img);
 	tr.append(td);
 
+	td=$("<td>").css("text-align","left").html("evaluate,"+evaluate.id);
+	tr.append(td);
+
 	td=$("<td>").attr("class","td-status");
 	if(evaluate.state==2)
 		td.append("<span class='label label-success radius'>已启用</span>");
@@ -182,7 +186,7 @@ function evaluateDelete(obj,id){
 	            	$(obj).parents("tr").remove();
 	            	layer.msg('已删除!',{icon:1,time:1000});
 	            } else {
-	                layer.msg(data.msg,{icon:1,time:1000});
+	                layer.msg(data.msg,{icon:2,time:2000});
 	            }
 	        }
 		});		

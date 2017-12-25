@@ -24,6 +24,7 @@
 				<th>售价</th>
 				<th>品牌</th>
 				<th>型号</th>
+				<th>URL</th>
 				<th width="130">加入时间</th>
 				<th width="70">状态</th>
 				<th width="100">操作</th>
@@ -46,6 +47,29 @@ var newDate = new Date();
 $(function(){
 	productSearch();
 });
+function productSearch(){
+	$("#productTbody").html("");
+	$.ajax({
+        type : "POST",
+        url : "/searchProductList",
+        data : {
+        	beginTime : $("#datemin").val(),
+        	endTime : $("#datemax").val(),
+        	name : $("#name").val(),
+        },
+        dataType : "json",
+        success : function(data) {
+            if (data.code == "0") {
+				$.each(data.data.content, function (index, product) {
+					createTr(index,product);
+            	});
+            	$("#list_quantity").html(data.data.content.length);
+            } else {
+                alert("获取信息失败");
+            }
+        }
+    });
+}
 function createTr(index,product){
 	var tr=$("<tr>").attr("class","text-c").attr("id","productTr_"+product.id)
 	$("#productTbody").append(tr);
@@ -63,6 +87,9 @@ function createTr(index,product){
 	tr.append(td);
 
 	td=$("<td>").css("text-align","left").html(product.car.model.name);
+	tr.append(td);
+
+	td=$("<td>").css("text-align","left").html("product,"+product.id);
 	tr.append(td);
 
 	td=$("<td>").css("text-align","left");
@@ -110,27 +137,6 @@ function createTr(index,product){
 
 	tr.append(td);
 }
-function productSearch(){
-	$.ajax({
-        type : "POST",
-        url : "/searchProductListByIdentity",
-        data : {
-        	beginTime : $("#datemin").val(),
-        	endTime : $("#datemax").val(),
-        	name : $("#name").val(),
-        },
-        dataType : "json",
-        success : function(data) {
-            if (data.code == "0") {
-				$.each(data.data, function (index, product) {
-					createTr(index,product);
-            	});
-            } else {
-                alert("获取信息失败");
-            }
-        }
-    });
-}
 function productAdd(title,url,w,h){
 	layer_show(title,url,w,h);
 }
@@ -154,7 +160,7 @@ function productDelete(obj,id){
 	            	$(obj).parents("tr").remove();
 	            	layer.msg('已删除!',{icon:1,time:1000});
 	            } else {
-	                layer.msg(data.msg,{icon:1,time:1000});
+	                layer.msg(data.msg,{icon:2,time:2000});
 	            }
 	        }
 		});		

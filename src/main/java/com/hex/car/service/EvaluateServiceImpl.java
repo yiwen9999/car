@@ -1,7 +1,6 @@
 package com.hex.car.service;
 
 import com.hex.car.domain.Evaluate;
-import com.hex.car.domain.Shop;
 import com.hex.car.repository.EvaluateRepository;
 import com.hex.car.repository.MySpec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

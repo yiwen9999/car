@@ -49,6 +49,7 @@ $(function(){
 				$.each(data.data, function (index, user) {
 					createTr(index,user);
             	});
+            	$("#list_quantity").html(data.data.length);
             } else {
                 alert(data.msg);
             }

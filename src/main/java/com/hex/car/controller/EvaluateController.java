@@ -60,10 +60,14 @@ public class EvaluateController {
     /**
      * 根据身份获取对应文章集合（管理员查看全部，4s店获取本店文章）
      *
-     * @param request request获取登录账号
+     * @param page
+     * @param size
+     * @param sortStr
+     * @param asc
+     * @param request
      * @return
      */
-    @GetMapping(value = "/searchEvaluateListByIdentity")
+    @PostMapping(value = "/searchEvaluateListByIdentity")
     private Object searchEvaluateListByIdentity(@RequestParam(defaultValue = "0") Integer page,
                                                 @RequestParam(defaultValue = "1000") Integer size,
                                                 @RequestParam(defaultValue = "createTime") String sortStr,
@@ -78,8 +82,9 @@ public class EvaluateController {
         if (user.getId().equals("root")) {
             return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         } else if (null != user.getShop()) {
-            // shopId作为条件时，会查询与该店所售车辆配对的文章，以及创建人为该店的文章
+            // 操作人是4s店身份时，会查询与该店所售车辆配对的文章，以及创建人为该店账号的文章
             condition.put("shopId", user.getShop().getId());
+            condition.put("shopUserId", user.getId());
             return ResultUtil.success(evaluateService.findEvaluates(condition, HexUtil.getPageRequest(page, size, sortStr, asc)));
         } else {
             condition.put("creatorId", user.getId());

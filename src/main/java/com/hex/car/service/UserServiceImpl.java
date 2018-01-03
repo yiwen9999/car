@@ -50,6 +50,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findUsers(Map<String, Object> condition, PageRequest pageRequest) {
-        return userRepository.findAll(MySpec.findUsers(condition),pageRequest);
+        return userRepository.findAll(MySpec.findUsers(condition), pageRequest);
     }
 }

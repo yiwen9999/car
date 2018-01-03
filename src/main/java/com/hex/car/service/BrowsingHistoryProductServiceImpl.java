@@ -38,4 +38,9 @@ public class BrowsingHistoryProductServiceImpl implements BrowsingHistoryProduct
     public List<Product> findProductsByBrowsingHistoryCountDesc() {
         return browsingHistoryProductRepository.findProductsByBrowsingHistoryCountDesc();
     }
+
+    @Override
+    public void deleteBrowsingHistoryProductByProduct(Product product) {
+        browsingHistoryProductRepository.delete(browsingHistoryProductRepository.findBrowsingHistoryProductsByProduct(product));
+    }
 }

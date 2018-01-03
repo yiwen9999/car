@@ -23,4 +23,6 @@ public interface FavoritesProductService {
     Page<FavoritesProduct> findFavoritesProducts(Map<String, Object> condition, PageRequest pageRequest);
 
     FavoritesProduct findFirstByUserAndProduct(User user, Product product);
+
+    void deleteFavoritesProductByProduct(Product product);
 }

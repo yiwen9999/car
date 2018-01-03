@@ -38,16 +38,15 @@
 <script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
 $(function(){
+	searchEvaluate();
+});
+function searchEvaluate(){
+	$("#evaluateTbody").html("");
 	$.ajax({
-        type : "GET",
-        url : "/getEvaluateListByIdentity",
+        type : "POST",
+        url : "/searchEvaluateListByIdentity",
         dataType : "json",
-		data:{
-            page:0,
-			size:100,
-			sortStr:"createTime",
-			asc:"desc"
-		},
+		data:{},
         success : function(data) {
             if (data.code == "0") {
 				$.each(data.data.content, function (index, evaluate) {
@@ -59,7 +58,7 @@ $(function(){
             }
         }
     });
-});
+}
 function createTr(index,evaluate){
 	var tr=$("<tr>").attr("class","text-c").attr("id","evaluateTr_"+evaluate.id);
 	$("#evaluateTbody").append(tr);

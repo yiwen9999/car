@@ -15,4 +15,6 @@ import java.util.List;
 public interface BrowsingHistoryProductRepository extends JpaRepository<BrowsingHistoryProduct, String> {
     @Query("select p from BrowsingHistoryProduct bhp inner join bhp.product p group by p.id order by count (bhp) desc ")
     List<Product> findProductsByBrowsingHistoryCountDesc();
+
+    List<BrowsingHistoryProduct> findBrowsingHistoryProductsByProduct(Product product);
 }

@@ -2,10 +2,7 @@ package com.hex.car.controller;
 
 import com.hex.car.domain.*;
 import com.hex.car.enums.ResultEnum;
-import com.hex.car.service.CarService;
-import com.hex.car.service.ImgProductService;
-import com.hex.car.service.ProductService;
-import com.hex.car.service.ShopService;
+import com.hex.car.service.*;
 import com.hex.car.utils.FileUtil;
 import com.hex.car.utils.HexUtil;
 import com.hex.car.utils.ResultUtil;
@@ -42,6 +39,15 @@ public class ProductController {
 
     @Autowired
     private ImgProductService imgProductService;
+
+    @Autowired
+    private EvaluateService evaluateService;
+
+    @Autowired
+    private FavoritesProductService favoritesProductService;
+
+    @Autowired
+    private BrowsingHistoryProductService browsingHistoryProductService;
 
     @Value("${web.upload-path}")
     private String path;
@@ -210,12 +216,23 @@ public class ProductController {
      */
     @PostMapping(value = "/deleteProduct")
     public Object deleteProduct(String id) {
+        /**
+         * 删除策略
+         * 1. 断掉文章与所售车辆配对的关系
+         * 2. 删掉所售车辆图片文件及数据
+         * 3. 删掉所有浏览该车辆记录
+         * 4. 删掉所有收藏该车辆记录
+         */
         if (null == id || id.equals("")) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         Product product = productService.findProductById(id);
         if (null == product) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        }
+        for (Evaluate evaluate : product.getEvaluates()) {
+            evaluate.getProducts().remove(product);
+            evaluateService.saveEvaluate(evaluate);
         }
         File deleteFile;
         for (ImgProduct imgProduct : product.getImgProducts()) {
@@ -224,6 +241,9 @@ public class ProductController {
                 deleteFile.delete();
             }
         }
+        browsingHistoryProductService.deleteBrowsingHistoryProductByProduct(product);
+        favoritesProductService.deleteFavoritesProductByProduct(product);
+
         productService.deleteProduct(product);
         return ResultUtil.success();
     }

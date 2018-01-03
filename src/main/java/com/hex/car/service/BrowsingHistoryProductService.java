@@ -18,4 +18,6 @@ public interface BrowsingHistoryProductService {
     BrowsingHistoryProduct findBrowsingHistoryProductById(String id);
 
     List<Product> findProductsByBrowsingHistoryCountDesc();
+
+    void deleteBrowsingHistoryProductByProduct(Product product);
 }

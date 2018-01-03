@@ -295,8 +295,8 @@ public class ShopController {
         }
         PageRequest pageRequest = new PageRequest(page, size, sort);
         Map<String, Object> condition = new HashMap<>();
-        condition.put("name",name);
-        condition.put("minCreateTime",HexUtil.formatBeginTimeString(beginTime));
+        condition.put("name", name);
+        condition.put("minCreateTime", HexUtil.formatBeginTimeString(beginTime));
         condition.put("maxCreateTime", HexUtil.formatEndTimeString(endTime));
         return ResultUtil.success(shopService.findShops(condition, pageRequest));
     }

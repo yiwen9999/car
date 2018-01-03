@@ -113,11 +113,11 @@ public class BrandController {
     public Object saveBrandAndModels(@RequestParam String[] modelNames,
                                      String brandName,
                                      String brandInitial) {
-        if(!HexUtil.validateString(brandName)){
-            ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "品牌名称"+ResultEnum.ERROR_NULLPARAM.getMsg());
+        if (!HexUtil.validateString(brandName)) {
+            ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "品牌名称" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
-        if(!HexUtil.validateString(brandInitial)){
-            ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "品牌首字母"+ResultEnum.ERROR_NULLPARAM.getMsg());
+        if (!HexUtil.validateString(brandInitial)) {
+            ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "品牌首字母" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
         Brand brand = new Brand();
         brand.setName(brandName);

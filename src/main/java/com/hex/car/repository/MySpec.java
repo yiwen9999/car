@@ -118,16 +118,18 @@ public class MySpec {
                 List<Predicate> predicate = new ArrayList<>();
                 Integer state = (Integer) condition.get("state");
                 String shopId = (String) condition.get("shopId");
+                String shopUserId = (String) condition.get("shopUserId");
                 String creatorId = (String) condition.get("creatorId");
 
                 if (null != state) {
                     predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), state));
                 }
-                if (!StringUtils.isEmpty(shopId)) {
-                    Join<Evaluate, Product> productJoin = root.join("products", JoinType.INNER);
+                if (!StringUtils.isEmpty(shopId) && !StringUtils.isEmpty(shopUserId)) {
+                    Join<Evaluate, Product> productJoin = root.join("products", JoinType.LEFT);
                     Predicate predicate1 = criteriaBuilder.equal(productJoin.get("shop").get("id").as(String.class), shopId);
-                    Predicate predicate2 = criteriaBuilder.equal(root.get("creator").get("id").as(String.class), shopId);
+                    Predicate predicate2 = criteriaBuilder.equal(root.get("creator").get("id").as(String.class), shopUserId);
                     predicate.add(criteriaBuilder.or(predicate1, predicate2));
+                    // predicate.add(criteriaBuilder.equal(root.get("creator").get("id").as(String.class), shopUserId));
                 }
                 if (!StringUtils.isEmpty(creatorId)) {
                     predicate.add(criteriaBuilder.equal(root.get("creator").get("id").as(String.class), creatorId));

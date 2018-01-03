@@ -352,10 +352,10 @@ public class UserController {
 
     @PostMapping(value = "/searchUserList")
     public Object searchUserList(String username,
-                             @RequestParam(defaultValue = "0") Integer page,
-                             @RequestParam(defaultValue = "1000") Integer size,
-                             @RequestParam(defaultValue = "createTime") String sortStr,
-                             @RequestParam(defaultValue = "desc") String asc) {
+                                 @RequestParam(defaultValue = "0") Integer page,
+                                 @RequestParam(defaultValue = "1000") Integer size,
+                                 @RequestParam(defaultValue = "createTime") String sortStr,
+                                 @RequestParam(defaultValue = "desc") String asc) {
         Sort sort;
         if (asc.equals("asc")) {
             sort = new Sort(Sort.Direction.ASC, sortStr);

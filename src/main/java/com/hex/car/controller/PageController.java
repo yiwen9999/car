@@ -402,7 +402,7 @@ public class PageController {
     }
 
     @GetMapping(value = "/toUserAdd")
-    public String toUserAdd(){
+    public String toUserAdd() {
         return "/user/userAdd";
     }
 

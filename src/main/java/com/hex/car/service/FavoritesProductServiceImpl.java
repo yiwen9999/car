@@ -47,4 +47,9 @@ public class FavoritesProductServiceImpl implements FavoritesProductService {
     public FavoritesProduct findFirstByUserAndProduct(User user, Product product) {
         return favoritesProductRepository.findFirstByUserAndProduct(user, product);
     }
+
+    @Override
+    public void deleteFavoritesProductByProduct(Product product) {
+        favoritesProductRepository.delete(favoritesProductRepository.findFavoritesProductsByProduct(product));
+    }
 }

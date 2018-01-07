@@ -67,15 +67,23 @@ public class Product implements Serializable {
      * 商品主图
      */
     @OneToMany(targetEntity = ImgProduct.class)
-    @Where(clause = "is_main=1")
+    @Where(clause = "img_type=0")
     @JoinColumn(name = "product_id")
     private List<ImgProduct> mainImgProducts = new ArrayList();
+
+    /**
+     * banner图
+     */
+    @OneToMany(targetEntity = ImgProduct.class)
+    @Where(clause = "img_type=1")
+    @JoinColumn(name = "product_id")
+    private List<ImgProduct> bannerImgProducts = new ArrayList();
 
     /**
      * 商品其他图
      */
     @OneToMany(targetEntity = ImgProduct.class)
-    @Where(clause = "is_main=0")
+    @Where(clause = "img_type=2")
     @JoinColumn(name = "product_id")
     private List<ImgProduct> commonImgProducts = new ArrayList();
 
@@ -211,5 +219,13 @@ public class Product implements Serializable {
 
     public void setEvaluates(List<Evaluate> evaluates) {
         this.evaluates = evaluates;
+    }
+
+    public List<ImgProduct> getBannerImgProducts() {
+        return bannerImgProducts;
+    }
+
+    public void setBannerImgProducts(List<ImgProduct> bannerImgProducts) {
+        this.bannerImgProducts = bannerImgProducts;
     }
 }

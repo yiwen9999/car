@@ -403,6 +403,7 @@ public class FrontController {
         shop.setLatitude(product.getShop().getLatitude());
         shop.setMainImgShops(product.getShop().getMainImgShops());
         shop.setCommonImgShops(product.getShop().getCommonImgShops());
+        shop.setBannerImgShops(product.getShop().getBannerImgShops());
         shop.setPlace(product.getShop().getPlace());
         shop.setUser(product.getShop().getUser());
         map.put("shop", shop);
@@ -473,6 +474,7 @@ public class FrontController {
             shop.setLatitude(product.getShop().getLatitude());
             shop.setMainImgShops(product.getShop().getMainImgShops());
             shop.setCommonImgShops(product.getShop().getCommonImgShops());
+            shop.setBannerImgShops(product.getShop().getBannerImgShops());
             shop.setPlace(product.getShop().getPlace());
             shop.setUser(product.getShop().getUser());
         }

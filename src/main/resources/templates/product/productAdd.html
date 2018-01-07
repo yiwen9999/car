@@ -90,9 +90,9 @@
 		</div>
 		<div id="imgeProductDiv" th:if="${product==null}">
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>附件(主图)：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>主图：</label>
 				<div class="formControls col-xs-8 col-sm-9">
-					<a onClick="addImgProductFileTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<span class="btn-upload form-group">
 						<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
 						<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
@@ -100,11 +100,33 @@
 					</span>
 				</div>
 			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>banner：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="btn-upload form-group">
+						<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
+						<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+						<input type="file" name="bannerFile" id="bannerFileId" class="input-file">
+					</span>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">详情图：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<a onClick="addImgProductFileTr();" href="javascript:;" title="添加" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;&nbsp;&nbsp;</i></a>
+					<span class="btn-upload form-group">
+						<input class="input-text upload-url" type="text" readonly nullmsg="请添加附件！" style="width:400px">
+						<a href="javascript:void();" class="btn btn-primary radius upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+						<input type="file" class="input-file" name="files">
+					</span>
+				</div>
+			</div>
 		</div>
 		<div class="row cl" th:if="${product==null}">
 			<label class="form-label col-xs-4 col-sm-3"></label>
 			<div class="formControls col-xs-8 col-sm-9" style="color:red;">
-				主图格式：jpg格式；主图比例：5:4；主图尺寸：500x400或等比例扩大。<br>图片格式：jpg格式；图片比例：5:3；图片尺寸：1200x720。
+				主图格式：jpg格式；主图比例：5:4；主图尺寸：500x400或等比例扩大。<br>详情图格式：jpg格式；详情图比例：5:3；详情图尺寸：1200x720。
 			</div>
 		</div>
 		<div class="row cl">
@@ -117,7 +139,7 @@
 		<input type="hidden" name="id" id="productId" value="" th:value="${product!=null ? product.id:''}">
 	</form>
 	<div class="row cl" id="imgeProductDivClone" style="display:none;">
-		<label class="form-label col-xs-4 col-sm-3">附件(图片)：</label>
+		<label class="form-label col-xs-4 col-sm-3">详情图：</label>
 		<div class="formControls col-xs-8 col-sm-9">
 			<a onClick="deleteFile($(this));" href="javascript:;" title="删除" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;&nbsp;&nbsp;</i></a>
 			<span class="btn-upload form-group">
@@ -166,7 +188,10 @@ $(function(){
 				layer.msg("车型库为必选项",{icon:2,time:2000});
 				isFlag=false;
 			}else if($("#mainFileId").length>0&&$("#mainFileId").val()==""){
-				layer.msg("附件(主图)为必传项",{icon:2,time:2000});
+				layer.msg("主图为必传项",{icon:2,time:2000});
+				isFlag=false;
+			}else if($("#bannerFileId").length>0&&$("#bannerFileId").val()==""){
+				layer.msg("banner为必传项",{icon:2,time:2000});
 				isFlag=false;
 			}
 			if(isFlag){

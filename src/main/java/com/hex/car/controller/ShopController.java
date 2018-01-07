@@ -72,6 +72,7 @@ public class ShopController {
                            String username,
                            String password,
                            @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
+                           @RequestParam(value = "bannerFile", required = false) MultipartFile bannerFile,
                            @RequestParam(value = "files", required = false) List<MultipartFile> files) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if (!HexUtil.validateString(placeId)) {
             return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "所在地区" + ResultEnum.ERROR_NULLPARAM.getMsg());
@@ -105,6 +106,9 @@ public class ShopController {
         if (null == mainFile) {
             return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "主图" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
+        if (null == bannerFile) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "banner图" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
         MultipartFile file;
         ImgShop imgShop;
         List<ImgShop> imgShopList = new ArrayList<>();
@@ -115,7 +119,20 @@ public class ShopController {
             FileUtil.uploadImgFile(mainFile, path, fileName, zipFileLimit);
             imgShop = new ImgShop();
             imgShop.setFileName(fileName);
-            imgShop.setMain(new Boolean(true));
+            imgShop.setImgType(new Integer(0));
+            imgShopList.add(imgShop);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+        }
+        fileName = bannerFile.getOriginalFilename();
+        suffixName = fileName.substring(fileName.lastIndexOf("."));
+        fileName = UUID.randomUUID() + suffixName;
+        try {
+            FileUtil.uploadImgFile(bannerFile, path, fileName, zipFileLimit);
+            imgShop = new ImgShop();
+            imgShop.setFileName(fileName);
+            imgShop.setImgType(new Integer(1));
             imgShopList.add(imgShop);
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,7 +147,7 @@ public class ShopController {
                 FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
-                imgShop.setMain(new Boolean(false));
+                imgShop.setImgType(new Integer(2));
                 imgShopList.add(imgShop);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -368,6 +385,7 @@ public class ShopController {
     @PostMapping(value = "/editImgShop")
     public Object editImgShop(String id,
                               @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
+                              @RequestParam(value = "bannerFile", required = false) MultipartFile bannerFile,
                               @RequestParam(value = "files", required = false) List<MultipartFile> files) {
         if (null == id || "".equals(id)) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
@@ -398,14 +416,37 @@ public class ShopController {
                 FileUtil.uploadImgFile(mainFile, path, fileName, zipFileLimit);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
-                imgShop.setMain(new Boolean(true));
+                imgShop.setImgType(new Integer(0));
                 imgShopList.add(imgShop);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
             }
         }
-
+        if (null != bannerFile) {
+            fileName = bannerFile.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                if (null != shop.getBannerImgShops() && !shop.getBannerImgShops().isEmpty()) {
+                    oldImgShop = shop.getBannerImgShops().iterator().next();
+                    File deleteFile = new File(path + oldImgShop.getFileName());
+                    if (deleteFile.exists()) {
+                        deleteFile.delete();
+                    }
+                    shop.getBannerImgShops().clear();
+                    imgShopService.deleteImgShop(oldImgShop);
+                }
+                FileUtil.uploadImgFile(bannerFile, path, fileName, zipFileLimit);
+                imgShop = new ImgShop();
+                imgShop.setFileName(fileName);
+                imgShop.setImgType(new Integer(1));
+                imgShopList.add(imgShop);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
         MultipartFile file;
         for (int i = 0; i < files.size(); i++) {
             file = files.get(i);
@@ -416,7 +457,7 @@ public class ShopController {
                 FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgShop = new ImgShop();
                 imgShop.setFileName(fileName);
-                imgShop.setMain(new Boolean(false));
+                imgShop.setImgType(new Integer(2));
                 imgShopList.add(imgShop);
             } catch (Exception e) {
                 e.printStackTrace();

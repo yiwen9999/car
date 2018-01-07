@@ -123,15 +123,23 @@ public class Shop implements Serializable {
      * 4s店主图
      */
     @OneToMany(targetEntity = ImgShop.class)
-    @Where(clause = "is_main=1")
+    @Where(clause = "img_type=0")
     @JoinColumn(name = "shop_id")
     private List<ImgShop> mainImgShops = new ArrayList();
+
+    /**
+     * 4s店banner图
+     */
+    @OneToMany(targetEntity = ImgShop.class)
+    @Where(clause = "img_type=1")
+    @JoinColumn(name = "shop_id")
+    private List<ImgShop> bannerImgShops = new ArrayList();
 
     /**
      * 4s店其他图
      */
     @OneToMany(targetEntity = ImgShop.class)
-    @Where(clause = "is_main=0")
+    @Where(clause = "img_type=2")
     @JoinColumn(name = "shop_id")
     private List<ImgShop> commonImgShops = new ArrayList();
 
@@ -295,4 +303,11 @@ public class Shop implements Serializable {
         this.commonImgShops = commonImgShops;
     }
 
+    public List<ImgShop> getBannerImgShops() {
+        return bannerImgShops;
+    }
+
+    public void setBannerImgShops(List<ImgShop> bannerImgShops) {
+        this.bannerImgShops = bannerImgShops;
+    }
 }

@@ -69,6 +69,7 @@ public class ProductController {
                               String shopId,
                               HttpServletRequest request,
                               @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
+                              @RequestParam(value = "bannerFile", required = false) MultipartFile bannerFile,
                               @RequestParam(value = "files", required = false) List<MultipartFile> files) {
         if (!HexUtil.validateDouble(product.getPrice())) {
             return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "售价" + ResultEnum.ERROR_NULLPARAM.getMsg());
@@ -100,16 +101,32 @@ public class ProductController {
         if (null == mainFile) {
             return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "主图" + ResultEnum.ERROR_NULLPARAM.getMsg());
         }
+        if (null == bannerFile) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "banner图" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        ImgProduct imgProduct;
+        List<ImgProduct> imgProductList = new ArrayList<>();
         String fileName = mainFile.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = UUID.randomUUID() + suffixName;
-        ImgProduct imgProduct;
-        List<ImgProduct> imgProductList = new ArrayList<>();
         try {
             FileUtil.uploadImgFile(mainFile, path, fileName, zipFileLimit);
             imgProduct = new ImgProduct();
             imgProduct.setFileName(fileName);
-            imgProduct.setMain(new Boolean(true));
+            imgProduct.setImgType(new Integer(0));
+            imgProductList.add(imgProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+        }
+        fileName = bannerFile.getOriginalFilename();
+        suffixName = fileName.substring(fileName.lastIndexOf("."));
+        fileName = UUID.randomUUID() + suffixName;
+        try {
+            FileUtil.uploadImgFile(bannerFile, path, fileName, zipFileLimit);
+            imgProduct = new ImgProduct();
+            imgProduct.setFileName(fileName);
+            imgProduct.setImgType(new Integer(1));
             imgProductList.add(imgProduct);
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +142,7 @@ public class ProductController {
                 FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
-                imgProduct.setMain(new Boolean(false));
+                imgProduct.setImgType(new Integer(2));
                 imgProductList.add(imgProduct);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -358,6 +375,7 @@ public class ProductController {
     @PostMapping(value = "/editImgProduct")
     public Object editImgProduct(String id,
                                  @RequestParam(value = "mainFile", required = false) MultipartFile mainFile,
+                                 @RequestParam(value = "bannerFile", required = false) MultipartFile bannerFile,
                                  @RequestParam(value = "files", required = false) List<MultipartFile> files) {
         if (null == id || "".equals(id)) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
@@ -388,7 +406,31 @@ public class ProductController {
                 FileUtil.uploadImgFile(mainFile, path, fileName, zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
-                imgProduct.setMain(new Boolean(true));
+                imgProduct.setImgType(new Integer(0));
+                imgProductList.add(imgProduct);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getCode(), ResultEnum.UPLOAD_FAIL.getMsg());
+            }
+        }
+        if (null != bannerFile) {
+            fileName = bannerFile.getOriginalFilename();
+            suffixName = fileName.substring(fileName.lastIndexOf("."));
+            fileName = UUID.randomUUID() + suffixName;
+            try {
+                if (null != product.getBannerImgProducts() && !product.getBannerImgProducts().isEmpty()) {
+                    oldImgProduct = product.getBannerImgProducts().iterator().next();
+                    File deleteFile = new File(path + oldImgProduct.getFileName());
+                    if (deleteFile.exists()) {
+                        deleteFile.delete();
+                    }
+                    product.getBannerImgProducts().clear();
+                    imgProductService.deleteImgProduct(oldImgProduct);
+                }
+                FileUtil.uploadImgFile(bannerFile, path, fileName, zipFileLimit);
+                imgProduct = new ImgProduct();
+                imgProduct.setFileName(fileName);
+                imgProduct.setImgType(new Integer(1));
                 imgProductList.add(imgProduct);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -406,7 +448,7 @@ public class ProductController {
                 FileUtil.uploadImgFile(file, path, fileName, zipFileLimit);
                 imgProduct = new ImgProduct();
                 imgProduct.setFileName(fileName);
-                imgProduct.setMain(new Boolean(false));
+                imgProduct.setImgType(new Integer(2));
                 imgProductList.add(imgProduct);
             } catch (Exception e) {
                 e.printStackTrace();

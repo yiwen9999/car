@@ -31,9 +31,9 @@ public class ImgShop implements Serializable {
     private String fileName;
 
     /**
-     * 是否为主图
+     * 图片类型（0为主图，1为banner图，2为详情图）
      */
-    private Boolean isMain;
+    private Integer imgType = new Integer(2);
 
     /**
      * 创建时间
@@ -67,12 +67,12 @@ public class ImgShop implements Serializable {
         this.createTime = createTime;
     }
 
-    public Boolean getMain() {
-        return isMain;
+    public Integer getImgType() {
+        return imgType;
     }
 
-    public void setMain(Boolean main) {
-        isMain = main;
+    public void setImgType(Integer imgType) {
+        this.imgType = imgType;
     }
 
     @Override

@@ -73,7 +73,6 @@ public class PersonnelController {
      */
     @PostMapping(value = "/deletePersonnel")
     public Object deletePersonnel(String id) {
-        // TODO 删除策略还待调整实现
         if (null == id || id.equals("")) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }

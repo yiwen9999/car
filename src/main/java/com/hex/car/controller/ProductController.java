@@ -292,7 +292,7 @@ public class ProductController {
     @PostMapping(value = "/searchProductList")
     public Object searchProductList(String beginTime, String endTime, String name, HttpServletRequest request,
                                     @RequestParam(defaultValue = "0") Integer page,
-                                    @RequestParam(defaultValue = "1000") Integer size,
+                                    @RequestParam(defaultValue = "10000") Integer size,
                                     @RequestParam(defaultValue = "createTime") String sortStr,
                                     @RequestParam(defaultValue = "desc") String asc) {
         User user = HexUtil.getUser(request);
@@ -313,6 +313,7 @@ public class ProductController {
         condition.put("minCreateTime", HexUtil.formatBeginTimeString(beginTime));
         condition.put("maxCreateTime", HexUtil.formatEndTimeString(endTime));
         condition.put("name", name);
+        condition.put("productStateLimit", new Boolean(false));
         return ResultUtil.success(productService.findProducts(condition, pageRequest));
     }
 

@@ -185,6 +185,7 @@ public class FrontController {
         condition.put("bodyTypeId", bodyTypeId);
         condition.put("seatsId", seatsId);
         condition.put("shopId", shopId);
+        condition.put("productStateLimit", new Boolean(true));
         return ResultUtil.success(productService.findProducts(condition, pageRequest));
     }
 
@@ -223,6 +224,7 @@ public class FrontController {
         condition.put("shopIds", shopIds);
         condition.put("minDisplacement", minDisplacement);
         condition.put("maxDisplacement", maxDisplacement);
+        condition.put("productStateLimit", new Boolean(true));
         return ResultUtil.success(productService.findProducts(condition, pageRequest));
     }
 
@@ -664,6 +666,7 @@ public class FrontController {
             condition.put("maxPrice", maxPrice);
             condition.put("carTypeId", carTypeId);
         }
+        condition.put("productStateLimit", new Boolean(true));
         return ResultUtil.success(productService.findProducts(condition, pageRequest));
     }
 

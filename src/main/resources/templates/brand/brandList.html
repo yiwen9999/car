@@ -8,7 +8,7 @@
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 品牌管理<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="brandAdd('添加品牌','/toBrandAdd','','310')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加品牌</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
-	<table class="table table-border table-bordered table-hover table-bg">
+	<table class="table table-border table-bordered table-hover table-bg table-sort">
 		<thead>
 			<tr>
 				<th scope="col" colspan="7">品牌列表</th>
@@ -32,6 +32,7 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
 <script type="text/javascript">
 $(function(){
 	$.ajax({
@@ -44,6 +45,14 @@ $(function(){
 					createTr(index,brand);
             	});
             	$("#list_quantity").html(data.data.length);
+            	$('.table-sort').dataTable({
+            		"aaSorting": [[ 0, "asc" ]],//默认第几个排序
+					"bStateSave": false,//状态保存
+					"pading":false,
+					"aoColumnDefs": [
+					  {"orderable":false,"aTargets":[3,4,5]}// 不参与排序的列
+					]
+            	});
             } else {
                 alert("获取信息失败");
             }

@@ -206,6 +206,7 @@ public class MySpec {
                 String[] seatsIds = (String[]) condition.get("seatsIds");
                 String[] shopIds = (String[]) condition.get("shopIds");
                 Integer[] years = (Integer[]) condition.get("years");
+                Boolean productStateLimit = (Boolean) condition.get("productStateLimit");
 
                 List<Predicate> predicate = new ArrayList<>();
                 Join<Product, Car> carJoin = root.join("car", JoinType.INNER);
@@ -356,7 +357,9 @@ public class MySpec {
                 /**
                  * 查询所售车辆状态为【启用】且 4s店状态为【启用】的车辆
                  */
-                predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), new Integer(2)));
+                if (productStateLimit) {
+                    predicate.add(criteriaBuilder.equal(root.get("state").as(Integer.class), new Integer(2)));
+                }
                 predicate.add(criteriaBuilder.equal(shopJoin.get("state").as(Integer.class), new Integer(2)));
 
                 Predicate[] pre = new Predicate[predicate.size()];

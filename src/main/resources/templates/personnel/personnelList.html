@@ -10,7 +10,7 @@
 	<div class="text-c"> 
 		<input type="text" class="input-text" style="width:250px" placeholder="输入会员姓名" id="name" name="">
 		<input type="text" class="input-text" style="width:250px" placeholder="输入会员手机号" id="mobile" name="">
-		<button type="button" class="btn btn-success radius" id="" name="" onclick="searchPersonnel();"><i class="Hui-iconfont">&#xe665;</i>搜会员</button>
+		<button type="button" class="btn btn-success radius" id="" name="" onclick="clickSearchButton();"><i class="Hui-iconfont">&#xe665;</i>搜会员</button>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
 		<span class="l">
@@ -50,6 +50,10 @@ var newDate = new Date();
 $(function(){
 	searchPersonnel();
 });
+function clickSearchButton(){
+	$('.table-sort').dataTable().fnDestroy();
+	searchPersonnel();
+}
 function searchPersonnel(){
 	$("#personnelTbody").html("");
 	$.ajax({
@@ -66,6 +70,14 @@ function searchPersonnel(){
 					createTr(index,personnel);
             	});
             	$("#list_quantity").html(data.data.length);
+            	$('.table-sort').dataTable({
+            		"aaSorting": [[ 0, "asc" ]],//默认第几个排序
+					"bStateSave": false,//状态保存
+					"pading":false,
+					"aoColumnDefs": [
+					  {"orderable":false,"aTargets":[6,7]}// 不参与排序的列
+					]
+            	});
             } else {
                 alert(data.msg);
             }

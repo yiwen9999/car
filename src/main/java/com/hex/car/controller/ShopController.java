@@ -301,7 +301,7 @@ public class ShopController {
     @PostMapping(value = "/searchShopList")
     public Object searchShopList(String beginTime, String endTime, String name,
                                  @RequestParam(defaultValue = "0") Integer page,
-                                 @RequestParam(defaultValue = "1000") Integer size,
+                                 @RequestParam(defaultValue = "10000") Integer size,
                                  @RequestParam(defaultValue = "createTime") String sortStr,
                                  @RequestParam(defaultValue = "desc") String asc) {
         Sort sort;

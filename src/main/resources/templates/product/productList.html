@@ -12,7 +12,7 @@
 		-
 		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
 		<input type="text" class="input-text" style="width:250px" placeholder="输入所售车辆名称" id="name" name="">
-		<button type="button" class="btn btn-success radius" id="" name="" onclick="productSearch();"><i class="Hui-iconfont">&#xe665;</i>搜所售卖车辆</button>
+		<button type="button" class="btn btn-success radius" id="" name="" onclick="clickSearchButton();"><i class="Hui-iconfont">&#xe665;</i>搜所售卖车辆</button>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="productAdd('新建所售车辆','/toProductAdd','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 新建所售车辆</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
 	<div class="mt-16">
@@ -47,6 +47,10 @@ var newDate = new Date();
 $(function(){
 	productSearch();
 });
+function clickSearchButton(){
+	$('.table-sort').dataTable().fnDestroy();
+	productSearch();
+}
 function productSearch(){
 	$("#productTbody").html("");
 	$.ajax({
@@ -64,6 +68,14 @@ function productSearch(){
 					createTr(index,product);
             	});
             	$("#list_quantity").html(data.data.content.length);
+            	$('.table-sort').dataTable({
+					"aaSorting": [[ 0, "asc" ]],//默认第几个排序
+					"bStateSave": false,//状态保存
+					"pading":false,
+					"aoColumnDefs": [
+					  {"orderable":false,"aTargets":[7,8]}// 不参与排序的列
+					]
+				});
             } else {
                 alert("获取信息失败");
             }

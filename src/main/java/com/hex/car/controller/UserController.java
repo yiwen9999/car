@@ -198,8 +198,8 @@ public class UserController {
         }
 
         User user = userService.findUserByUsername(username);
-        if (null == user) {
-            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+        if (null == user || -1==user.getState()) {
+            return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), "该用户不存在或已失效");
         }
         user.setPassword(Md5SaltTool.getEncryptedPwd(password));
         userService.saveUser(user);
@@ -353,7 +353,7 @@ public class UserController {
     @PostMapping(value = "/searchUserList")
     public Object searchUserList(String username,
                                  @RequestParam(defaultValue = "0") Integer page,
-                                 @RequestParam(defaultValue = "1000") Integer size,
+                                 @RequestParam(defaultValue = "10000") Integer size,
                                  @RequestParam(defaultValue = "createTime") String sortStr,
                                  @RequestParam(defaultValue = "desc") String asc) {
         Sort sort;

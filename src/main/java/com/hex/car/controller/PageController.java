@@ -406,4 +406,9 @@ public class PageController {
         return "/user/userAdd";
     }
 
+    @GetMapping(value = "/toImportCarExcel")
+    public String toImportCarExcel() {
+        return "/car/importCarExcel";
+    }
+
 }

@@ -126,6 +126,18 @@ public class BaseController {
                 childMapList.add(childMap);
                 map.put("childList", childMapList);
                 mapList.add(map);
+
+                map = new HashMap<>();
+                map.put("id", "c9");
+                map.put("name", "车辆库管理");
+                map.put("url", "/");
+                childMapList = new ArrayList<>();
+                childMap = new HashMap<>();
+                childMap.put("name", "车辆库excel导入");
+                childMap.put("url", "/toImportCarExcel");
+                childMapList.add(childMap);
+                map.put("childList", childMapList);
+                mapList.add(map);
             } else if (null != user.getShop()) { // 4s店账号
                 map = new HashMap<>();
                 map.put("id", "c1");

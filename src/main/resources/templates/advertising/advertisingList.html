@@ -44,6 +44,14 @@ $(function(){
 					createTr(index,advertising);
             	});
             	$("#list_quantity").html(data.data.length);
+            	$('.table-sort').dataTable({
+            		"aaSorting": [[ 0, "asc" ]],//默认第几个排序
+					"bStateSave": false,//状态保存
+					"pading":false,
+					"aoColumnDefs": [
+					  {"orderable":false,"aTargets":[4,5]}// 不参与排序的列
+					]
+            	});
             } else {
                 alert("获取信息失败");
             }

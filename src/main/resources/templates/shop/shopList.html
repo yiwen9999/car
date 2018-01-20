@@ -12,7 +12,7 @@
 		-
 		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
 		<input type="text" class="input-text" style="width:250px" placeholder="输入4S店名称" id="name" name="">
-		<button type="button" onclick="searchShop();" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i>搜4S店</button>
+		<button type="button" onclick="clickSearchButton();" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i>搜4S店</button>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="shopAdd('新建4S店','/toShopAdd','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 新建4S店</a></span> <span class="r">共有数据：<strong id="list_quantity"></strong> 条</span> </div>
 	<div class="mt-16">
@@ -46,6 +46,10 @@ var newDate = new Date();
 $(function(){
 	searchShop();
 });
+function clickSearchButton(){
+	$('.table-sort').dataTable().fnDestroy();
+	searchShop();
+}
 function searchShop(){
 	$("#shopTbody").html("");
 	$.ajax({
@@ -63,6 +67,14 @@ function searchShop(){
 					createTr(index,shop);
             	});
             	$("#list_quantity").html(data.data.content.length);
+            	$('.table-sort').dataTable({
+            		"aaSorting": [[ 0, "asc" ]],//默认第几个排序
+					"bStateSave": false,//状态保存
+					"pading":false,
+					"aoColumnDefs": [
+					  {"orderable":false,"aTargets":[7,8]}// 不参与排序的列
+					]
+            	});
             } else {
                 alert("获取信息失败");
             }

@@ -91,7 +91,7 @@ public class PersonnelController {
 
     @PostMapping(value = "/searchPersonnelList")
     public Object searchPersonnelList(@RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(defaultValue = "1000") Integer size,
+                                      @RequestParam(defaultValue = "10000") Integer size,
                                       @RequestParam(defaultValue = "createTime") String sortStr,
                                       @RequestParam(defaultValue = "desc") String asc,
                                       String name, String mobile) {

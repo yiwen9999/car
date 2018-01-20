@@ -14,7 +14,7 @@ public class CarApplication {
     }
 
     @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer(){
+    public EmbeddedServletContainerCustomizer containerCustomizer() {
         return new EmbeddedServletContainerCustomizer() {
             @Override
             public void customize(ConfigurableEmbeddedServletContainer container) {

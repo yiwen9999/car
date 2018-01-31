@@ -198,7 +198,7 @@ public class UserController {
         }
 
         User user = userService.findUserByUsername(username);
-        if (null == user || -1==user.getState()) {
+        if (null == user || -1 == user.getState()) {
             return ResultUtil.error(ResultEnum.ERROR_PARAM.getCode(), "该用户不存在或已失效");
         }
         user.setPassword(Md5SaltTool.getEncryptedPwd(password));
@@ -281,6 +281,23 @@ public class UserController {
         if (null == user) {
             return ResultUtil.error(ResultEnum.UN_LOGIN.getCode(), ResultEnum.UN_LOGIN.getMsg());
         }
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", user);
+        map.put("personnel", user.getPersonnel());
+        return ResultUtil.success(map);
+    }
+
+    @PostMapping(value = "/updateNickname")
+    public Object updateNickname(HttpServletRequest request, String nickname) {
+        User user = HexUtil.getUser(request);
+        if (null == user) {
+            return ResultUtil.error(ResultEnum.UN_LOGIN.getCode(), ResultEnum.UN_LOGIN.getMsg());
+        }
+        if (!HexUtil.validateString(nickname)) {
+            return ResultUtil.error(ResultEnum.ERROR_NULLPARAM.getCode(), "昵称" + ResultEnum.ERROR_NULLPARAM.getMsg());
+        }
+        user.getPersonnel().setNickname(nickname);
+        personnelService.savePersonnel(user.getPersonnel());
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
         map.put("personnel", user.getPersonnel());

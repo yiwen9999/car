@@ -379,6 +379,7 @@ public class MySpec {
                 if (!StringUtils.isEmpty(userId)) {
                     predicate.add(criteriaBuilder.equal(root.get("user").get("id").as(String.class), userId));
                 }
+                predicate.add(criteriaBuilder.equal(root.get("product").get("state").as(Integer.class), new Integer(2)));
                 Predicate[] pre = new Predicate[predicate.size()];
                 return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
             }

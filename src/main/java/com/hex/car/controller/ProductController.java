@@ -199,6 +199,10 @@ public class ProductController {
         saveProduct.setName(product.getName());
         saveProduct.setPrice(product.getPrice());
         saveProduct.setDetails(product.getDetails());
+        saveProduct.setInsideColor(product.getInsideColor());
+        saveProduct.setOutsideColor(product.getOutsideColor());
+        saveProduct.setDoorNumber(product.getDoorNumber());
+        saveProduct.setCarSeries(product.getCarSeries());
         return ResultUtil.success(productService.saveProduct(saveProduct));
     }
 

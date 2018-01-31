@@ -36,6 +36,26 @@ public class Product implements Serializable {
     private String details;
 
     /**
+     * 内饰颜色
+     */
+    private String insideColor;
+
+    /**
+     * 外观颜色
+     */
+    private String outsideColor;
+
+    /**
+     * 车门数
+     */
+    private String doorNumber;
+
+    /**
+     * 车系
+     */
+    private String carSeries;
+
+    /**
      * 售价
      */
     private Double price;
@@ -227,5 +247,37 @@ public class Product implements Serializable {
 
     public void setBannerImgProducts(List<ImgProduct> bannerImgProducts) {
         this.bannerImgProducts = bannerImgProducts;
+    }
+
+    public String getInsideColor() {
+        return insideColor;
+    }
+
+    public void setInsideColor(String insideColor) {
+        this.insideColor = insideColor;
+    }
+
+    public String getOutsideColor() {
+        return outsideColor;
+    }
+
+    public void setOutsideColor(String outsideColor) {
+        this.outsideColor = outsideColor;
+    }
+
+    public String getDoorNumber() {
+        return doorNumber;
+    }
+
+    public void setDoorNumber(String doorNumber) {
+        this.doorNumber = doorNumber;
+    }
+
+    public String getCarSeries() {
+        return carSeries;
+    }
+
+    public void setCarSeries(String carSeries) {
+        this.carSeries = carSeries;
     }
 }
